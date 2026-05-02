@@ -1,14 +1,10 @@
+"use client"
+
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
 import { ArrowRight, Code, ShoppingCart, Palette, Store, Zap, Sparkles, CheckCircle, Award } from "lucide-react"
 import Link from "next/link"
 import { motion } from "framer-motion"
-import { Metadata } from "next"
-
-export const metadata: Metadata = {
-  title: "Web Development Services - MZwebSolutions",
-  description: "Professional web development services including WordPress, Shopify, eBay templates, and modern frontend development by M Muzammil.",
-}
 
 export default function ServicesPage() {
   const services = [
