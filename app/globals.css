@@ -1,0 +1,426 @@
+@import "tailwindcss";
+
+/* ════════════════════════════════════════════════════════════════════════════
+   DESIGN TOKENS
+   Extracted from hero (#0a0a12 bg, #6366f1 primary, #8b5cf6 accent)
+   and navbar (rgba(15,15,15,0.85) glass, indigo-to-violet gradient CTA)
+════════════════════════════════════════════════════════════════════════════ */
+
+:root {
+  /* ── Core palette ── */
+  --bg-base:          #0a0a12;   /* hero/page background */
+  --bg-surface:       #0d0d18;   /* slightly lighter surface */
+  --bg-elevated:      #12121f;   /* cards, modals */
+  --bg-overlay:       rgba(10, 10, 20, 0.85); /* glass cards */
+
+  /* ── Brand ── */
+  --indigo:           #6366f1;   /* primary */
+  --violet:           #8b5cf6;   /* accent */
+  --indigo-light:     #818cf8;   /* gradient text start */
+  --violet-light:     #c084fc;   /* gradient text end */
+  --indigo-dim:       rgba(99, 102, 241, 0.12);
+  --violet-dim:       rgba(139, 92, 246, 0.10);
+
+  /* ── Text ── */
+  --text-primary:     #ffffff;
+  --text-secondary:   #9CA3AF;   /* gray-400 */
+  --text-muted:       #6B7280;   /* gray-500 */
+  --text-faint:       #4B5563;   /* gray-600 */
+  --text-accent:      #a5b4fc;   /* indigo-300 */
+
+  /* ── Borders ── */
+  --border-subtle:    rgba(255, 255, 255, 0.06);
+  --border-default:   rgba(255, 255, 255, 0.09);
+  --border-strong:    rgba(255, 255, 255, 0.14);
+  --border-brand:     rgba(99, 102, 241, 0.25);
+
+  /* ── Shadows ── */
+  --shadow-sm:        0 4px 20px rgba(0, 0, 0, 0.30);
+  --shadow-md:        0 8px 32px rgba(0, 0, 0, 0.45);
+  --shadow-lg:        0 24px 64px rgba(0, 0, 0, 0.60);
+  --shadow-glow:      0 0 24px rgba(99, 102, 241, 0.30);
+  --shadow-glow-lg:   0 0 40px rgba(99, 102, 241, 0.40);
+
+  /* ── Tailwind / Radix compat ── */
+  --background:       #0a0a12;
+  --foreground:       var(--text-primary);
+  --card:             var(--bg-elevated);
+  --card-foreground:  var(--text-primary);
+  --primary:          var(--indigo);
+  --primary-foreground: #ffffff;
+  --accent:           var(--violet);
+  --accent-foreground: #ffffff;
+  --border:           var(--border-default);
+  --input:            rgba(255, 255, 255, 0.05);
+  --ring:             var(--indigo);
+  --radius:           0.75rem;
+  --max-container:    1240px !important;
+}
+
+/* ── Light mode ── */
+.light {
+  --bg-base:          #ffffff;
+  --bg-surface:       #f8fafc;
+  --bg-elevated:      #ffffff;
+  --bg-overlay:       rgba(255, 255, 255, 0.95);
+  --text-primary:     #0f172a;
+  --text-secondary:   #64748b;
+  --text-muted:       #94a3b8;
+  --text-faint:       #cbd5e1;
+  --border-subtle:    rgba(226, 232, 240, 0.6);
+  --border-default:   rgba(226, 232, 240, 0.8);
+  --border-strong:    rgba(226, 232, 240, 1);
+  --background:       #ffffff;
+  --foreground:       #0f172a;
+  --card:             #ffffff;
+  --card-foreground:  #0f172a;
+  --border:           rgba(226, 232, 240, 0.8);
+  --input:            #ffffff;
+}
+
+/* ── Dark (explicit) ── */
+.dark {
+  --bg-base:          #0a0a12;
+  --bg-surface:       #0d0d18;
+  --bg-elevated:      #12121f;
+  --bg-overlay:       rgba(10, 10, 20, 0.85);
+  --text-primary:     #ffffff;
+  --text-secondary:   #9CA3AF;
+  --text-muted:       #6B7280;
+  --text-faint:       #4B5563;
+  --border-subtle:    rgba(255, 255, 255, 0.06);
+  --border-default:   rgba(255, 255, 255, 0.09);
+  --border-strong:    rgba(255, 255, 255, 0.14);
+  --background:       #0a0a12;
+  --foreground:       #ffffff;
+  --card:             #12121f;
+  --card-foreground:  #ffffff;
+  --primary:          var(--indigo);
+  --primary-foreground: #ffffff;
+  --accent:           var(--violet);
+  --accent-foreground: #ffffff;
+  --border:           rgba(255, 255, 255, 0.09);
+  --input:            rgba(255, 255, 255, 0.05);
+  --ring:             var(--indigo);
+}
+
+/* ════════════════════════════════════════════════════════════════════════════
+   BASE
+════════════════════════════════════════════════════════════════════════════ */
+
+* {
+  border-color: var(--border-default);
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: #0a0a12;
+  color: var(--text-primary);
+  font-family: 'Inter', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* ── Container ── */
+.container {
+  max-width: var(--max-container) !important;
+}
+
+/* ════════════════════════════════════════════════════════════════════════════
+   BACKGROUNDS
+════════════════════════════════════════════════════════════════════════════ */
+
+/* Main page background — matches hero exactly */
+.bg-page {
+  background: var(--bg-base);
+}
+
+/* Section background with subtle purple-blue tint */
+.bg-gradient-dark {
+  background: var(--bg-base);
+  position: relative;
+}
+.bg-gradient-dark::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 80% 50% at 20% 0%, rgba(99,102,241,0.08) 0%, transparent 60%),
+    radial-gradient(ellipse 60% 40% at 80% 100%, rgba(139,92,246,0.06) 0%, transparent 60%);
+  pointer-events: none;
+}
+
+/* Button / badge gradients — matches navbar "Get Started" exactly */
+.bg-gradient-blue {
+  background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+}
+.bg-gradient-purple {
+  background: linear-gradient(135deg, #7c3aed 0%, #6366f1 100%);
+}
+
+/* Fine grid overlay — the "developer/engineer" trope */
+.bg-grid {
+  background-image:
+    linear-gradient(rgba(255,255,255,0.025) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.025) 1px, transparent 1px);
+  background-size: 48px 48px;
+}
+
+/* ════════════════════════════════════════════════════════════════════════════
+   GLASS UTILITIES
+════════════════════════════════════════════════════════════════════════════ */
+
+/* Inline glass — nav links, badges */
+.glass {
+  background: rgba(255, 255, 255, 0.06);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--border-default);
+}
+
+/* Card glass — floating cards, modals */
+.glass-card {
+  background: var(--bg-overlay);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid var(--border-default);
+  box-shadow: var(--shadow-md);
+}
+
+/* Nav glass — the floating pill navbar */
+.glass-nav {
+  background: rgba(15, 15, 15, 0.82);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid var(--border-default);
+  box-shadow: var(--shadow-sm);
+}
+
+/* Light mode overrides */
+.light .glass {
+  background: rgba(255, 255, 255, 0.55);
+  border-color: var(--border-default);
+}
+.light .glass-card {
+  background: rgba(255, 255, 255, 0.88);
+  border-color: var(--border-default);
+  box-shadow: 0 4px 24px rgba(15, 15, 26, 0.08);
+}
+.light .glass-nav {
+  background: rgba(244, 244, 248, 0.90);
+  border-color: var(--border-default);
+}
+
+/* ════════════════════════════════════════════════════════════════════════════
+   TYPOGRAPHY
+════════════════════════════════════════════════════════════════════════════ */
+
+/* Primary gradient text — matches hero "Technical Precision" exactly */
+.text-gradient {
+  background: linear-gradient(120deg, #818cf8 0%, #c084fc 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Blue-indigo gradient text */
+.text-gradient-blue {
+  background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* ════════════════════════════════════════════════════════════════════════════
+   INTERACTIVE STATES
+════════════════════════════════════════════════════════════════════════════ */
+
+.hover-lift {
+  transition: transform 0.28s ease, box-shadow 0.28s ease, border-color 0.28s ease;
+}
+.hover-lift:hover {
+  transform: translateY(-6px);
+  box-shadow: var(--shadow-lg);
+  border-color: var(--border-brand) !important;
+}
+
+/* ════════════════════════════════════════════════════════════════════════════
+   ANIMATIONS
+════════════════════════════════════════════════════════════════════════════ */
+
+/* Floating orbs */
+.orb {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(80px);
+  pointer-events: none;
+  animation: orbFloat 8s ease-in-out infinite;
+}
+@keyframes orbFloat {
+  0%, 100% { transform: translateY(0) scale(1); }
+  50%       { transform: translateY(-28px) scale(1.04); }
+}
+
+/* Animated grid drift */
+.particle-grid {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+.particle-grid::before {
+  content: '';
+  position: absolute;
+  inset: -50%;
+  width: 200%;
+  height: 200%;
+  background-image:
+    linear-gradient(rgba(99,102,241,0.15) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(99,102,241,0.15) 1px, transparent 1px);
+  background-size: 60px 60px;
+  animation: gridDrift 22s linear infinite;
+}
+.particle-grid::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse 80% 60% at 50% 50%, transparent 40%, var(--bg-base) 100%);
+}
+@keyframes gridDrift {
+  0%   { transform: translate(0, 0); }
+  100% { transform: translate(60px, 60px); }
+}
+
+/* CTA pulse — used on primary buttons */
+@keyframes ctaPulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(99, 102, 241, 0.45); }
+  50%       { box-shadow: 0 0 0 12px rgba(99, 102, 241, 0); }
+}
+.btn-pulse {
+  animation: ctaPulse 2.4s ease-in-out infinite;
+}
+
+/* ════════════════════════════════════════════════════════════════════════════
+   LIGHT MODE — text & border overrides for Tailwind utility classes
+════════════════════════════════════════════════════════════════════════════ */
+
+.light .text-white          { color: var(--text-primary)   !important; }
+.light .text-gray-300       { color: var(--text-secondary) !important; }
+.light .text-gray-400       { color: var(--text-muted)     !important; }
+.light .text-gray-500       { color: var(--text-faint)     !important; }
+.light .border-white\/10    { border-color: var(--border-subtle)  !important; }
+.light .border-white\/20    { border-color: var(--border-default) !important; }
+.light .bg-gradient-dark    { background: var(--bg-base) !important; }
+.light .bg-gradient-dark::before {
+  background:
+    radial-gradient(ellipse 80% 50% at 20% 0%, rgba(99,102,241,0.05) 0%, transparent 60%),
+    radial-gradient(ellipse 60% 40% at 80% 100%, rgba(139,92,246,0.04) 0%, transparent 60%);
+}
+
+/* ════════════════════════════════════════════════════════════════════════════
+   CUSTOM CURSOR
+════════════════════════════════════════════════════════════════════════════ */
+
+/* Hide system cursor on pointer devices — custom cursor component takes over */
+@media (pointer: fine) {
+  *, *::before, *::after {
+    /* cursor: none !important; */
+  }
+}
+
+/* Touch devices — restore normal cursors */
+@media (pointer: coarse) {
+  button, a, [role="button"], [role="link"], .cursor-pointer,
+  input[type="submit"], input[type="button"], input[type="reset"],
+  select, label[for], [data-slot="button"] { cursor: pointer !important; }
+
+  button:disabled, input:disabled, select:disabled,
+  textarea:disabled, [disabled]            { cursor: not-allowed !important; }
+
+  input[type="text"], input[type="email"], input[type="password"],
+  input[type="search"], input[type="tel"], input[type="url"],
+  input[type="number"], textarea           { cursor: text !important; }
+}
+
+
+/* ════════════════════════════════════════════════════════════════════════════
+   THEME BACKGROUNDS
+════════════════════════════════════════════════════════════════════════════ */
+
+body {
+  background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
+  transition: background 0.3s ease;
+  cursor: default;
+}
+
+* {
+  cursor: inherit;
+}
+
+a, button, [role="button"], input, select, textarea, label {
+  cursor: pointer;
+}
+
+input[type="text"], input[type="email"], input[type="tel"], input[type="password"], textarea {
+  cursor: text;
+}
+
+.dark body {
+  background: linear-gradient(180deg, #0a0a12 0%, #0d0d18 100%);
+}
+
+/* Page backgrounds that respond to theme */
+.theme-bg-gradient {
+  background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
+}
+
+.dark .theme-bg-gradient {
+  background: linear-gradient(180deg, #0a0a12 0%, #0d0d18 100%);
+}
+
+/* Card backgrounds */
+.theme-card {
+  background: rgba(255,255,255,0.95);
+  backdrop-filter: blur(20px);
+  border-color: rgba(226,232,240,0.8);
+}
+
+.dark .theme-card {
+  background: rgba(18,18,31,0.95);
+  backdrop-filter: blur(20px);
+  border-color: rgba(255,255,255,0.09);
+}
+
+/* Text colors */
+.theme-text-primary {
+  color: #0f172a;
+}
+
+.dark .theme-text-primary {
+  color: #ffffff;
+}
+
+.theme-text-secondary {
+  color: #64748b;
+}
+
+.dark .theme-text-secondary {
+  color: #9CA3AF;
+}
+
+/* Navigation */
+.theme-nav-bg {
+  background: rgba(255,255,255,0.95);
+  backdrop-filter: blur(14px);
+  border: 1px solid rgba(226,232,240,0.8);
+}
+
+.dark .theme-nav-bg {
+  background: rgba(15,15,15,0.85);
+  backdrop-filter: blur(14px);
+  border: 1px solid rgba(255,255,255,0.09);
+}
