@@ -2,7 +2,8 @@ import { NextResponse } from "next/server"
 
 export async function POST(req: Request) {
   try {
-    const { name, email, phone, company, service, budget, timeline, message } = await req.json()
+    const body = await req.json()
+    const { name, email, phone, company, service, budget, timeline, message } = body
 
     // Validate required fields
     if (!name || !email || !message) {
@@ -31,6 +32,19 @@ export async function POST(req: Request) {
       const resendApiKey = process.env.RESEND_API_KEY
       
       if (resendApiKey && resendApiKey !== 'your_resend_api_key_here') {
+        // Parse service and budget from message if they're embedded (home page form)
+        let parsedService = service
+        let parsedBudget = budget
+        let cleanMessage = message
+
+        // Check if message contains "Service:" and "Budget:" (home page form format)
+        if (message.includes('Service:') && message.includes('Budget:')) {
+          const lines = message.split('\n')
+          parsedService = lines[0]?.replace('Service:', '').trim() || service
+          parsedBudget = lines[1]?.replace('Budget:', '').trim() || budget
+          cleanMessage = lines.slice(3).join('\n').trim() || message
+        }
+
         // Create email HTML
         const emailHtml = `
           <!DOCTYPE html>
@@ -79,17 +93,17 @@ export async function POST(req: Request) {
                 </div>
                 ` : ''}
                 
-                ${service ? `
+                ${parsedService ? `
                 <div class="field">
                   <div class="label">💼 Service:</div>
-                  <div class="value">${service}</div>
+                  <div class="value">${parsedService}</div>
                 </div>
                 ` : ''}
                 
-                ${budget ? `
+                ${parsedBudget ? `
                 <div class="field">
                   <div class="label">💰 Budget:</div>
-                  <div class="value">${budget}</div>
+                  <div class="value">${parsedBudget}</div>
                 </div>
                 ` : ''}
                 
@@ -102,7 +116,7 @@ export async function POST(req: Request) {
                 
                 <div class="field">
                   <div class="label">💬 Message:</div>
-                  <div class="value" style="white-space: pre-wrap;">${message}</div>
+                  <div class="value" style="white-space: pre-wrap;">${cleanMessage}</div>
                 </div>
                 
                 <div class="footer">
@@ -130,7 +144,7 @@ export async function POST(req: Request) {
           body: JSON.stringify({
             from: 'Portfolio Contact <onboarding@resend.dev>',
             to: ['muzammalzaheer571@gmail.com'],
-            subject: `🚀 New ${service || 'Project'} Inquiry from ${name}`,
+            subject: `🚀 New ${parsedService || 'Project'} Inquiry from ${name}`,
             html: emailHtml,
             reply_to: email,
           }),
