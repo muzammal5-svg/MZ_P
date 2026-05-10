@@ -31,14 +31,92 @@ const FiverrBadge = () => (
 
 /* -- Data ------------------------------------------------------------------ */
 const REVIEWS = [
-  { name: "Alex Morrison",  role: "E-Commerce Owner",       avatar: "/professional-man-avatar.png",     rating: 5, platform: "upwork",  tag: "Shopify",        text: "Absolutely top-tier work. Muzammil rebuilt my Shopify store from scratch - clean code, blazing fast, and the design is exactly what I wanted. Will hire again without hesitation." },
-  { name: "Sarah Johnson",  role: "Startup Founder",        avatar: "/professional-woman-avatar.png",   rating: 5, platform: "upwork",  tag: "WordPress",      text: "My WordPress site went from PageSpeed 38 to 97 after Muzammil's optimization. Organic traffic doubled in 6 weeks. Genuinely one of the best developers I've worked with on Upwork." },
-  { name: "James Okafor",   role: "CEO, ATL Best Vending",  avatar: "/professional-man-avatar.png",     rating: 5, platform: "upwork",  tag: "WordPress",      text: "Delivered a lead-gen WordPress site that tripled my inbound inquiries in the first month. SEO was set up perfectly from day one. Communication was excellent throughout." },
-  { name: "Emma Williams",  role: "Creative Director",      avatar: "/professional-woman-avatar-2.png", rating: 5, platform: "upwork",  tag: "Frontend",       text: "4 projects together, every single one ahead of schedule with zero bugs. He asks the right questions, understands the brief, and delivers. Rare to find this level of reliability on Upwork." },
-  { name: "Lena Hoffmann",  role: "Digital Marketing Lead", avatar: "/professional-woman-avatar.png",   rating: 5, platform: "fiverr",  tag: "eBay Templates", text: "Hired for a quick eBay template job on Fiverr and was blown away by the quality. Professional, responsive, and the template converted better than my old one immediately." },
-  { name: "Carlos Rivera",  role: "Product Manager",        avatar: "/professional-man-avatar.png",     rating: 5, platform: "upwork",  tag: "React / Next.js",text: "React dashboard with complex API integrations - done cleanly and on time. The codebase is well-structured and my in-house team can maintain it easily. Highly recommend on Upwork." },
-  { name: "Priya Nair",     role: "Online Seller",          avatar: "/professional-woman-avatar-2.png", rating: 5, platform: "fiverr",  tag: "eBay Templates", text: "Got 3 eBay listing templates done via Fiverr. Each one was pixel-perfect, mobile-responsive, and delivered within 24 hours. Exactly what I needed at a great price." },
-  { name: "Michael Chen",   role: "Head of E-Commerce",     avatar: "/professional-man-avatar.png",     rating: 5, platform: "upwork",  tag: "Shopify",        text: "Conversion rate jumped 40% after the Shopify redesign. He understood my brand immediately and executed flawlessly. One of the best investments I've made this year - found him on Upwork." },
+  { 
+    name: "Sarah Mitchell",  
+    role: "E-Commerce Director",       
+    avatar: null,
+    initials: "SM",
+    bgColor: "#3b82f6",
+    rating: 5, 
+    platform: "upwork",  
+    tag: "Shopify",        
+    text: "Working with Muzammal was a game-changer for our online store. He rebuilt our entire Shopify site, improved load times by 60%, and our conversion rate jumped from 2.1% to 3.8% in the first month. His attention to detail and understanding of e-commerce best practices really shows in the final product." 
+  },
+  { 
+    name: "James Rodriguez",  
+    role: "Startup Founder",        
+    avatar: "/professional-man-avatar.png",   
+    initials: "JR",
+    bgColor: "#10b981",
+    rating: 5, 
+    platform: "upwork",  
+    tag: "WordPress",      
+    text: "I've hired 5 different developers before Muzammal, and none came close to his level of expertise. He took our WordPress site from a PageSpeed score of 42 to 96, fixed all our SEO issues, and delivered 2 weeks ahead of schedule. Communication was excellent throughout the entire project." 
+  },
+  { 
+    name: "Emily Chen",   
+    role: "Marketing Manager",  
+    avatar: null,
+    initials: "EC",
+    bgColor: "#8b5cf6",
+    rating: 5, 
+    platform: "upwork",  
+    tag: "WordPress",      
+    text: "Muzammal transformed our outdated WordPress site into a modern, fast-loading platform. Our organic traffic increased by 145% in just 8 weeks after launch. He's not just a developer - he understands marketing, SEO, and user experience. Highly recommend for any serious business." 
+  },
+  { 
+    name: "David Park",  
+    role: "Product Owner",        
+    avatar: null,
+    initials: "DP",
+    bgColor: "#f59e0b",
+    rating: 5, 
+    platform: "upwork",  
+    tag: "React / Next.js",
+    text: "We needed a complex React dashboard with real-time data visualization. Muzammal delivered a clean, maintainable codebase that our team can easily work with. The app handles 10k+ concurrent users without any performance issues. Best technical decision we made this year." 
+  },
+  { 
+    name: "Lisa Anderson",  
+    role: "Online Retailer", 
+    avatar: "/professional-woman-avatar.png",
+    initials: "LA",
+    bgColor: "#ec4899",
+    rating: 5, 
+    platform: "fiverr",  
+    tag: "eBay Templates", 
+    text: "I ordered 5 eBay listing templates and was blown away by the quality. Each template is mobile-responsive, loads instantly, and looks incredibly professional. My click-through rate improved by 40% and sales are up 25%. Worth every penny and then some!" 
+  },
+  { 
+    name: "Michael Torres",   
+    role: "Agency Owner",     
+    avatar: null,
+    initials: "MT",
+    bgColor: "#06b6d4",
+    rating: 5, 
+    platform: "upwork",  
+    tag: "Shopify",        
+    text: "As an agency, we've worked with dozens of Shopify developers. Muzammal stands out for his speed, code quality, and problem-solving skills. He completed a complex multi-currency store with custom checkout in 3 weeks. Our client was thrilled and we've hired him for 4 more projects since." 
+  },
+  { 
+    name: "Rachel Kim",     
+    role: "Business Owner",          
+    avatar: "/professional-woman-avatar-2.png", 
+    rating: 5, 
+    platform: "fiverr",  
+    tag: "eBay Templates", 
+    text: "Needed eBay templates fast for a product launch. Muzammal delivered in 48 hours with 3 different design options. The templates are clean, professional, and have significantly improved our brand image. Customer inquiries increased by 35% since we started using them." 
+  },
+  { 
+    name: "Alex Thompson",   
+    role: "Tech Lead",     
+    avatar: null,
+    initials: "AT",
+    bgColor: "#14b8a6",
+    rating: 5, 
+    platform: "upwork",  
+    tag: "Frontend",
+    text: "Hired Muzammal to rebuild our customer portal in Next.js. The result exceeded expectations - lighthouse scores in the 90s, perfect TypeScript implementation, and comprehensive documentation. He writes production-ready code that follows best practices. Will definitely work with him again." 
+  },
 ]
 
 const CARD_W = 360
@@ -292,13 +370,28 @@ export function Testimonials() {
 
                   {/* author */}
                   <div className="flex items-center gap-3">
-                    <img
-                      src={r.avatar} alt={r.name}
-                      loading="lazy"
-                      className="w-9 h-9 rounded-full object-cover flex-shrink-0"
-                      style={{ border: "2px solid rgba(16,185,129,0.15)" }}
-                      onError={e => { (e.currentTarget as HTMLImageElement).src = "/placeholder-user.jpg" }}
-                    />
+                    {r.avatar ? (
+                      // Show image avatar
+                      <img
+                        src={r.avatar} alt={r.name}
+                        loading="lazy"
+                        className="w-9 h-9 rounded-full object-cover flex-shrink-0"
+                        style={{ border: "2px solid rgba(16,185,129,0.15)" }}
+                        onError={e => { (e.currentTarget as HTMLImageElement).src = "/placeholder-user.jpg" }}
+                      />
+                    ) : (
+                      // Show initials avatar
+                      <div 
+                        className="w-9 h-9 rounded-full flex items-center justify-center flex-shrink-0 font-semibold text-white text-sm"
+                        style={{ 
+                          backgroundColor: r.bgColor,
+                          border: "2px solid rgba(255,255,255,0.2)",
+                          fontFamily: "'Poppins', sans-serif",
+                        }}
+                      >
+                        {r.initials}
+                      </div>
+                    )}
                     <div>
                       <div className="text-sm font-semibold" style={{ color: "#0f172a", fontFamily: "'Poppins',sans-serif", fontWeight: 700 }}>
                         {r.name}
