@@ -86,29 +86,14 @@ export function MZwebSolutionsNavigation() {
       >
         {/* ── Logo ── */}
         <Link href="/" className="flex items-center gap-3 flex-shrink-0 group">
-          {/* Modern Logo Badge */}
+          {/* Profile Picture as Logo */}
           <div 
-            className="relative flex items-center justify-center w-10 h-10 rounded-xl transition-all duration-300 group-hover:scale-105"
-            style={{
-              background: "linear-gradient(135deg, #10b981 0%, #06b6d4 100%)",
-              boxShadow: "0 4px 12px rgba(16,185,129,0.3)",
-            }}
+            className="relative w-10 h-10 rounded-full overflow-hidden ring-2 ring-emerald-500/30 group-hover:ring-emerald-500/60 transition-all duration-300 group-hover:scale-105"
           >
-            <span 
-              className="text-white font-bold text-lg"
-              style={{ 
-                fontFamily: "'Poppins', sans-serif",
-                fontWeight: 700,
-              }}
-            >
-              M
-            </span>
-            {/* Shine effect */}
-            <div 
-              className="absolute inset-0 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"
-              style={{
-                background: "linear-gradient(135deg, rgba(255,255,255,0.3) 0%, transparent 50%)",
-              }}
+            <img 
+              src="/profile-pic.jpg" 
+              alt="Muzammal" 
+              className="w-full h-full object-cover"
             />
           </div>
           

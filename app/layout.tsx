@@ -127,22 +127,22 @@ export const metadata: Metadata = {
   icons: {
     icon: [
       {
-        url: "/favicon.ico",
+        url: "/profile-pic.jpg",
         sizes: "any",
       },
       {
-        url: "/MZwebsolution.png",
+        url: "/profile-pic.jpg",
         sizes: "32x32",
-        type: "image/png",
+        type: "image/jpeg",
       },
       {
-        url: "/MZwebsolution.png",
+        url: "/profile-pic.jpg",
         sizes: "16x16", 
-        type: "image/png",
+        type: "image/jpeg",
       },
     ],
-    apple: "/MZwebsolution.png",
-    shortcut: "/favicon.ico",
+    apple: "/profile-pic.jpg",
+    shortcut: "/profile-pic.jpg",
   },
   openGraph: {
     type: 'website',
