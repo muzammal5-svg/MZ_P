@@ -18,7 +18,7 @@ export function MZwebSolutionsFooter() {
   ]
 
   const socialLinks = [
-    { name: "GitHub", href: "https://github.com/muzammal5-sv", icon: Github },
+    { name: "GitHub", href: "https://github.com/muzammal5-svg", icon: Github },
     { name: "LinkedIn", href: "https://www.linkedin.com/in/muz-the-coder/", icon: Linkedin },
     // { name: "Twitter", href: "#", icon: Twitter },
   ]
