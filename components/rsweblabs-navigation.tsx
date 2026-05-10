@@ -93,7 +93,7 @@ export function MZwebSolutionsNavigation() {
             <img 
               src="/profile-pic.jpg" 
               alt="Muzammal" 
-              className="w-full h-full object-cover"
+              className="w-full object-cover"
             />
           </div>
           
