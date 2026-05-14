@@ -171,7 +171,7 @@ export const metadata: Metadata = {
     canonical: 'https://muzammal.dev',
   },
   verification: {
-    google: 'your-google-search-console-verification-code',
+    google: 'cByFXCFwzGvwLLkpfQ25ijpIWHghANmKZM3owjJ5q_4',
     yandex: 'your-yandex-verification-code',
     other: {
       'msvalidate.01': 'your-bing-verification-code',
