@@ -128,7 +128,7 @@ export function AboutBento() {
                   color: "#475569",
                   fontWeight: 400,
                 }}>
-                I'm <strong style={{ color: "#0f172a" }}>Muzammal</strong>, a full-stack web developer with <strong style={{ color: "#0f172a" }}>5+ years</strong> of experience 
+                I'm <strong style={{ color: "#0f172a" }}>Muzammal</strong>, a full-stack web developer with <strong style={{ color: "#0f172a" }}>2+ years</strong> of experience 
                 specializing in high-performance websites that rank, convert, and scale.
               </p>
               <p className="text-lg leading-relaxed"

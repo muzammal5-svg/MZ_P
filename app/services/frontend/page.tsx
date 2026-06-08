@@ -46,7 +46,9 @@ export default function FrontendPage() {
   const packages = [
     {
       name: "Single Page App",
-      price: "$799",
+      price: "$349",
+      originalPrice: "$799",
+      discount: "56%",
       description: "Perfect for interactive web applications",
       features: [
         "React/Next.js development",
@@ -59,7 +61,9 @@ export default function FrontendPage() {
     },
     {
       name: "Multi-Page Application",
-      price: "$1,499",
+      price: "$599",
+      originalPrice: "$1,499",
+      discount: "60%",
       description: "Ideal for complex web applications",
       features: [
         "React/Next.js development",
@@ -73,7 +77,9 @@ export default function FrontendPage() {
     },
     {
       name: "Enterprise Solution",
-      price: "$2,999",
+      price: "$999",
+      originalPrice: "$2,999",
+      discount: "67%",
       description: "Complete solution for large-scale applications",
       features: [
         "Full-stack development",
@@ -315,7 +321,6 @@ export default function FrontendPage() {
                       backdropFilter: "blur(20px)",
                       borderColor: pkg.popular ? "rgba(16,185,129,0.3)" : "rgba(226,232,240,0.8)",
                       boxShadow: pkg.popular ? "0 25px 50px rgba(16,185,129,0.15)" : "0 4px 20px rgba(0,0,0,0.06)",
-                      ringColor: pkg.popular ? "rgba(16,185,129,0.3)" : undefined,
                     }}>
                     {pkg.popular && (
                       <div className="absolute -top-4 left-1/2 transform -translate-x-1/2">
@@ -336,13 +341,33 @@ export default function FrontendPage() {
                           fontFamily: "'Poppins', sans-serif",
                         }}>{pkg.name}</h3>
                       <div className="mb-4">
-                        <span className="text-5xl font-bold"
-                          style={{
-                            background: "linear-gradient(135deg, #10b981 0%, #06b6d4 100%)",
-                            WebkitBackgroundClip: "text",
-                            WebkitTextFillColor: "transparent",
-                            fontFamily: "'Poppins', sans-serif",
-                          }}>{pkg.price}</span>
+                        <div className="flex items-center justify-center gap-3 mb-2">
+                          <span className="text-5xl font-bold"
+                            style={{
+                              background: "linear-gradient(135deg, #10b981 0%, #06b6d4 100%)",
+                              WebkitBackgroundClip: "text",
+                              WebkitTextFillColor: "transparent",
+                              fontFamily: "'Poppins', sans-serif",
+                            }}>{pkg.price}</span>
+                          {pkg.discount && (
+                            <span className="px-3 py-1 rounded-full text-sm font-bold text-white"
+                              style={{
+                                background: "linear-gradient(135deg, #ef4444 0%, #f87171 100%)",
+                                fontFamily: "'Poppins', sans-serif",
+                              }}>
+                              {pkg.discount} OFF
+                            </span>
+                          )}
+                        </div>
+                        {pkg.originalPrice && (
+                          <p className="text-sm line-through"
+                            style={{
+                              color: "#cbd5e1",
+                              fontFamily: "'Poppins', sans-serif",
+                            }}>
+                            {pkg.originalPrice}
+                          </p>
+                        )}
                       </div>
                       <p className="text-sm leading-relaxed"
                         style={{

@@ -286,6 +286,54 @@ export const defaultProjects: Project[] = [
     isEbayTemplate: true,
     trustScore: 100,
   },
+  {
+    id: 23,
+    title: "Heroic Home Comfort",
+    niche: "HVAC Service Company",
+    description: "Professional HVAC services website with CRM integration, online booking system, emergency support, and maintenance plans for heating, cooling, and ventilation solutions.",
+    category: "Custom Web",
+    technologies: ["Laravel", "Tailwind CSS", "HouseCall Pro CRM", "Online Booking", "Contact Forms"],
+    image: "/frontend/housecallpro-crm.png",
+    liveUrl: "https://heroiccomfort.com",
+    isEbayTemplate: false,
+    trustScore: 100,
+  },
+  {
+    id: 24,
+    title: "CoolBuffs — IT Job Portal",
+    niche: "Job Portal Platform",
+    description: "IT-focused job portal connecting 13,000+ IT professionals with 521+ employers. Features advanced job search filters, featured companies slider, admin dashboard with job/company/blog management, and AI chatbot assistant.",
+    category: "Custom Web",
+    technologies: ["Laravel", "Blade Templating", "Tailwind CSS", "MySQL", "AI Chatbot Integration", "Job Search Filters"],
+    image: "/frontend/coolfbuffs-jobportal.png",
+    liveUrl: "https://coolbuffs.com",
+    isEbayTemplate: false,
+    trustScore: 100,
+  },
+  {
+    id: 25,
+    title: "Seyma Robb — Interior Design Studio",
+    niche: "Luxury Interior Design",
+    description: "High-end interior design studio specializing in residential and commercial projects. Features portfolio gallery with featured projects (Manhattan Penthouse, Hamptons Hospitality, Upper East Side), luxury service offerings, design philosophy, and Robb Corporation network partnerships.",
+    category: "WordPress",
+    technologies: ["WordPress", "Elementor", "Custom Popups", "Gallery", "Contact Forms", "Responsive Design", "SEO Optimized"],
+    image: "/frontend/Syam-Interior Design.png",
+    liveUrl: "https://seymarobb.com",
+    isEbayTemplate: false,
+    trustScore: 100,
+  },
+  {
+    id: 26,
+    title: "Luxury Interior Design — Landing Page",
+    niche: "Interior Design Landing Page",
+    description: "Elegant frontend landing page featuring full-screen hero, portfolio gallery with smooth animations, 3-pillar design philosophy section, services showcase, and contact form. Built with responsive design, serif typography, earthy color palette, and smooth scroll interactions.",
+    category: "Custom Web",
+    technologies: ["HTML5", "CSS3", "JavaScript", "Responsive Design", "Smooth Scroll", "Animations", "CSS Variables"],
+    image: "/frontend/Interior Design.png",
+    liveUrl: "#",
+    isEbayTemplate: false,
+    trustScore: 100,
+  },
 ]
 
 // Get projects from localStorage or return defaults
@@ -295,7 +343,13 @@ export function getProjects(): Project[] {
   const saved = localStorage.getItem("portfolioProjects")
   if (saved) {
     try {
-      return JSON.parse(saved)
+      const parsed = JSON.parse(saved)
+      // If saved data has fewer than default projects, use defaults (stale data)
+      if (parsed.length < defaultProjects.length) {
+        localStorage.setItem("portfolioProjects", JSON.stringify(defaultProjects))
+        return defaultProjects
+      }
+      return parsed
     } catch {
       return defaultProjects
     }

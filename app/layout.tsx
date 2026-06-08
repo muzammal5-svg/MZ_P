@@ -3,6 +3,7 @@ import type { Metadata } from "next"
 import { Inter } from "next/font/google"
 import { Analytics } from "@vercel/analytics/next"
 import { WhatsAppFloat } from "@/components/whatsapp-float"
+import { ScrollToTop } from "@/components/scroll-to-top"
 import { ThemeProvider } from "@/components/theme-provider"
 import "./globals.css"
 
@@ -19,37 +20,48 @@ export const metadata: Metadata = {
     template: "%s | Muzammal - Professional Web Developer"
   },
   description:
-    "Professional WordPress developer, Shopify expert, and React/Next.js specialist with 5+ years experience. Custom theme development, WooCommerce, Shopify Plus, eBay listing templates, Laravel APIs, and high-performance web applications. 100+ projects delivered, 5.0 rating on Upwork.",
+    "Professional WordPress developer, Shopify expert, and React/Next.js specialist with 2+ years experience. Custom theme development, WooCommerce, Shopify Plus, eBay listing templates, Laravel APIs, and high-performance web applications. 100+ projects delivered, 5.0 rating on Upwork.",
   generator: "Next.js",
   applicationName: "Muzammal Portfolio",
   keywords: [
     // WordPress - High-value keywords
     "WordPress developer",
+    "WordPress development services",
     "custom WordPress development",
     "WordPress theme development",
     "WordPress plugin development",
+    "WordPress site maintenance",
     "WooCommerce developer",
+    "WooCommerce store development",
     "WordPress speed optimization",
     "WordPress SEO expert",
     "headless WordPress developer",
-    "WordPress REST API",
-    "WordPress Gutenberg blocks",
+    "WordPress REST API development",
+    "WordPress Gutenberg expert",
+    "WordPress security consulting",
     "hire WordPress developer",
     "WordPress consultant",
+    "WordPress migration expert",
+    "WordPress performance optimization",
     
     // Shopify - High-value keywords
     "Shopify developer",
     "Shopify expert",
+    "Shopify development services",
     "custom Shopify theme development",
     "Shopify store development",
     "Shopify app integration",
     "Shopify Plus developer",
+    "Shopify store setup",
     "Shopify migration services",
     "Shopify Liquid developer",
+    "Shopify payment integration",
+    "Shopify inventory management",
     "hire Shopify developer",
     "Shopify consultant",
     "Shopify theme customization",
-    
+    "Shopify store optimization",
+
     // React & Next.js - High-value keywords
     "React developer",
     "Next.js developer",
@@ -59,9 +71,12 @@ export const metadata: Metadata = {
     "server-side rendering React",
     "static site generation Next.js",
     "React hooks expert",
+    "React performance optimization",
     "hire React developer",
     "Next.js 14 developer",
-    
+    "React component development",
+    "React frontend development",
+
     // eBay - Niche keywords
     "eBay listing templates",
     "eBay store design",
@@ -70,22 +85,27 @@ export const metadata: Metadata = {
     "eBay HTML templates",
     "eBay template developer",
     "responsive eBay templates",
-    
+    "eBay seller solutions",
+
     // Laravel - Backend keywords
     "Laravel developer",
     "Laravel API development",
     "Laravel REST API",
     "PHP Laravel expert",
     "Laravel backend developer",
-    
+    "Laravel application development",
+    "Laravel custom development",
+
     // Tailwind CSS
     "Tailwind CSS developer",
     "Tailwind CSS expert",
     "custom Tailwind components",
-    
+    "Tailwind CSS implementation",
+
     // General high-value keywords
     "full-stack developer",
     "full-stack web developer",
+    "web developer for hire",
     "e-commerce developer",
     "web application development",
     "frontend developer",
@@ -95,15 +115,48 @@ export const metadata: Metadata = {
     "mobile-first development",
     "PageSpeed optimization expert",
     "Core Web Vitals optimization",
+    "SEO optimization services",
     "technical SEO specialist",
     "conversion rate optimization",
     "freelance web developer",
     "professional web developer",
-    "custom web development",
-    "web development services",
+    "custom web development services",
+    "web development company",
+    "web development agency",
     "hire full-stack developer",
+    "best web developer",
+    "experienced web developer",
+    "affordable web development",
+    "quality web development",
+    "fast web development",
+    "secure web development",
+    "accessible web development",
+    "SEO-friendly web development",
+    "performance-focused development",
     "Upwork top rated developer",
-    "Fiverr pro developer"
+    "Fiverr pro developer",
+    "verified developer",
+    "professional developer",
+    
+    // Location-based
+    "web developer Pakistan",
+    "developer worldwide services",
+    "remote web developer",
+    "online developer",
+    
+    // Service-specific
+    "website redesign services",
+    "website maintenance services",
+    "website optimization services",
+    "website security services",
+    "website backup services",
+    "website hosting setup",
+    "domain management",
+    "SSL certificate setup",
+    "website analytics setup",
+    "conversion tracking setup",
+    "A/B testing services",
+    "user experience optimization",
   ],
   authors: [{ name: "Muhammad Muzammal", url: "https://muzammal.dev" }],
   creator: "Muhammad Muzammal",
@@ -211,7 +264,7 @@ export default function RootLayout({
           "@type": "Organization",
           "name": "Freelance"
         },
-        "description": "Professional WordPress developer, Shopify expert, and React/Next.js specialist with 5+ years of experience",
+        "description": "Professional WordPress developer, Shopify expert, and React/Next.js specialist with 2+ years of experience",
         "knowsAbout": [
           "WordPress Development",
           "Shopify Development",
@@ -337,6 +390,7 @@ export default function RootLayout({
           disableTransitionOnChange
         >
           {children}
+          <ScrollToTop />
           <WhatsAppFloat 
             phoneNumber="923417359571" 
             message="Hi! I'm interested in MZwebSolutions services. Let's discuss my project!" 

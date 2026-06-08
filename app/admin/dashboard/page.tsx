@@ -68,7 +68,7 @@ export default function AdminDashboard() {
   const loadProjects = () => {
     const loadedProjects = getProjects()
     
-    // If only 4 projects (old data), use all 22 default projects
+    // If only 4 projects (old data), use all default projects
     if (loadedProjects.length <= 4) {
       saveProjects(allDefaultProjects)
       setProjects(allDefaultProjects)

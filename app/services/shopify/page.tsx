@@ -46,7 +46,9 @@ export default function ShopifyPage() {
   const packages = [
     {
       name: "Starter Store",
-      price: "$599",
+      price: "$249",
+      originalPrice: "$599",
+      discount: "58%",
       description: "Perfect for new businesses entering eCommerce",
       features: [
         "Custom Shopify theme",
@@ -59,7 +61,9 @@ export default function ShopifyPage() {
     },
     {
       name: "Professional Store",
-      price: "$1,299",
+      price: "$499",
+      originalPrice: "$1,299",
+      discount: "62%",
       description: "Ideal for growing businesses with advanced needs",
       features: [
         "Premium Shopify theme",
@@ -73,7 +77,9 @@ export default function ShopifyPage() {
     },
     {
       name: "Enterprise Store",
-      price: "$2,499",
+      price: "$899",
+      originalPrice: "$2,499",
+      discount: "64%",
       description: "Complete solution for large-scale eCommerce",
       features: [
         "Custom Shopify Plus theme",
@@ -322,7 +328,6 @@ export default function ShopifyPage() {
                       backdropFilter: "blur(20px)",
                       borderColor: pkg.popular ? "rgba(16,185,129,0.3)" : "rgba(226,232,240,0.8)",
                       boxShadow: pkg.popular ? "0 25px 50px rgba(16,185,129,0.15)" : "0 4px 20px rgba(0,0,0,0.06)",
-                      ringColor: pkg.popular ? "rgba(16,185,129,0.3)" : undefined,
                     }}>
                     {pkg.popular && (
                       <div className="absolute -top-4 left-1/2 transform -translate-x-1/2">
@@ -343,13 +348,33 @@ export default function ShopifyPage() {
                           fontFamily: "'Poppins', sans-serif",
                         }}>{pkg.name}</h3>
                       <div className="mb-4">
-                        <span className="text-5xl font-bold"
-                          style={{
-                            background: "linear-gradient(135deg, #10b981 0%, #06b6d4 100%)",
-                            WebkitBackgroundClip: "text",
-                            WebkitTextFillColor: "transparent",
-                            fontFamily: "'Poppins', sans-serif",
-                          }}>{pkg.price}</span>
+                        <div className="flex items-center justify-center gap-3 mb-2">
+                          <span className="text-5xl font-bold"
+                            style={{
+                              background: "linear-gradient(135deg, #10b981 0%, #06b6d4 100%)",
+                              WebkitBackgroundClip: "text",
+                              WebkitTextFillColor: "transparent",
+                              fontFamily: "'Poppins', sans-serif",
+                            }}>{pkg.price}</span>
+                          {pkg.discount && (
+                            <span className="px-3 py-1 rounded-full text-sm font-bold text-white"
+                              style={{
+                                background: "linear-gradient(135deg, #ef4444 0%, #f87171 100%)",
+                                fontFamily: "'Poppins', sans-serif",
+                              }}>
+                              {pkg.discount} OFF
+                            </span>
+                          )}
+                        </div>
+                        {pkg.originalPrice && (
+                          <p className="text-sm line-through"
+                            style={{
+                              color: "#cbd5e1",
+                              fontFamily: "'Poppins', sans-serif",
+                            }}>
+                            {pkg.originalPrice}
+                          </p>
+                        )}
                       </div>
                       <p className="text-sm leading-relaxed"
                         style={{

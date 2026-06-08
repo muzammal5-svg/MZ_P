@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server"
+import nodemailer from "nodemailer"
 
 export async function POST(req: Request) {
   try {
@@ -27,23 +28,20 @@ export async function POST(req: Request) {
       timestamp: new Date().toISOString()
     })
 
-    // Send email using Resend API
+    // Send email using Gmail
     try {
-      const resendApiKey = process.env.RESEND_API_KEY
+      const emailUser = process.env.EMAIL_USER
+      const emailPass = process.env.EMAIL_PASS
       
-      if (resendApiKey && resendApiKey !== 'your_resend_api_key_here') {
-        // Parse service and budget from message if they're embedded (home page form)
-        let parsedService = service
-        let parsedBudget = budget
-        let cleanMessage = message
-
-        // Check if message contains "Service:" and "Budget:" (home page form format)
-        if (message.includes('Service:') && message.includes('Budget:')) {
-          const lines = message.split('\n')
-          parsedService = lines[0]?.replace('Service:', '').trim() || service
-          parsedBudget = lines[1]?.replace('Budget:', '').trim() || budget
-          cleanMessage = lines.slice(3).join('\n').trim() || message
-        }
+      if (emailUser && emailPass) {
+        // Create transporter
+        const transporter = nodemailer.createTransport({
+          service: 'gmail',
+          auth: {
+            user: emailUser,
+            pass: emailPass,
+          },
+        })
 
         // Create email HTML
         const emailHtml = `
@@ -52,12 +50,12 @@ export async function POST(req: Request) {
           <head>
             <meta charset="utf-8">
             <style>
-              body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
+              body { font-family: 'Poppins', Arial, sans-serif; line-height: 1.6; color: #333; }
               .container { max-width: 600px; margin: 0 auto; padding: 20px; }
               .header { background: linear-gradient(135deg, #10b981 0%, #06b6d4 100%); color: white; padding: 30px; border-radius: 10px 10px 0 0; }
               .content { background: #f9fafb; padding: 30px; border-radius: 0 0 10px 10px; }
               .field { margin-bottom: 20px; }
-              .label { font-weight: bold; color: #374151; margin-bottom: 5px; }
+              .label { font-weight: bold; color: #374151; margin-bottom: 5px; font-size: 14px; }
               .value { color: #1f2937; padding: 10px; background: white; border-radius: 5px; border-left: 3px solid #10b981; }
               .footer { text-align: center; margin-top: 20px; color: #6b7280; font-size: 14px; }
             </style>
@@ -93,17 +91,17 @@ export async function POST(req: Request) {
                 </div>
                 ` : ''}
                 
-                ${parsedService ? `
+                ${service ? `
                 <div class="field">
                   <div class="label">💼 Service:</div>
-                  <div class="value">${parsedService}</div>
+                  <div class="value">${service}</div>
                 </div>
                 ` : ''}
                 
-                ${parsedBudget ? `
+                ${budget ? `
                 <div class="field">
                   <div class="label">💰 Budget:</div>
-                  <div class="value">${parsedBudget}</div>
+                  <div class="value">${budget}</div>
                 </div>
                 ` : ''}
                 
@@ -116,7 +114,7 @@ export async function POST(req: Request) {
                 
                 <div class="field">
                   <div class="label">💬 Message:</div>
-                  <div class="value" style="white-space: pre-wrap;">${cleanMessage}</div>
+                  <div class="value" style="white-space: pre-wrap;">${message}</div>
                 </div>
                 
                 <div class="footer">
@@ -125,7 +123,7 @@ export async function POST(req: Request) {
                     timeStyle: 'short' 
                   })}</p>
                   <p style="margin-top: 10px;">
-                    <a href="mailto:${email}" style="background: #10b981; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; display: inline-block;">Reply to ${name}</a>
+                    <strong>Client Email:</strong> ${email}
                   </p>
                 </div>
               </div>
@@ -134,32 +132,42 @@ export async function POST(req: Request) {
           </html>
         `
 
-        // Send email via Resend
-        const response = await fetch('https://api.resend.com/emails', {
-          method: 'POST',
-          headers: {
-            'Authorization': `Bearer ${resendApiKey}`,
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            from: 'Portfolio Contact <onboarding@resend.dev>',
-            to: ['muzammalzaheer571@gmail.com'],
-            subject: `🚀 New ${parsedService || 'Project'} Inquiry from ${name}`,
-            html: emailHtml,
-            reply_to: email,
-          }),
+        // Send email
+        await transporter.sendMail({
+          from: emailUser,
+          to: emailUser,
+          subject: `🚀 New ${service || 'Project'} Inquiry from ${name}`,
+          html: emailHtml,
+          replyTo: email,
         })
 
-        const data = await response.json()
+        console.log('✅ Email sent successfully to', emailUser)
 
-        if (!response.ok) {
-          console.error('Resend API Error:', data)
-          // Don't fail the request, just log the error
-        } else {
-          console.log('✅ Email sent successfully via Resend:', data.id)
+        // Optionally send confirmation to user
+        try {
+          await transporter.sendMail({
+            from: emailUser,
+            to: email,
+            subject: '✅ We Received Your Inquiry',
+            html: `
+              <div style="font-family: 'Poppins', Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
+                <h2 style="color: #10b981;">Thank you, ${name}!</h2>
+                <p style="color: #64748b; line-height: 1.6;">
+                  I've received your inquiry and will review it shortly. I typically respond to all inquiries within 2-4 hours during business hours.
+                </p>
+                <p style="color: #64748b; line-height: 1.6;">
+                  If you need an urgent response, feel free to reach out via WhatsApp at <strong>+92 341 735 9571</strong>
+                </p>
+                <p style="color: #64748b;">Best regards,<br><strong>Muzammal</strong></p>
+              </div>
+            `,
+          })
+          console.log('✅ Confirmation email sent to', email)
+        } catch (confirmError) {
+          console.log('⚠️ Could not send confirmation email, but main email was sent')
         }
       } else {
-        console.log('⚠️ Resend API key not configured. Email not sent.')
+        console.log('⚠️ Email credentials not configured')
       }
     } catch (emailError) {
       console.error('Email sending error:', emailError)
@@ -168,7 +176,7 @@ export async function POST(req: Request) {
 
     return NextResponse.json({ 
       success: true,
-      message: "Thank you for your message! I'll get back to you soon."
+      message: "Thank you for your message! I'll get back to you within 24 hours."
     })
     
   } catch (error) {
