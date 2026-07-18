@@ -1,5 +1,7 @@
 "use client"
 
+import { MZwebSolutionsNavigation } from "@/components/rsweblabs-navigation"
+import { MZwebSolutionsFooter } from "@/components/mzwebsolutions-footer"
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
 import { ArrowRight, CheckCircle, Code, Zap, Shield, Search, Smartphone, Gauge, ExternalLink } from "lucide-react"
@@ -46,9 +48,9 @@ export default function WordPressPage() {
   const packages = [
     {
       name: "Starter WordPress",
-      price: "$199",
-      originalPrice: "$499",
-      discount: "60%",
+      price: "$99",
+      originalPrice: "$299",
+      discount: "67%",
       description: "Perfect for small businesses and personal websites",
       features: [
         "Custom WordPress theme design",
@@ -61,9 +63,9 @@ export default function WordPressPage() {
     },
     {
       name: "Professional WordPress",
-      price: "$399",
-      originalPrice: "$999",
-      discount: "60%",
+      price: "$249",
+      originalPrice: "$699",
+      discount: "64%",
       description: "Ideal for growing businesses with advanced needs",
       features: [
         "Premium custom WordPress theme",
@@ -78,9 +80,9 @@ export default function WordPressPage() {
     },
     {
       name: "Enterprise WordPress",
-      price: "$699",
-      originalPrice: "$1,999",
-      discount: "65%",
+      price: "$499",
+      originalPrice: "$1,499",
+      discount: "67%",
       description: "Complete solution for large businesses",
       features: [
         "Premium enterprise theme",
@@ -122,7 +124,10 @@ export default function WordPressPage() {
   ]
 
   return (
-    <div className="min-h-screen pt-24" style={{ background: "linear-gradient(180deg, #ffffff 0%, #f8fafc 100%)" }}>
+    <div className="min-h-screen">
+      <MZwebSolutionsNavigation />
+      
+      <div className="pt-24" style={{ background: "linear-gradient(180deg, #ffffff 0%, #f8fafc 100%)" }}>
         
         {/* Decorative elements */}
         <div className="absolute top-40 right-10 w-96 h-96 rounded-full opacity-20 blur-3xl pointer-events-none"
@@ -605,5 +610,8 @@ export default function WordPressPage() {
         </section>
 
       </div>
+      
+      <MZwebSolutionsFooter />
+    </div>
   )
 }

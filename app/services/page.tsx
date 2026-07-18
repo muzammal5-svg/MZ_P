@@ -31,6 +31,28 @@ export default function ServicesPage() {
       price: "Starting at $3,000"
     },
     {
+      title: "AI Automation",
+      description: "Automate workflows and connect 1000+ apps with Make.com integration. Save hours every day.",
+      icon: Zap,
+      features: ["Workflow Automation", "Multi-App Integration", "Data Sync", "Email Automation"],
+      href: "/services/ai-automation",
+      color: "text-indigo-400",
+      bgColor: "bg-indigo-500/20",
+      borderColor: "border-indigo-500/30",
+      price: "Starting at $79"
+    },
+    {
+      title: "AI Chatbot",
+      description: "ChatGPT-powered chatbots for customer support, lead generation, and 24/7 assistance.",
+      icon: Sparkles,
+      features: ["24/7 Availability", "Multi-Language", "Lead Generation", "Natural Conversations"],
+      href: "/services/ai-chatbot",
+      color: "text-purple-400",
+      bgColor: "bg-purple-500/20",
+      borderColor: "border-purple-500/30",
+      price: "Starting at $89"
+    },
+    {
       title: "eBay Listing Templates",
       description: "Professional eBay listing templates that increase conversions and maintain brand consistency.",
       icon: Store,
@@ -44,12 +66,12 @@ export default function ServicesPage() {
     {
       title: "Frontend Development",
       description: "Modern frontend solutions using React, Next.js, TypeScript, and cutting-edge technologies.",
-      icon: Zap,
+      icon: Code,
       features: ["React & Next.js", "TypeScript", "Tailwind CSS", "Responsive Design"],
       href: "/services/frontend",
-      color: "text-indigo-400",
-      bgColor: "bg-indigo-500/20",
-      borderColor: "border-indigo-500/30",
+      color: "text-cyan-400",
+      bgColor: "bg-cyan-500/20",
+      borderColor: "border-cyan-500/30",
       price: "Starting at $3,500"
     }
   ]
@@ -143,8 +165,8 @@ export default function ServicesPage() {
               </p>
             </motion.div>
 
-            <div className="grid md:grid-cols-2 lg:grid-cols-2 gap-8 mb-12">
-              {services.slice(0, 4).map((service, index) => {
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
+              {services.map((service, index) => {
                 const Icon = service.icon
                 return (
                   <motion.div
@@ -201,74 +223,6 @@ export default function ServicesPage() {
                               <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
                             </Button>
                           </Link>
-                        </div>
-                      </div>
-                    </Card>
-                  </motion.div>
-                )
-              })}
-            </div>
-
-            {/* Frontend Development - Full Width */}
-            <div className="max-w-5xl mx-auto">
-              {services.slice(4).map((service, index) => {
-                const Icon = service.icon
-                return (
-                  <motion.div
-                    key={index + 4}
-                    initial={{ opacity: 0, y: 30 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.6, delay: 0.4 }}
-                    viewport={{ once: true }}
-                    className="group"
-                  >
-                    <Card className="glass-card border-white/10 hover-lift transition-all duration-500 overflow-hidden">
-                      <div className="p-8">
-                        <div className="grid md:grid-cols-2 gap-8 items-center">
-                          <div>
-                            {/* Service Icon */}
-                            <div className="mb-6">
-                              <div className={`inline-flex items-center justify-center w-16 h-16 rounded-2xl ${service.bgColor} border ${service.borderColor}`}>
-                                <Icon className={`h-8 w-8 ${service.color}`} />
-                              </div>
-                            </div>
-
-                            {/* Service Content */}
-                            <div className="space-y-4">
-                              <div className="flex items-center justify-between">
-                                <h3 className="text-2xl font-bold text-white group-hover:text-primary transition-colors">
-                                  {service.title}
-                                </h3>
-                                <span className={`text-sm font-semibold ${service.color}`}>
-                                  {service.price}
-                                </span>
-                              </div>
-                              
-                              <p className="text-gray-400 leading-relaxed">
-                                {service.description}
-                              </p>
-                            </div>
-                          </div>
-
-                          <div>
-                            {/* Features List */}
-                            <ul className="space-y-3 mb-6">
-                              {service.features.map((feature, featureIndex) => (
-                                <li key={featureIndex} className="flex items-center gap-3">
-                                  <CheckCircle className={`w-4 h-4 ${service.color}`} />
-                                  <span className="text-gray-300">{feature}</span>
-                                </li>
-                              ))}
-                            </ul>
-
-                            {/* CTA Button */}
-                            <Link href={service.href}>
-                              <Button className="bg-gradient-blue hover:bg-gradient-purple text-white font-semibold px-6 py-3 rounded-xl transition-all duration-300">
-                                <span>Learn More</span>
-                                <ArrowRight className="ml-2 h-4 w-4" />
-                              </Button>
-                            </Link>
-                          </div>
                         </div>
                       </div>
                     </Card>

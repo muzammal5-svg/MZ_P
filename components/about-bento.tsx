@@ -3,6 +3,7 @@
 import { motion } from "framer-motion"
 import { Code2, Zap, Award, CheckCircle, ArrowRight } from "lucide-react"
 import Link from "next/link"
+import Image from "next/image"
 
 export function AboutBento() {
   return (
@@ -76,12 +77,17 @@ export function AboutBento() {
                 boxShadow: "0 20px 60px rgba(16,185,129,0.2)",
                 border: "3px solid rgba(16,185,129,0.2)",
               }}>
-              <img
-                src="/professional-developer-portrait.png"
-                alt="Muhammad Muzammal"
-                className="w-full h-auto object-cover"
-                style={{ maxHeight: "600px" }}
-              />
+              <div className="relative w-full" style={{ aspectRatio: "4/5", maxHeight: "600px" }}>
+                <Image
+                  src="/professional-developer-portrait.png"
+                  alt="Muhammad Muzammal - Full Stack Web Developer"
+                  fill
+                  priority
+                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 600px"
+                  className="object-cover"
+                  quality={90}
+                />
+              </div>
               
               {/* Overlay badge */}
               <div className="absolute bottom-6 left-6 right-6 px-6 py-4 rounded-xl"

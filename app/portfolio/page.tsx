@@ -29,6 +29,8 @@ const CATEGORY_META: Record<string, { color: string; dot: string; bg: string }> 
   Shopify:        { color: "#96bf48", dot: "bg-[#96bf48]", bg: "rgba(150,191,72,0.1)" },
   "Custom Web":   { color: "#61dafb", dot: "bg-[#61dafb]", bg: "rgba(97,218,251,0.1)" },
   "eBay Templates":{ color: "#f59e0b", dot: "bg-[#f59e0b]", bg: "rgba(245,158,11,0.1)" },
+  "AI Automation": { color: "#6366f1", dot: "bg-[#6366f1]", bg: "rgba(99,102,241,0.1)" },
+  "AI Chatbot":   { color: "#8b5cf6", dot: "bg-[#8b5cf6]", bg: "rgba(139,92,246,0.1)" },
 }
 
 // ─── Pill Filter Bar ──────────────────────────────────────────────────────────

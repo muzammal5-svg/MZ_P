@@ -9,6 +9,7 @@ export type Project = {
   liveUrl: string
   isEbayTemplate: boolean
   trustScore: number
+  featured?: boolean
   achievements?: { icon: React.ReactNode; label: string; value: string }[]
   testimonial?: { quote: string; author: string }
 }
@@ -334,7 +335,147 @@ export const defaultProjects: Project[] = [
     isEbayTemplate: false,
     trustScore: 100,
   },
+  
+  // AI Automation Projects
+  {
+    id: 27,
+    title: "E-Commerce Order Automation",
+    niche: "E-Commerce Workflow Automation",
+    description: "Automated workflow connecting Shopify orders to Google Sheets, sending customer notifications via Gmail, updating inventory across multiple platforms, and notifying team on Slack. Processes 500+ orders daily without manual intervention.",
+    category: "AI Automation",
+    technologies: ["Make.com", "Shopify API", "Google Sheets", "Gmail", "Slack", "Webhooks", "JSON"],
+    image: "/ai-automation/ecommerce-automation.png",
+    liveUrl: "#",
+    isEbayTemplate: false,
+    trustScore: 100,
+  },
+  {
+    id: 28,
+    title: "Marketing Lead Automation",
+    niche: "Lead Generation & CRM Integration",
+    description: "Intelligent lead capture system that automatically collects leads from Typeform, enriches data, adds to HubSpot CRM, sends personalized welcome emails via Mailchimp, and notifies sales team. Increased lead response time by 85%.",
+    category: "AI Automation",
+    technologies: ["Make.com", "Typeform", "HubSpot", "Mailchimp", "Airtable", "Zapier", "API Integration"],
+    image: "/ai-automation/lead-automation.png",
+    liveUrl: "#",
+    isEbayTemplate: false,
+    trustScore: 100,
+  },
+  {
+    id: 29,
+    title: "Social Media Management Automation",
+    niche: "Social Media Scheduling & Analytics",
+    description: "Multi-platform social media automation that schedules posts across Instagram, Twitter, Facebook, and LinkedIn. Auto-generates reports, monitors mentions, responds to comments, and tracks engagement metrics. Saves 15+ hours per week.",
+    category: "AI Automation",
+    technologies: ["Make.com", "Instagram API", "Twitter API", "Facebook Graph", "Buffer", "Google Analytics"],
+    image: "/ai-automation/social-automation.png",
+    liveUrl: "#",
+    isEbayTemplate: false,
+    trustScore: 100,
+  },
+  {
+    id: 30,
+    title: "Customer Support Ticket System",
+    niche: "Support Automation & Ticketing",
+    description: "Automated customer support system that creates tickets from emails, assigns to team members based on expertise, tracks resolution time, sends satisfaction surveys, and generates performance reports. Reduced response time by 60%.",
+    category: "AI Automation",
+    technologies: ["Make.com", "Gmail", "Zendesk", "Trello", "SurveyMonkey", "Slack", "Google Sheets"],
+    image: "/ai-automation/support-automation.png",
+    liveUrl: "#",
+    isEbayTemplate: false,
+    trustScore: 100,
+  },
+  {
+    id: 31,
+    title: "Invoice & Payment Automation",
+    niche: "Accounting & Finance Automation",
+    description: "Complete invoicing automation that generates invoices from CRM data, sends to clients via email, tracks payments, updates accounting software, sends payment reminders, and reconciles accounts. Eliminates manual data entry completely.",
+    category: "AI Automation",
+    technologies: ["Make.com", "QuickBooks", "Stripe", "PayPal", "Gmail", "Google Sheets", "PDF Generation"],
+    image: "/ai-automation/invoice-automation.png",
+    liveUrl: "#",
+    isEbayTemplate: false,
+    trustScore: 100,
+  },
+
+  // AI Chatbot Projects  
+  {
+    id: 32,
+    title: "E-Commerce Shopping Assistant",
+    niche: "AI Shopping Assistant Chatbot",
+    description: "ChatGPT-powered shopping assistant that helps customers find products, answers product questions, provides recommendations, tracks orders, processes returns, and handles checkout support. Increased conversion rate by 35% and reduced cart abandonment by 40%.",
+    category: "AI Chatbot",
+    technologies: ["ChatGPT API", "OpenAI", "React", "Node.js", "MongoDB", "Stripe Integration", "WebSockets"],
+    image: "/ai-chatbot/shopping-assistant.png",
+    liveUrl: "#",
+    isEbayTemplate: false,
+    trustScore: 100,
+  },
+  {
+    id: 33,
+    title: "Customer Support AI Bot",
+    niche: "24/7 Customer Support Chatbot",
+    description: "Intelligent support chatbot trained on company knowledge base, handles FAQs, troubleshoots issues, escalates complex queries to humans, supports 50+ languages, and learns from interactions. Handles 80% of support queries autonomously, available on website, WhatsApp, and Facebook Messenger.",
+    category: "AI Chatbot",
+    technologies: ["ChatGPT", "GPT-4", "Python", "Flask", "PostgreSQL", "WhatsApp Business API", "Facebook Messenger"],
+    image: "/ai-chatbot/support-bot.png",
+    liveUrl: "#",
+    isEbayTemplate: false,
+    trustScore: 100,
+  },
+  {
+    id: 34,
+    title: "Lead Qualification Chatbot",
+    niche: "Sales Lead Qualification Bot",
+    description: "AI-powered lead qualification bot that asks qualifying questions, collects contact information, schedules meetings automatically, integrates with CRM, and sends follow-up emails. Qualified 500+ leads monthly with 92% accuracy, integrated with Calendly for auto-scheduling.",
+    category: "AI Chatbot",
+    technologies: ["ChatGPT", "OpenAI API", "Calendly Integration", "HubSpot CRM", "TypeScript", "Next.js", "Prisma"],
+    image: "/ai-chatbot/lead-bot.png",
+    liveUrl: "#",
+    isEbayTemplate: false,
+    trustScore: 100,
+  },
+  {
+    id: 35,
+    title: "Healthcare Appointment Bot",
+    niche: "Medical Appointment Scheduling",
+    description: "HIPAA-compliant healthcare chatbot that helps patients book appointments, get test results, receive medication reminders, and access health information. Features symptom checker, doctor availability lookup, and automated SMS reminders. Reduced no-shows by 45%.",
+    category: "AI Chatbot",
+    technologies: ["ChatGPT", "HIPAA Compliance", "Twilio SMS", "Calendar Integration", "Healthcare APIs", "Encryption"],
+    image: "/ai-chatbot/healthcare-bot.png",
+    liveUrl: "#",
+    isEbayTemplate: false,
+    trustScore: 100,
+  },
+  {
+    id: 36,
+    title: "Real Estate Property Advisor",
+    niche: "Real Estate AI Assistant",
+    description: "Intelligent property assistant that answers questions about listings, schedules viewings, provides neighborhood information, calculates mortgage estimates, and sends property recommendations based on preferences. Integrated with MLS data and virtual tour systems.",
+    category: "AI Chatbot",
+    technologies: ["ChatGPT", "OpenAI", "MLS Integration", "Google Maps API", "Mortgage Calculator", "Virtual Tours"],
+    image: "/ai-chatbot/realestate-bot.png",
+    liveUrl: "#",
+    isEbayTemplate: false,
+    trustScore: 100,
+  },
+  {
+    id: 37,
+    title: "Restaurant Ordering & Reservation Bot",
+    niche: "Restaurant AI Chatbot",
+    description: "Multi-lingual restaurant chatbot that handles table reservations, takes food orders, answers menu questions, processes payments, and sends order confirmations. Available on WhatsApp, website, and Facebook. Supports voice ordering and dietary preference detection.",
+    category: "AI Chatbot",
+    technologies: ["ChatGPT", "WhatsApp Business", "Payment Gateway", "POS Integration", "Voice Recognition", "Multi-language"],
+    image: "/ai-chatbot/restaurant-bot.png",
+    liveUrl: "#",
+    isEbayTemplate: false,
+    trustScore: 100,
+  },
 ]
+
+// =============================================================================
+// LOCALSTORAGE FUNCTIONS
+// =============================================================================
 
 // Get projects from localStorage or return defaults
 export function getProjects(): Project[] {
@@ -344,7 +485,6 @@ export function getProjects(): Project[] {
   if (saved) {
     try {
       const parsed = JSON.parse(saved)
-      // If saved data has fewer than default projects, use defaults (stale data)
       if (parsed.length < defaultProjects.length) {
         localStorage.setItem("portfolioProjects", JSON.stringify(defaultProjects))
         return defaultProjects

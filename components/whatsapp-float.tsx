@@ -161,9 +161,9 @@ export function WhatsAppFloat({
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         transition={{ delay: 0.3 }}
-                        className="text-gray-300 leading-relaxed"
+                        className="text-gray-300 leading-relaxed flex items-center gap-2"
                       >
-                        👋 Hi! Need help with web development? Let's chat!
+                        <span className="text-xl">👋</span> Hi! Need help with web development? Let's chat!
                       </motion.div>
                       <motion.div 
                         initial={{ opacity: 0 }}

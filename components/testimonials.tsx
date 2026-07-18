@@ -1,6 +1,7 @@
 ﻿"use client"
 
 import { useState, useCallback, useEffect, useRef } from "react"
+import Image from "next/image"
 import { motion } from "framer-motion"
 import { Star, ChevronLeft, ChevronRight } from "lucide-react"
 
@@ -31,91 +32,87 @@ const FiverrBadge = () => (
 
 /* -- Data ------------------------------------------------------------------ */
 const REVIEWS = [
+  // LinkedIn Recommendations
   { 
-    name: "Sarah Mitchell",  
-    role: "E-Commerce Director",       
+    name: "Sahil Meo",  
+    role: "Full Stack Developer | JavaScript Expert",       
     avatar: null,
     initials: "SM",
-    bgColor: "#3b82f6",
+    bgColor: "#0077b5",
     rating: 5, 
     platform: "upwork",  
-    tag: "Shopify",        
-    text: "Working with Muzammal was a game-changer for our online store. He rebuilt our entire Shopify site, improved load times by 60%, and our conversion rate jumped from 2.1% to 3.8% in the first month. His attention to detail and understanding of e-commerce best practices really shows in the final product." 
+    tag: "Laravel / React",        
+    text: "I had the pleasure of working with Muzammil on multiple projects at CodeWire Solutions. He has strong hands-on expertise in Laravel and React, and consistently delivered clean, high-quality work on time. A true professional, I highly recommend him for any web development project." 
   },
   { 
-    name: "James Rodriguez",  
-    role: "Startup Founder",        
-    avatar: "/professional-man-avatar.png",   
-    initials: "JR",
-    bgColor: "#10b981",
+    name: "Muhammad Haseeb Arshad",  
+    role: "Entrepreneur",        
+    avatar: null,   
+    initials: "MH",
+    bgColor: "#0077b5",
     rating: 5, 
     platform: "upwork",  
-    tag: "WordPress",      
-    text: "I've hired 5 different developers before Muzammal, and none came close to his level of expertise. He took our WordPress site from a PageSpeed score of 42 to 96, fixed all our SEO issues, and delivered 2 weeks ahead of schedule. Communication was excellent throughout the entire project." 
+    tag: "React",      
+    text: "I worked with Muzammil on a React project and had a great experience. He is skilled, professional, and delivers quality work on time. I highly recommend him for any web development project." 
+  },
+  
+  // Fiverr Reviews
+  { 
+    name: "dan17011988",   
+    role: "United Kingdom 🇬🇧",  
+    avatar: null,
+    initials: "DU",
+    bgColor: "#1dbf73",
+    rating: 5, 
+    platform: "fiverr",  
+    tag: "eBay Templates",      
+    text: "Great experience! The seller designed a clean and professional eBay listing template. Communication was smooth, and delivery was very fast. Highly recommended!" 
   },
   { 
-    name: "Emily Chen",   
-    role: "Marketing Manager",  
+    name: "rizwanramzan518",  
+    role: "United Kingdom 🇬🇧",        
+    avatar: null,
+    initials: "RR",
+    bgColor: "#1dbf73",
+    rating: 5, 
+    platform: "fiverr",  
+    tag: "eBay Templates",
+    text: "I was blown away by Muhammad's professionalism!! He understood my task and did great job for my listing template for eBay. It look so much better. Muhammad, consult me with some examples and was very happy how profession he is. I would highly recommending messaging him and he will cater for your..." 
+  },
+  
+  // Upwork Reviews
+  { 
+    name: "WordPress Client",  
+    role: "Upwork Client", 
+    avatar: null,
+    initials: "WC",
+    bgColor: "#14a34a",
+    rating: 5, 
+    platform: "upwork",  
+    tag: "WordPress / Elementor", 
+    text: "Great work, fast delivery, and excellent communication throughout the project. Highly recommend this seller to anyone looking for high-quality results. I'll definitely work with them again!" 
+  },
+  { 
+    name: "Elementor Client",   
+    role: "Upwork Client",     
     avatar: null,
     initials: "EC",
-    bgColor: "#8b5cf6",
+    bgColor: "#14a34a",
     rating: 5, 
     platform: "upwork",  
-    tag: "WordPress",      
-    text: "Muzammal transformed our outdated WordPress site into a modern, fast-loading platform. Our organic traffic increased by 145% in just 8 weeks after launch. He's not just a developer - he understands marketing, SEO, and user experience. Highly recommend for any serious business." 
+    tag: "WordPress / Elementor",        
+    text: "Excellent work! The website is professional, fast, and fully responsive. The seller is a pro at Elementor. Highly recommended!" 
   },
   { 
-    name: "David Park",  
-    role: "Product Owner",        
-    avatar: null,
-    initials: "DP",
-    bgColor: "#f59e0b",
+    name: "Custom WordPress Client",     
+    role: "Upwork Client",          
+    avatar: null, 
+    initials: "CW",
+    bgColor: "#14a34a",
     rating: 5, 
     platform: "upwork",  
-    tag: "React / Next.js",
-    text: "We needed a complex React dashboard with real-time data visualization. Muzammal delivered a clean, maintainable codebase that our team can easily work with. The app handles 10k+ concurrent users without any performance issues. Best technical decision we made this year." 
-  },
-  { 
-    name: "Lisa Anderson",  
-    role: "Online Retailer", 
-    avatar: "/professional-woman-avatar.png",
-    initials: "LA",
-    bgColor: "#ec4899",
-    rating: 5, 
-    platform: "fiverr",  
-    tag: "eBay Templates", 
-    text: "I ordered 5 eBay listing templates and was blown away by the quality. Each template is mobile-responsive, loads instantly, and looks incredibly professional. My click-through rate improved by 40% and sales are up 25%. Worth every penny and then some!" 
-  },
-  { 
-    name: "Michael Torres",   
-    role: "Agency Owner",     
-    avatar: null,
-    initials: "MT",
-    bgColor: "#06b6d4",
-    rating: 5, 
-    platform: "upwork",  
-    tag: "Shopify",        
-    text: "As an agency, we've worked with dozens of Shopify developers. Muzammal stands out for his speed, code quality, and problem-solving skills. He completed a complex multi-currency store with custom checkout in 3 weeks. Our client was thrilled and we've hired him for 4 more projects since." 
-  },
-  { 
-    name: "Rachel Kim",     
-    role: "Business Owner",          
-    avatar: "/professional-woman-avatar-2.png", 
-    rating: 5, 
-    platform: "fiverr",  
-    tag: "eBay Templates", 
-    text: "Needed eBay templates fast for a product launch. Muzammal delivered in 48 hours with 3 different design options. The templates are clean, professional, and have significantly improved our brand image. Customer inquiries increased by 35% since we started using them." 
-  },
-  { 
-    name: "Alex Thompson",   
-    role: "Tech Lead",     
-    avatar: null,
-    initials: "AT",
-    bgColor: "#14b8a6",
-    rating: 5, 
-    platform: "upwork",  
-    tag: "Frontend",
-    text: "Hired Muzammal to rebuild our customer portal in Next.js. The result exceeded expectations - lighthouse scores in the 90s, perfect TypeScript implementation, and comprehensive documentation. He writes production-ready code that follows best practices. Will definitely work with him again." 
+    tag: "WordPress / SEO", 
+    text: "Excellent experience working together. The work was delivered on time with great attention to detail and quality. Communication was smooth throughout the project. Highly recommended." 
   },
 ]
 
@@ -148,9 +145,9 @@ export function Testimonials() {
     return () => window.removeEventListener("resize", measure)
   }, [])
 
-  // 3 copies for infinite loop - always render from middle copy
-  const ITEMS  = [...REVIEWS, ...REVIEWS, ...REVIEWS]
-  const OFFSET = total // middle copy starts here
+  // Single copy of reviews with modulo arithmetic for infinite loop
+  const ITEMS  = REVIEWS
+  const OFFSET = 0
 
   /*
     translateX:
@@ -187,21 +184,8 @@ export function Testimonials() {
       className="relative py-24 overflow-hidden"
       style={{ background: "linear-gradient(180deg, #ffffff 0%, #f8fafc 100%)" }}
     >
-      {/* Background video */}
-      <video
-        autoPlay
-        loop
-        muted
-        playsInline
-        preload="metadata"
-        className="absolute inset-0 w-full h-full object-cover"
-        style={{ opacity: 0.25 }}
-      >
-        <source src="/visa.mp4" type="video/mp4" />
-      </video>
-
-      {/* Black overlay for better text readability and video visibility */}
-      <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-black/30 to-black/40" />
+      {/* Gradient background pattern instead of video - removed duplicate visa.mp4 for performance */}
+      <div className="absolute inset-0 bg-gradient-to-br from-transparent via-black/5 to-transparent" />
 
       {/* ambient glow */}
       <div className="pointer-events-none absolute -top-40 left-1/4 w-[800px] h-[600px] rounded-full"
@@ -371,13 +355,15 @@ export function Testimonials() {
                   {/* author */}
                   <div className="flex items-center gap-3">
                     {r.avatar ? (
-                      // Show image avatar
-                      <img
-                        src={r.avatar} alt={r.name}
+                      // Show image avatar using Next.js Image for optimization
+                      <Image
+                        src={r.avatar}
+                        alt={r.name}
+                        width={36}
+                        height={36}
                         loading="lazy"
                         className="w-9 h-9 rounded-full object-cover flex-shrink-0"
                         style={{ border: "2px solid rgba(16,185,129,0.15)" }}
-                        onError={e => { (e.currentTarget as HTMLImageElement).src = "/placeholder-user.jpg" }}
                       />
                     ) : (
                       // Show initials avatar

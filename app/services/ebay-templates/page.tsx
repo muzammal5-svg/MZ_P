@@ -46,9 +46,9 @@ export default function EbayTemplatesPage() {
   const packages = [
     {
       name: "Basic Template",
-      price: "$49",
-      originalPrice: "$99",
-      discount: "50%",
+      price: "$25",
+      originalPrice: "$79",
+      discount: "68%",
       description: "Perfect for individual sellers and small businesses",
       features: [
         "1 custom eBay template",
@@ -61,9 +61,9 @@ export default function EbayTemplatesPage() {
     },
     {
       name: "Professional Package",
-      price: "$99",
-      originalPrice: "$199",
-      discount: "50%",
+      price: "$69",
+      originalPrice: "$149",
+      discount: "54%",
       description: "Ideal for growing eBay businesses",
       features: [
         "3 custom eBay templates",
@@ -77,8 +77,8 @@ export default function EbayTemplatesPage() {
     },
     {
       name: "Store Package",
-      price: "$199",
-      originalPrice: "$399",
+      price: "$149",
+      originalPrice: "$299",
       discount: "50%",
       description: "Complete solution for eBay stores",
       features: [

@@ -15,6 +15,7 @@ const services = [
       </svg>
     ),
     color: "#21759b",
+    price: "$99",
   },
   {
     title: "Shopify Development",
@@ -26,6 +27,7 @@ const services = [
       </svg>
     ),
     color: "#96bf48",
+    price: "$149",
   },
   {
     title: "Frontend Development",
@@ -37,20 +39,35 @@ const services = [
       </svg>
     ),
     color: "#61dafb",
+    price: "$129",
   },
   {
-    title: "SEO Optimization",
-    description: "Technical SEO audits, Core Web Vitals improvements, and on-page optimization for organic growth.",
-    href: "/services/wordpress",
+    title: "AI Automation with Make.com",
+    description: "Automate workflows, integrate APIs, and connect 1000+ apps with Make.com (Integromat) for seamless business automation.",
+    href: "/services/ai-automation",
     icon: (
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-10 h-10">
-        <circle cx="11" cy="11" r="8" />
-        <line x1="21" y1="21" x2="16.65" y2="16.65" />
-        <line x1="11" y1="8" x2="11" y2="14" />
-        <line x1="8" y1="11" x2="14" y2="11" />
+        <circle cx="12" cy="12" r="3"/>
+        <path d="M12 2v4m0 12v4M4.93 4.93l2.83 2.83m8.48 8.48l2.83 2.83M2 12h4m12 0h4M4.93 19.07l2.83-2.83m8.48-8.48l2.83-2.83"/>
       </svg>
     ),
-    color: "#f59e0b",
+    color: "#6366f1",
+    price: "$79",
+  },
+  {
+    title: "AI Chatbot Integration",
+    description: "Smart AI-powered chatbots for customer support, lead generation, and automated conversations using ChatGPT, Dialogflow, or custom solutions.",
+    href: "/services/ai-chatbot",
+    icon: (
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-10 h-10">
+        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+        <circle cx="9" cy="10" r="1"/>
+        <circle cx="15" cy="10" r="1"/>
+        <path d="M9 14s1 1 3 1 3-1 3-1"/>
+      </svg>
+    ),
+    color: "#8b5cf6",
+    price: "$89",
   },
   {
     title: "eBay Templates",
@@ -64,18 +81,7 @@ const services = [
       </svg>
     ),
     color: "#ef4444",
-  },
-  {
-    title: "Website Maintenance",
-    description: "Security updates, performance monitoring, backups, and ongoing support for your website.",
-    href: "/services/wordpress",
-    icon: (
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-10 h-10">
-        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
-        <polyline points="9 12 11 14 15 10" />
-      </svg>
-    ),
-    color: "#10b981",
+    price: "$25",
   },
 ]
 
@@ -182,6 +188,20 @@ export function MZwebSolutionsServices() {
                     }}>
                     {service.description}
                   </p>
+
+                  {/* Price Badge */}
+                  {service.price && (
+                    <div className="mb-4">
+                      <span className="inline-flex items-center gap-1 px-3 py-1.5 rounded-full text-sm font-bold"
+                        style={{
+                          background: `${service.color}20`,
+                          color: service.color,
+                          fontFamily: "'Poppins', sans-serif",
+                        }}>
+                        Starting at {service.price}
+                      </span>
+                    </div>
+                  )}
 
                   {/* Arrow */}
                   <div className="flex items-center gap-2 text-sm font-semibold group-hover:gap-3 transition-all"

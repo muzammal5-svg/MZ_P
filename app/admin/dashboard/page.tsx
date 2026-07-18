@@ -15,7 +15,8 @@ import {
   X, 
   Image as ImageIcon,
   ExternalLink,
-  FolderOpen
+  FolderOpen,
+  Loader2
 } from "lucide-react"
 import { motion, AnimatePresence } from "framer-motion"
 import { getProjects, saveProjects, defaultProjects as allDefaultProjects } from "@/lib/projects-data"
@@ -34,11 +35,12 @@ type Project = {
 }
 
 export default function AdminDashboard() {
+  const router = useRouter()
   const [projects, setProjects] = useState<Project[]>([])
   const [isEditing, setIsEditing] = useState(false)
   const [editingProject, setEditingProject] = useState<Project | null>(null)
   const [showForm, setShowForm] = useState(false)
-  const router = useRouter()
+  const [isLoading, setIsLoading] = useState(true)
 
   // Form state
   const [formData, setFormData] = useState({
@@ -53,17 +55,41 @@ export default function AdminDashboard() {
     trustScore: 100,
   })
 
+  // Single useEffect for auth check and data loading
   useEffect(() => {
-    // Check authentication
-    const isLoggedIn = localStorage.getItem("adminLoggedIn")
-    if (isLoggedIn !== "true") {
-      router.push("/admin")
-      return
+    if (typeof window !== 'undefined') {
+      const isLoggedIn = localStorage.getItem("adminLoggedIn")
+      if (isLoggedIn !== "true") {
+        router.push('/admin')
+        return
+      }
+      
+      // Load projects from localStorage
+      const loadedProjects = getProjects()
+      
+      // If only 4 projects (old data), use all default projects
+      if (loadedProjects.length <= 4) {
+        saveProjects(allDefaultProjects)
+        setProjects(allDefaultProjects)
+      } else {
+        setProjects(loadedProjects)
+      }
+      
+      setIsLoading(false)
     }
-
-    // Load projects from localStorage
-    loadProjects()
   }, [router])
+
+  // Show loading while checking auth
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <Loader2 className="w-8 h-8 animate-spin mx-auto mb-4 text-emerald-500" />
+          <p className="text-slate-600">Loading...</p>
+        </div>
+      </div>
+    )
+  }
 
   const loadProjects = () => {
     const loadedProjects = getProjects()
@@ -84,6 +110,7 @@ export default function AdminDashboard() {
 
   const handleLogout = () => {
     localStorage.removeItem("adminLoggedIn")
+    localStorage.removeItem("adminEmail")
     router.push("/admin")
   }
 
@@ -181,6 +208,8 @@ export default function AdminDashboard() {
     "Custom Web": "bg-green-500/20 text-green-600 border-green-500/30",
     Shopify: "bg-purple-500/20 text-purple-600 border-purple-500/30",
     "eBay Templates": "bg-yellow-500/20 text-yellow-600 border-yellow-500/30",
+    "AI Automation": "bg-indigo-500/20 text-indigo-600 border-indigo-500/30",
+    "AI Chatbot": "bg-violet-500/20 text-violet-600 border-violet-500/30",
   }
 
   return (
@@ -269,12 +298,24 @@ export default function AdminDashboard() {
                       src={project.image}
                       alt={project.title}
                       className="w-full h-full object-cover"
+                      onError={(e) => {
+                        const target = e.currentTarget as HTMLImageElement
+                        target.style.display = 'none'
+                        if (target.nextElementSibling) {
+                          (target.nextElementSibling as HTMLElement).style.display = 'flex'
+                        }
+                      }}
                     />
-                  ) : (
-                    <div className="w-full h-full flex items-center justify-center">
-                      <ImageIcon className="w-12 h-12 text-gray-300" />
+                  ) : null}
+                  <div 
+                    className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-slate-100 to-slate-200"
+                    style={{ display: project.image ? 'none' : 'flex' }}
+                  >
+                    <div className="text-center">
+                      <ImageIcon className="w-12 h-12 text-gray-300 mx-auto mb-2" />
+                      <p className="text-xs text-gray-400">No image</p>
                     </div>
-                  )}
+                  </div>
                   <div className="absolute top-2 left-2">
                     <span 
                       className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-semibold border ${categoryColors[project.category] || "bg-gray-500/20 text-gray-600 border-gray-500/30"}`}
@@ -514,6 +555,8 @@ export default function AdminDashboard() {
                         <option value="Shopify">Shopify</option>
                         <option value="Custom Web">Custom Web</option>
                         <option value="eBay Templates">eBay Templates</option>
+                        <option value="AI Automation">AI Automation</option>
+                        <option value="AI Chatbot">AI Chatbot</option>
                       </select>
                     </div>
 
@@ -590,9 +633,33 @@ export default function AdminDashboard() {
                           fontFamily: "'Poppins', sans-serif",
                         }}
                       />
-                      <p className="text-xs mt-1" style={{ color: "#94a3b8" }}>
-                        Upload image to /public folder first, then enter path
-                      </p>
+                      <div className="mt-2 space-y-1">
+                        <p className="text-xs" style={{ color: "#94a3b8" }}>
+                          <strong style={{ color: "#475569" }}>Step 1:</strong> Upload image to <code className="px-1 py-0.5 bg-slate-100 rounded text-xs">/public</code> folder
+                        </p>
+                        <p className="text-xs" style={{ color: "#94a3b8" }}>
+                          <strong style={{ color: "#475569" }}>Step 2:</strong> Enter path starting with <code className="px-1 py-0.5 bg-slate-100 rounded text-xs">/</code> (e.g., <code className="px-1 py-0.5 bg-slate-100 rounded text-xs">/wordpress/my-project.png</code>)
+                        </p>
+                        {formData.image && (
+                          <div className="mt-3 p-2 border rounded-lg" style={{ borderColor: "rgba(226,232,240,0.8)" }}>
+                            <p className="text-xs mb-2" style={{ color: "#475569", fontWeight: 600 }}>Preview:</p>
+                            <img 
+                              src={formData.image} 
+                              alt="Preview" 
+                              className="max-w-full h-32 object-contain rounded"
+                              onError={(e) => {
+                                const target = e.currentTarget
+                                target.style.display = 'none'
+                                const errorMsg = target.nextElementSibling
+                                if (errorMsg) (errorMsg as HTMLElement).style.display = 'block'
+                              }}
+                            />
+                            <p className="text-xs text-red-500 mt-2" style={{ display: 'none' }}>
+                              ⚠️ Image not found. Please check the path.
+                            </p>
+                          </div>
+                        )}
+                      </div>
                     </div>
 
                     <div>

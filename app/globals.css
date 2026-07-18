@@ -125,6 +125,46 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
+/* Performance optimizations */
+* {
+  -webkit-tap-highlight-color: transparent;
+}
+
+img, video {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+/* Prevent layout shifts */
+.aspect-video,
+.aspect-square,
+.aspect-\[16\/10\],
+.aspect-\[4\/5\] {
+  position: relative;
+  display: block;
+}
+
+/* GPU acceleration for animations */
+.will-change-transform {
+  will-change: transform;
+}
+
+.will-change-opacity {
+  will-change: opacity;
+}
+
+/* Smooth transitions */
+.transition-smooth {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Prevent cumulative layout shift (CLS) */
+.prevent-cls {
+  content-visibility: auto;
+  contain-intrinsic-size: auto 500px;
+}
+
 /* ── Container ── */
 .container {
   max-width: var(--max-container) !important;

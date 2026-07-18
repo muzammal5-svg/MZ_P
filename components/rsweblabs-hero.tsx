@@ -2,7 +2,14 @@
 
 import { ArrowRight } from "lucide-react"
 import { TechScroller } from "@/components/tech-scroller"
-import { useState, useEffect } from "react"
+import { useState, useEffect, useRef } from "react"
+import dynamic from "next/dynamic"
+
+// Lazy load TechScroller for better initial page load
+const LazyTechScroller = dynamic(() => import("@/components/tech-scroller").then(mod => ({ default: mod.TechScroller })), {
+  ssr: false,
+  loading: () => <div className="h-24 bg-gradient-to-r from-gray-50 to-gray-100 animate-pulse" />
+})
 
 export function MZwebSolutionsHero() {
   const scrollToContact = () =>
@@ -11,6 +18,8 @@ export function MZwebSolutionsHero() {
   // Typing animation state
   const technologies = [
     "WordPress Development",
+    "AI Automation",
+    "AI Chatbot Integration",
     "Shopify Development",
     "Frontend Development",
     "Laravel",
@@ -54,12 +63,27 @@ export function MZwebSolutionsHero() {
   }, [displayedText, isDeleting, currentTechIndex, typingSpeed, technologies])
 
   const [isVideoVisible, setIsVideoVisible] = useState(false)
+  const videoRef = useRef<HTMLDivElement>(null)
 
-  // Auto-show video on desktop on mount
+  // Lazy load video using IntersectionObserver
   useEffect(() => {
-    if (typeof window !== "undefined" && window.innerWidth >= 1024) {
-      setIsVideoVisible(true)
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            setIsVideoVisible(true)
+            observer.unobserve(entry.target)
+          }
+        })
+      },
+      { threshold: 0.1 }
+    )
+
+    if (videoRef.current) {
+      observer.observe(videoRef.current)
     }
+
+    return () => observer.disconnect()
   }, [])
 
   return (
@@ -152,57 +176,61 @@ export function MZwebSolutionsHero() {
           </div>
 
           {/* RIGHT COLUMN - Video with Diagonal Frame (shows on desktop) */}
-          {isVideoVisible && (
-            <div
-              className="relative hidden lg:block animate-in fade-in slide-in-from-right-4 duration-800 delay-300"
-            >
-              {/* Video container with diagonal shape and blue border */}
-              <div className="relative w-full" style={{ height: "500px" }}>
-                {/* Blue border wrapper */}
-                <div 
-                  className="absolute inset-0"
-                  style={{ 
-                    clipPath: "polygon(15% 0%, 100% 0%, 85% 100%, 0% 100%)",
-                    background: "linear-gradient(135deg, #63b3ed 0%, #4299e1 100%)",
-                    padding: "3px",
-                  }}
-                >
-                  {/* Video container */}
+          <div
+            ref={videoRef}
+            className="relative hidden lg:block animate-in fade-in slide-in-from-right-4 duration-800 delay-300"
+          >
+            {isVideoVisible && (
+              <>
+                {/* Video container with diagonal shape and blue border */}
+                <div className="relative w-full" style={{ height: "500px" }}>
+                  {/* Blue border wrapper */}
                   <div 
-                    className="w-full h-full relative overflow-hidden bg-gray-900"
+                    className="absolute inset-0"
                     style={{ 
                       clipPath: "polygon(15% 0%, 100% 0%, 85% 100%, 0% 100%)",
+                      background: "linear-gradient(135deg, #63b3ed 0%, #4299e1 100%)",
+                      padding: "3px",
                     }}
                   >
-                    <video
-                      autoPlay
-                      loop
-                      muted
-                      playsInline
-                      preload="metadata"
-                      className="w-full h-full object-cover"
+                    {/* Video container */}
+                    <div 
+                      className="w-full h-full relative overflow-hidden bg-gray-900"
+                      style={{ 
+                        clipPath: "polygon(15% 0%, 100% 0%, 85% 100%, 0% 100%)",
+                      }}
                     >
-                      <source src="/visa.mp4" type="video/mp4" />
-                    </video>
-                    
-                    {/* Subtle overlay */}
-                    <div className="absolute inset-0 bg-gradient-to-br from-black/10 to-transparent pointer-events-none" />
+                      <video
+                        autoPlay
+                        loop
+                        muted
+                        playsInline
+                        preload="none"
+                        className="w-full h-full object-cover"
+                        poster="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 300'%3E%3Crect fill='%23e5e7eb' width='400' height='300'/%3E%3C/svg%3E"
+                      >
+                        <source src="/visa.mp4" type="video/mp4" />
+                      </video>
+                      
+                      {/* Subtle overlay */}
+                      <div className="absolute inset-0 bg-gradient-to-br from-black/10 to-transparent pointer-events-none" />
+                    </div>
                   </div>
                 </div>
-              </div>
 
-              {/* Decorative blue accent on top-right */}
-              <div className="absolute -top-8 -right-8 w-32 h-32 rounded-full opacity-40 pointer-events-none"
-                style={{ background: "linear-gradient(135deg, #63b3ed 0%, #4299e1 100%)" }} />
-            </div>
-          )}
+                {/* Decorative blue accent on top-right */}
+                <div className="absolute -top-8 -right-8 w-32 h-32 rounded-full opacity-40 pointer-events-none"
+                  style={{ background: "linear-gradient(135deg, #63b3ed 0%, #4299e1 100%)" }} />
+              </>
+            )}
+          </div>
 
         </div>
       </div>
 
       {/* Tech scroller — absolute bottom */}
       <div className="absolute bottom-0 left-0 right-0 z-10">
-        <TechScroller />
+        <LazyTechScroller />
       </div>
     </section>
   )

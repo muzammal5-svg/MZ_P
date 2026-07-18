@@ -4,7 +4,7 @@ import { useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
-import { RefreshCw, CheckCircle, ArrowRight } from "lucide-react"
+import { RefreshCw, CheckCircle, ArrowRight, AlertTriangle } from "lucide-react"
 import { motion } from "framer-motion"
 import { resetToDefaultProjects, getProjects } from "@/lib/projects-data"
 
@@ -150,7 +150,11 @@ export default function ResetProjectsPage() {
                   fontFamily: "'Poppins', sans-serif",
                 }}
               >
-                <strong>⚠️ Warning:</strong> This will replace your current projects with the default 22 projects. Any custom projects you added will be removed.
+                <div className="flex items-center gap-2">
+                  <AlertTriangle className="w-5 h-5 text-yellow-600" />
+                  <strong>Warning:</strong>
+                </div>
+                <span>This will replace your current projects with the default 22 projects. Any custom projects you added will be removed.</span>
               </div>
 
               {/* Action Button */}

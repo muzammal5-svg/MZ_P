@@ -10,6 +10,7 @@ const navLinks = [
   { label: "Home",      href: "/" },
   { label: "Services",  href: "/services", hasDropdown: true },
   { label: "Portfolio", href: "/portfolio" },
+  { label: "Blog",      href: "/blog" },
   { label: "Contact",   href: "/contact" },
 ]
 
@@ -17,6 +18,8 @@ const services = [
   { name: "WordPress Development", href: "/services/wordpress",     desc: "Custom themes & plugins" },
   { name: "Shopify Development",   href: "/services/shopify",       desc: "E-commerce solutions" },
   { name: "Frontend Development",  href: "/services/frontend",      desc: "React & Next.js apps" },
+  { name: "AI Automation",         href: "/services/ai-automation", desc: "Make.com workflows" },
+  { name: "AI Chatbot Integration", href: "/services/ai-chatbot",   desc: "Smart AI chatbots" },
   { name: "eBay Templates",        href: "/services/ebay-templates", desc: "Listing optimization" },
 ]
 

@@ -3,6 +3,7 @@
 import { Button } from "@/components/ui/button"
 import { ArrowRight, ExternalLink, Star, Award, CheckCircle, X, ChevronLeft, ChevronRight } from "lucide-react"
 import Link from "next/link"
+import Image from "next/image"
 import { motion, AnimatePresence } from "framer-motion"
 import { useState, useEffect, useCallback } from "react"
 import { getProjects, initializeProjects } from "@/lib/projects-data"
@@ -221,16 +222,17 @@ export function FeaturedPortfolio() {
                   >
                 {/* Image */}
                 <div className="relative aspect-[16/10] overflow-hidden bg-gray-100 flex-shrink-0">
-                  <img
+                  <Image
                     src={project.image}
                     alt={project.title}
+                    fill
+                    sizes="380px"
+                    className="object-cover transition-transform duration-600 group-hover:scale-105"
+                    quality={85}
                     loading="lazy"
-                    className="w-full h-full object-cover transition-transform duration-600 group-hover:scale-105"
                     onError={(e) => {
-                      const t = e.currentTarget
+                      const t = e.currentTarget as HTMLImageElement
                       t.style.display = "none"
-                      const fb = t.nextElementSibling as HTMLElement
-                      if (fb) fb.style.display = "flex"
                     }}
                   />
                   <div className="w-full h-full bg-gradient-to-br from-gray-200 to-gray-300 items-center justify-center hidden absolute inset-0">
@@ -562,14 +564,21 @@ export function FeaturedPortfolio() {
 
                   <div className="overflow-y-auto max-h-[calc(90vh-120px)]">
                 <div className="p-6 space-y-6">
-                  <img
-                    src={selectedProject.image}
-                    alt={selectedProject.title}
-                    loading="lazy"
-                    className="w-full h-auto max-h-[50vh] object-contain rounded-2xl"
-                    style={{ background: "rgba(248,250,252,0.5)" }}
-                    onError={(e) => { e.currentTarget.src = "/placeholder.svg" }}
-                  />
+                  <div className="relative w-full" style={{ aspectRatio: "16/10", maxHeight: "50vh" }}>
+                    <Image
+                      src={selectedProject.image}
+                      alt={selectedProject.title}
+                      fill
+                      sizes="(max-width: 768px) 100vw, 896px"
+                      className="object-contain rounded-2xl"
+                      quality={90}
+                      loading="lazy"
+                      onError={(e) => { 
+                        const img = e.currentTarget as HTMLImageElement
+                        img.src = "/placeholder.svg" 
+                      }}
+                    />
+                  </div>
 
                   <div className="grid grid-cols-3 gap-4">
                     {selectedProject.achievements.map((a, i) => (

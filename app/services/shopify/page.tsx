@@ -1,5 +1,7 @@
 "use client"
 
+import { MZwebSolutionsNavigation } from "@/components/rsweblabs-navigation"
+import { MZwebSolutionsFooter } from "@/components/mzwebsolutions-footer"
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
 import { ArrowRight, CheckCircle, ShoppingCart, CreditCard, Smartphone, BarChart, Shield, Zap, ExternalLink } from "lucide-react"
@@ -46,9 +48,9 @@ export default function ShopifyPage() {
   const packages = [
     {
       name: "Starter Store",
-      price: "$249",
-      originalPrice: "$599",
-      discount: "58%",
+      price: "$149",
+      originalPrice: "$399",
+      discount: "63%",
       description: "Perfect for new businesses entering eCommerce",
       features: [
         "Custom Shopify theme",
@@ -61,9 +63,9 @@ export default function ShopifyPage() {
     },
     {
       name: "Professional Store",
-      price: "$499",
-      originalPrice: "$1,299",
-      discount: "62%",
+      price: "$349",
+      originalPrice: "$999",
+      discount: "65%",
       description: "Ideal for growing businesses with advanced needs",
       features: [
         "Premium Shopify theme",
@@ -77,9 +79,9 @@ export default function ShopifyPage() {
     },
     {
       name: "Enterprise Store",
-      price: "$899",
-      originalPrice: "$2,499",
-      discount: "64%",
+      price: "$699",
+      originalPrice: "$1,999",
+      discount: "65%",
       description: "Complete solution for large-scale eCommerce",
       features: [
         "Custom Shopify Plus theme",
@@ -114,7 +116,10 @@ export default function ShopifyPage() {
   ]
 
   return (
-    <div className="min-h-screen pt-24" style={{ background: "linear-gradient(180deg, #ffffff 0%, #f8fafc 100%)" }}>
+    <div className="min-h-screen">
+      <MZwebSolutionsNavigation />
+      
+      <div className="pt-24" style={{ background: "linear-gradient(180deg, #ffffff 0%, #f8fafc 100%)" }}>
       
       {/* Decorative elements */}
       <div className="absolute top-40 right-10 w-96 h-96 rounded-full opacity-20 blur-3xl pointer-events-none"
@@ -596,6 +601,9 @@ export default function ShopifyPage() {
         </div>
       </section>
 
+      </div>
+      
+      <MZwebSolutionsFooter />
     </div>
   )
 }

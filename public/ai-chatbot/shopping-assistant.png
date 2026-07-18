@@ -1,0 +1,7 @@
+<!-- SVG Placeholder - Replace with actual image -->
+<svg width="800" height="500" xmlns="http://www.w3.org/2000/svg">
+  <rect width="800" height="500" fill="#6366f1"/>
+  <text x="400" y="220" font-family="Arial, sans-serif" font-size="32" fill="white" text-anchor="middle" font-weight="bold">E-Commerce Order</text>
+  <text x="400" y="260" font-family="Arial, sans-serif" font-size="32" fill="white" text-anchor="middle" font-weight="bold">Automation</text>
+  <text x="400" y="300" font-family="Arial, sans-serif" font-size="18" fill="rgba(255,255,255,0.8)" text-anchor="middle">Make.com • Shopify • Google Sheets</text>
+</svg>

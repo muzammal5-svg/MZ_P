@@ -5,37 +5,42 @@ import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Card } from "@/components/ui/card"
-import { Lock, User, Eye, EyeOff } from "lucide-react"
+import { Lock, User, Eye, EyeOff, Loader2 } from "lucide-react"
 import { motion } from "framer-motion"
 
 export default function AdminLogin() {
-  const [username, setUsername] = useState("")
+  const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [showPassword, setShowPassword] = useState(false)
   const [error, setError] = useState("")
   const [isLoading, setIsLoading] = useState(false)
   const router = useRouter()
 
+  // Check if already logged in
   useEffect(() => {
-    // Check if already logged in
-    const isLoggedIn = localStorage.getItem("adminLoggedIn")
-    if (isLoggedIn === "true") {
-      router.push("/admin/dashboard")
+    if (typeof window !== 'undefined') {
+      const isLoggedIn = localStorage.getItem("adminLoggedIn")
+      if (isLoggedIn === "true") {
+        router.push("/admin/dashboard")
+      }
     }
   }, [router])
 
-  const handleLogin = (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault()
     setIsLoading(true)
     setError("")
 
-    // Simple authentication (aap ye credentials change kar sakte hain)
-    // Production mein proper authentication use karein
-    if (username === "admin" && password === "admin123") {
+    // Simple hardcoded credentials
+    const ADMIN_EMAIL = "admin@muzammal.dev"
+    const ADMIN_PASSWORD = "Muzammal@2025"
+
+    if (email === ADMIN_EMAIL && password === ADMIN_PASSWORD) {
       localStorage.setItem("adminLoggedIn", "true")
+      localStorage.setItem("adminEmail", email)
       router.push("/admin/dashboard")
     } else {
-      setError("Invalid username or password")
+      setError("Invalid email or password")
       setIsLoading(false)
     }
   }
@@ -124,7 +129,7 @@ export default function AdminLogin() {
                   fontFamily: "'Poppins', sans-serif",
                 }}
               >
-                Username
+                Email
               </label>
               <div className="relative">
                 <User 
@@ -132,9 +137,9 @@ export default function AdminLogin() {
                   style={{ color: "#94a3b8" }}
                 />
                 <Input
-                  type="text"
-                  value={username}
-                  onChange={(e) => setUsername(e.target.value)}
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
                   className="pl-10 h-12 border-2"
                   style={{
                     background: "rgba(248,250,252,0.8)",
@@ -142,8 +147,9 @@ export default function AdminLogin() {
                     color: "#0f172a",
                     fontFamily: "'Poppins', sans-serif",
                   }}
-                  placeholder="Enter username"
+                  placeholder="Enter your email"
                   required
+                  disabled={isLoading}
                 />
               </div>
             </div>
@@ -174,14 +180,16 @@ export default function AdminLogin() {
                     color: "#0f172a",
                     fontFamily: "'Poppins', sans-serif",
                   }}
-                  placeholder="Enter password"
+                  placeholder="Enter your password"
                   required
+                  disabled={isLoading}
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
                   className="absolute right-3 top-1/2 -translate-y-1/2"
                   style={{ color: "#94a3b8" }}
+                  disabled={isLoading}
                 >
                   {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
                 </button>
@@ -200,7 +208,7 @@ export default function AdminLogin() {
             >
               {isLoading ? (
                 <div className="flex items-center gap-2">
-                  <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                  <Loader2 className="w-4 h-4 animate-spin" />
                   Logging in...
                 </div>
               ) : (
@@ -209,7 +217,7 @@ export default function AdminLogin() {
             </Button>
           </form>
 
-          {/* Default Credentials Info */}
+          {/* Login Info */}
           <div 
             className="mt-6 p-4 rounded-xl text-xs text-center"
             style={{
@@ -220,7 +228,7 @@ export default function AdminLogin() {
             }}
           >
             <strong style={{ color: "#0f172a" }}>Default Credentials:</strong><br />
-            Username: admin | Password: admin123
+            Email: admin@muzammal.dev | Password: Muzammal@2025
           </div>
         </Card>
       </motion.div>

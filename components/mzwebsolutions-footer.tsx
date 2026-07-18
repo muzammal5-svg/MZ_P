@@ -12,8 +12,11 @@ export function MZwebSolutionsFooter() {
     { name: "WordPress", href: "/services/wordpress" },
     { name: "Shopify", href: "/services/shopify" },
     { name: "Frontend", href: "/services/frontend" },
+    { name: "AI Automation", href: "/services/ai-automation" },
+    { name: "AI Chatbot", href: "/services/ai-chatbot" },
     { name: "eBay Listing", href: "/services/ebay-templates" },
     { name: "Portfolio", href: "/portfolio" },
+    { name: "Blog", href: "/blog" },
     { name: "Contact", href: "/contact" },
   ]
 
@@ -41,7 +44,16 @@ export function MZwebSolutionsFooter() {
               className="space-y-4"
             >
               <div className="flex items-center gap-3">
-                <img src="/MZwebsolution.png" alt="Muzammal" className="w-10 h-10 object-contain" />
+                {/* Profile Picture as Logo - Same as Header */}
+                <div 
+                  className="relative w-10 h-10 rounded-full overflow-hidden ring-2 ring-emerald-500/30 hover:ring-emerald-500/60 transition-all duration-300 hover:scale-105"
+                >
+                  <img 
+                    src="/profile-pic.jpg" 
+                    alt="Muzammal" 
+                    className="w-full h-full object-cover"
+                  />
+                </div>
                 <div>
                   <div className="text-lg font-bold" style={{ 
                     color: "#0f172a",

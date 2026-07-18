@@ -1,5 +1,7 @@
 "use client"
 
+import { MZwebSolutionsNavigation } from "@/components/rsweblabs-navigation"
+import { MZwebSolutionsFooter } from "@/components/mzwebsolutions-footer"
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
 import { ArrowRight, CheckCircle, Zap, Code, Smartphone, Database, Layers, Globe, ExternalLink } from "lucide-react"
@@ -46,9 +48,9 @@ export default function FrontendPage() {
   const packages = [
     {
       name: "Single Page App",
-      price: "$349",
-      originalPrice: "$799",
-      discount: "56%",
+      price: "$129",
+      originalPrice: "$399",
+      discount: "68%",
       description: "Perfect for interactive web applications",
       features: [
         "React/Next.js development",
@@ -61,9 +63,9 @@ export default function FrontendPage() {
     },
     {
       name: "Multi-Page Application",
-      price: "$599",
-      originalPrice: "$1,499",
-      discount: "60%",
+      price: "$299",
+      originalPrice: "$899",
+      discount: "67%",
       description: "Ideal for complex web applications",
       features: [
         "React/Next.js development",
@@ -77,9 +79,9 @@ export default function FrontendPage() {
     },
     {
       name: "Enterprise Solution",
-      price: "$999",
-      originalPrice: "$2,999",
-      discount: "67%",
+      price: "$599",
+      originalPrice: "$1,999",
+      discount: "70%",
       description: "Complete solution for large-scale applications",
       features: [
         "Full-stack development",
@@ -108,7 +110,10 @@ export default function FrontendPage() {
   ]
 
   return (
-    <div className="min-h-screen pt-24" style={{ background: "linear-gradient(180deg, #ffffff 0%, #f8fafc 100%)" }}>
+    <div className="min-h-screen">
+      <MZwebSolutionsNavigation />
+      
+      <div className="pt-24" style={{ background: "linear-gradient(180deg, #ffffff 0%, #f8fafc 100%)" }}>
       
       {/* Decorative elements */}
       <div className="absolute top-40 right-10 w-96 h-96 rounded-full opacity-20 blur-3xl pointer-events-none"
@@ -589,6 +594,9 @@ export default function FrontendPage() {
         </div>
       </section>
 
+      </div>
+      
+      <MZwebSolutionsFooter />
     </div>
   )
 }
