@@ -54,7 +54,11 @@ export function MZwebSolutionsNavigation() {
   }, [activeIdx])
 
   const scrollToContact = () => {
-    document.getElementById("contact")?.scrollIntoView({ behavior: "smooth" })
+    if (pathname === "/") {
+      document.getElementById("contact")?.scrollIntoView({ behavior: "smooth" })
+    } else {
+      window.location.href = "/#contact"
+    }
     setMobileOpen(false)
   }
 
@@ -95,7 +99,7 @@ export function MZwebSolutionsNavigation() {
           >
             <img 
               src="/profile-pic.jpg" 
-              alt="Muzammal" 
+              alt="Muhammad Muzammal" 
               className="w-full object-cover"
             />
           </div>

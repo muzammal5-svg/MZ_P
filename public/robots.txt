@@ -8,9 +8,9 @@ Disallow: /api/
 Disallow: /reset-projects/
 
 # Sitemap location
-Sitemap: https://muzammal.dev/sitemap.xml
+Sitemap: https://muzammalzaheer.vercel.app/sitemap.xml
 
-# Crawl-delay for specific bots (optional)
+# Crawl-delay for specific bots
 User-agent: Googlebot
 Crawl-delay: 0
 

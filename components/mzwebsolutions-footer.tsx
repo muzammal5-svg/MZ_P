@@ -50,7 +50,7 @@ export function MZwebSolutionsFooter() {
                 >
                   <img 
                     src="/profile-pic.jpg" 
-                    alt="Muzammal" 
+                    alt="Muhammad Muzammal" 
                     className="w-full h-full object-cover"
                   />
                 </div>
@@ -59,7 +59,7 @@ export function MZwebSolutionsFooter() {
                     color: "#0f172a",
                     fontFamily: "'Poppins', sans-serif",
                     fontWeight: 700,
-                  }}>Muzammal</div>
+                  }}>Muhammad Muzammal</div>
                   <div className="text-xs" style={{ 
                     color: "#64748b",
                     fontFamily: "'Poppins', sans-serif",
@@ -177,7 +177,7 @@ export function MZwebSolutionsFooter() {
             color: "#64748b",
             fontFamily: "'Poppins', sans-serif",
           }}>
-            © {currentYear} Muzammal. All rights reserved.
+            © {currentYear} Muhammad Muzammal. All rights reserved.
           </div>
           <div className="flex gap-6 text-xs">
             {/* <Link href="/privacy" className="transition-colors" style={{

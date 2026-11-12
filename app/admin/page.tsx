@@ -35,9 +35,9 @@ export default function AdminLogin() {
     const ADMIN_EMAIL = "admin@muzammal.dev"
     const ADMIN_PASSWORD = "Muzammal@2025"
 
-    if (email === ADMIN_EMAIL && password === ADMIN_PASSWORD) {
+    if (email.trim().toLowerCase() === ADMIN_EMAIL.toLowerCase() && password === ADMIN_PASSWORD) {
       localStorage.setItem("adminLoggedIn", "true")
-      localStorage.setItem("adminEmail", email)
+      localStorage.setItem("adminEmail", email.trim())
       router.push("/admin/dashboard")
     } else {
       setError("Invalid email or password")

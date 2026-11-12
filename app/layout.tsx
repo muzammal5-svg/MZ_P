@@ -7,6 +7,8 @@ import { ScrollToTop } from "@/components/scroll-to-top"
 import { ThemeProvider } from "@/components/theme-provider"
 import "./globals.css"
 
+const SITE_URL = (process.env.NEXT_PUBLIC_SITE_URL || 'https://muzammalzaheer.vercel.app').replace(/\/+$/, '')
+
 const inter = Inter({ 
   subsets: ["latin"],
   weight: ['300', '400', '500', '600', '700', '800', '900'],
@@ -17,153 +19,18 @@ const inter = Inter({
 })
 
 export const metadata: Metadata = {
-  metadataBase: new URL('https://muzammal.dev'),
+  metadataBase: new URL(SITE_URL),
   title: {
-    default: "Muzammal - Expert WordPress, Shopify & React Developer | Full-Stack Web Development Services",
-    template: "%s | Muzammal - Professional Web Developer"
+    default: "Muhammad Muzammal | Full-Stack Web Developer",
+    template: "%s | Muhammad Muzammal"
   },
   description:
-    "Professional WordPress developer, Shopify expert, and React/Next.js specialist with 2+ years experience. Custom theme development, WooCommerce, Shopify Plus, eBay listing templates, Laravel APIs, and high-performance web applications. 100+ projects delivered, 5.0 rating on Upwork.",
+    "Full-stack developer specializing in Next.js, React, WordPress, and Shopify. Delivering fast, accessible, and high-performance websites.",
   generator: "Next.js",
-  applicationName: "Muzammal Portfolio",
-  keywords: [
-    // WordPress - High-value keywords
-    "WordPress developer",
-    "WordPress development services",
-    "custom WordPress development",
-    "WordPress theme development",
-    "WordPress plugin development",
-    "WordPress site maintenance",
-    "WooCommerce developer",
-    "WooCommerce store development",
-    "WordPress speed optimization",
-    "WordPress SEO expert",
-    "headless WordPress developer",
-    "WordPress REST API development",
-    "WordPress Gutenberg expert",
-    "WordPress security consulting",
-    "hire WordPress developer",
-    "WordPress consultant",
-    "WordPress migration expert",
-    "WordPress performance optimization",
-    
-    // Shopify - High-value keywords
-    "Shopify developer",
-    "Shopify expert",
-    "Shopify development services",
-    "custom Shopify theme development",
-    "Shopify store development",
-    "Shopify app integration",
-    "Shopify Plus developer",
-    "Shopify store setup",
-    "Shopify migration services",
-    "Shopify Liquid developer",
-    "Shopify payment integration",
-    "Shopify inventory management",
-    "hire Shopify developer",
-    "Shopify consultant",
-    "Shopify theme customization",
-    "Shopify store optimization",
-
-    // React & Next.js - High-value keywords
-    "React developer",
-    "Next.js developer",
-    "React web application development",
-    "Next.js expert",
-    "React TypeScript developer",
-    "server-side rendering React",
-    "static site generation Next.js",
-    "React hooks expert",
-    "React performance optimization",
-    "hire React developer",
-    "Next.js 14 developer",
-    "React component development",
-    "React frontend development",
-
-    // eBay - Niche keywords
-    "eBay listing templates",
-    "eBay store design",
-    "professional eBay templates",
-    "custom eBay listings",
-    "eBay HTML templates",
-    "eBay template developer",
-    "responsive eBay templates",
-    "eBay seller solutions",
-
-    // Laravel - Backend keywords
-    "Laravel developer",
-    "Laravel API development",
-    "Laravel REST API",
-    "PHP Laravel expert",
-    "Laravel backend developer",
-    "Laravel application development",
-    "Laravel custom development",
-
-    // Tailwind CSS
-    "Tailwind CSS developer",
-    "Tailwind CSS expert",
-    "custom Tailwind components",
-    "Tailwind CSS implementation",
-
-    // General high-value keywords
-    "full-stack developer",
-    "full-stack web developer",
-    "web developer for hire",
-    "e-commerce developer",
-    "web application development",
-    "frontend developer",
-    "backend developer",
-    "API integration specialist",
-    "responsive web design",
-    "mobile-first development",
-    "PageSpeed optimization expert",
-    "Core Web Vitals optimization",
-    "SEO optimization services",
-    "technical SEO specialist",
-    "conversion rate optimization",
-    "freelance web developer",
-    "professional web developer",
-    "custom web development services",
-    "web development company",
-    "web development agency",
-    "hire full-stack developer",
-    "best web developer",
-    "experienced web developer",
-    "affordable web development",
-    "quality web development",
-    "fast web development",
-    "secure web development",
-    "accessible web development",
-    "SEO-friendly web development",
-    "performance-focused development",
-    "Upwork top rated developer",
-    "Fiverr pro developer",
-    "verified developer",
-    "professional developer",
-    
-    // Location-based
-    "web developer Pakistan",
-    "developer worldwide services",
-    "remote web developer",
-    "online developer",
-    
-    // Service-specific
-    "website redesign services",
-    "website maintenance services",
-    "website optimization services",
-    "website security services",
-    "website backup services",
-    "website hosting setup",
-    "domain management",
-    "SSL certificate setup",
-    "website analytics setup",
-    "conversion tracking setup",
-    "A/B testing services",
-    "user experience optimization",
-  ],
-  authors: [{ name: "Muhammad Muzammal", url: "https://muzammal.dev" }],
+  applicationName: "Muhammad Muzammal Portfolio",
+  authors: [{ name: "Muhammad Muzammal", url: SITE_URL }],
   creator: "Muhammad Muzammal",
-  publisher: "Muzammal",
+  publisher: "Muhammad Muzammal",
   formatDetection: {
     email: false,
     address: false,
@@ -203,35 +70,30 @@ export const metadata: Metadata = {
   openGraph: {
     type: 'website',
     locale: 'en_US',
-    url: 'https://muzammal.dev',
-    title: 'Muzammal - Expert WordPress, Shopify & React Developer | Full-Stack Development',
-    description: 'Professional full-stack developer specializing in WordPress, Shopify, React, Next.js, Laravel, and e-commerce solutions. 100+ projects delivered with 5.0 rating on Upwork. Custom theme development, API integration, and performance optimization.',
-    siteName: 'Muzammal - Full-Stack Developer',
+    url: SITE_URL,
+    title: 'Muhammad Muzammal | Full-Stack Web Developer',
+    description: 'Full-stack developer specializing in Next.js, React, WordPress, and Shopify with 100+ projects delivered.',
+    siteName: 'Muhammad Muzammal - Full-Stack Developer',
     images: [
       {
         url: '/og-image.jpg',
         width: 1200,
         height: 630,
-        alt: 'Muzammal - Professional WordPress, Shopify & React Developer',
+        alt: 'Muhammad Muzammal - Full-Stack Web Developer',
       },
     ],
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Muzammal - Expert WordPress, Shopify & React Developer',
-    description: 'Professional full-stack developer | WordPress | Shopify | React | Next.js | Laravel | 100+ projects | 5.0 rating',
+    title: 'Muhammad Muzammal | Full-Stack Web Developer',
+    description: 'Full-stack developer specializing in Next.js, React, WordPress, and Shopify. 100+ projects delivered.',
     images: ['/og-image.jpg'],
-    creator: '@muzammal',
   },
   alternates: {
-    canonical: 'https://muzammal.dev',
+    canonical: SITE_URL,
   },
   verification: {
     google: 'cByFXCFwzGvwLLkpfQ25ijpIWHghANmKZM3owjJ5q_4',
-    yandex: 'your-yandex-verification-code',
-    other: {
-      'msvalidate.01': 'your-bing-verification-code',
-    },
   },
   category: 'technology',
 }
@@ -247,20 +109,18 @@ export default function RootLayout({
     "@graph": [
       {
         "@type": "Person",
-        "@id": "https://muzammal.dev/#person",
+        "@id": `${SITE_URL}/#person`,
         "name": "Muhammad Muzammal",
-        "url": "https://muzammal.dev",
+        "url": SITE_URL,
         "image": {
           "@type": "ImageObject",
-          "url": "https://muzammal.dev/professional-developer-portrait.png",
+          "url": `${SITE_URL}/professional-developer-portrait.png`,
           "width": 400,
           "height": 400
         },
         "sameAs": [
-          "https://www.upwork.com/freelancers/muzammal",
-          "https://www.fiverr.com/muzammal",
-          "https://github.com/muzammal",
-          "https://linkedin.com/in/muzammal"
+          "https://github.com/muzammal5-svg",
+          "https://www.linkedin.com/in/muz-the-coder/"
         ],
         "jobTitle": "Full-Stack Web Developer",
         "worksFor": {
@@ -285,11 +145,11 @@ export default function RootLayout({
       },
       {
         "@type": "ProfessionalService",
-        "@id": "https://muzammal.dev/#service",
-        "name": "Muzammal - Full-Stack Web Development Services",
-        "url": "https://muzammal.dev",
-        "logo": "https://muzammal.dev/MZwebsolution.png",
-        "image": "https://muzammal.dev/og-image.jpg",
+        "@id": `${SITE_URL}/#service`,
+        "name": "Muhammad Muzammal - Full-Stack Web Development Services",
+        "url": SITE_URL,
+        "logo": `${SITE_URL}/MZwebsolution.png`,
+        "image": `${SITE_URL}/og-image.jpg`,
         "description": "Professional WordPress, Shopify, and React development services. Custom theme development, e-commerce solutions, and high-performance web applications.",
         "priceRange": "$$",
         "telephone": "+92-341-735-9571",
@@ -324,22 +184,17 @@ export default function RootLayout({
       },
       {
         "@type": "WebSite",
-        "@id": "https://muzammal.dev/#website",
-        "url": "https://muzammal.dev",
-        "name": "Muzammal - Full-Stack Developer",
+        "@id": `${SITE_URL}/#website`,
+        "url": SITE_URL,
+        "name": "Muhammad Muzammal - Full-Stack Developer",
         "description": "Professional WordPress, Shopify, and React developer portfolio",
         "publisher": {
-          "@id": "https://muzammal.dev/#person"
-        },
-        "potentialAction": {
-          "@type": "SearchAction",
-          "target": "https://muzammal.dev/search?q={search_term_string}",
-          "query-input": "required name=search_term_string"
+          "@id": `${SITE_URL}/#person`
         }
       },
       {
         "@type": "ItemList",
-        "@id": "https://muzammal.dev/#services",
+        "@id": `${SITE_URL}/#services`,
         "name": "Web Development Services",
         "itemListElement": [
           {
@@ -398,7 +253,7 @@ export default function RootLayout({
           <ScrollToTop />
           <WhatsAppFloat 
             phoneNumber="923417359571" 
-            message="Hi! I'm interested in MZwebSolutions services. Let's discuss my project!" 
+            message="Hi! I'm interested in your web development services. Let's discuss my project!" 
           />
           <Analytics />
         </ThemeProvider>

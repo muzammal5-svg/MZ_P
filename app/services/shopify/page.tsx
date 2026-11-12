@@ -1,7 +1,5 @@
 "use client"
 
-import { MZwebSolutionsNavigation } from "@/components/rsweblabs-navigation"
-import { MZwebSolutionsFooter } from "@/components/mzwebsolutions-footer"
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
 import { ArrowRight, CheckCircle, ShoppingCart, CreditCard, Smartphone, BarChart, Shield, Zap, ExternalLink } from "lucide-react"
@@ -117,8 +115,7 @@ export default function ShopifyPage() {
 
   return (
     <div className="min-h-screen">
-      <MZwebSolutionsNavigation />
-      
+            
       <div className="pt-24" style={{ background: "linear-gradient(180deg, #ffffff 0%, #f8fafc 100%)" }}>
       
       {/* Decorative elements */}
@@ -603,7 +600,6 @@ export default function ShopifyPage() {
 
       </div>
       
-      <MZwebSolutionsFooter />
-    </div>
+          </div>
   )
 }

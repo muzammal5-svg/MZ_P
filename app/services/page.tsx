@@ -17,7 +17,7 @@ export default function ServicesPage() {
       color: "text-blue-400",
       bgColor: "bg-blue-500/20",
       borderColor: "border-blue-500/30",
-      price: "Starting at $2,500"
+      price: "Starting at $99"
     },
     {
       title: "Shopify Development",
@@ -28,7 +28,7 @@ export default function ServicesPage() {
       color: "text-green-400",
       bgColor: "bg-green-500/20",
       borderColor: "border-green-500/30",
-      price: "Starting at $3,000"
+      price: "Starting at $149"
     },
     {
       title: "AI Automation",
@@ -61,7 +61,7 @@ export default function ServicesPage() {
       color: "text-orange-400",
       bgColor: "bg-orange-500/20",
       borderColor: "border-orange-500/30",
-      price: "Starting at $500"
+      price: "Starting at $25"
     },
     {
       title: "Frontend Development",
@@ -72,7 +72,7 @@ export default function ServicesPage() {
       color: "text-cyan-400",
       bgColor: "bg-cyan-500/20",
       borderColor: "border-cyan-500/30",
-      price: "Starting at $3,500"
+      price: "Starting at $129"
     }
   ]
 

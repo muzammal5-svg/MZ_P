@@ -13,6 +13,8 @@ import { MZwebSolutionsFooter } from "@/components/mzwebsolutions-footer"
 import { motion } from "framer-motion"
 import Link from "next/link"
 
+const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+
 export default function ContactPage() {
   const [formData, setFormData] = useState({
     name: "",
@@ -23,32 +25,79 @@ export default function ContactPage() {
     budget: "",
     timeline: "",
     message: "",
+    honeypot: "", // hidden spam field
   })
   
+  const [errors, setErrors] = useState<Record<string, string>>({})
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [submitStatus, setSubmitStatus] = useState<{
-    type: 'success' | 'error' | null
+    type: "success" | "error" | null
     message: string
-  }>({ type: null, message: '' })
+  }>({ type: null, message: "" })
+
+  const handleInputChange = (field: string, value: string) => {
+    setFormData((prev) => ({ ...prev, [field]: value }))
+    if (submitStatus.type) {
+      setSubmitStatus({ type: null, message: "" })
+    }
+    if (errors[field]) {
+      setErrors((prev) => {
+        const next = { ...prev }
+        delete next[field]
+        return next
+      })
+    }
+  }
+
+  const validate = (): boolean => {
+    const newErrors: Record<string, string> = {}
+    if (!formData.name.trim() || formData.name.trim().length < 2) {
+      newErrors.name = "Please enter your full name (at least 2 characters)."
+    }
+    if (!formData.email.trim()) {
+      newErrors.email = "Please enter your email address."
+    } else if (!EMAIL_REGEX.test(formData.email.trim())) {
+      newErrors.email = "Please enter a valid email address (e.g. name@domain.com)."
+    }
+    if (!formData.message.trim() || formData.message.trim().length < 5) {
+      newErrors.message = "Please describe your project or inquiry (at least 5 characters)."
+    }
+    setErrors(newErrors)
+    return Object.keys(newErrors).length === 0
+  }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
+
+    if (!validate()) return
+
     setIsSubmitting(true)
-    setSubmitStatus({ type: null, message: '' })
+    setSubmitStatus({ type: null, message: "" })
 
     try {
       const res = await fetch("/api/contact", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData),
+        body: JSON.stringify({
+          name: formData.name.trim(),
+          email: formData.email.trim(),
+          phone: formData.phone.trim(),
+          company: formData.company.trim(),
+          service: formData.service || "General Inquiry",
+          budget: formData.budget || "Not specified",
+          timeline: formData.timeline || "Flexible",
+          message: formData.message.trim(),
+          honeypot: formData.honeypot,
+          sourcePage: "Dedicated Contact Page",
+        }),
       })
 
       const data = await res.json()
 
-      if (res.ok) {
+      if (res.ok && data.success) {
         setSubmitStatus({
-          type: 'success',
-          message: 'Message sent successfully! I\'ll get back to you within 24 hours.'
+          type: "success",
+          message: "Thanks, I'll get back to you within 24 hours.",
         })
         setFormData({
           name: "",
@@ -59,51 +108,49 @@ export default function ContactPage() {
           budget: "",
           timeline: "",
           message: "",
+          honeypot: "",
         })
+        setErrors({})
       } else {
         setSubmitStatus({
-          type: 'error',
-          message: data.error || "Something went wrong. Please try again."
+          type: "error",
+          message: data.error || "Something went wrong while submitting. Please try again or reach out directly.",
         })
       }
-    } catch (error) {
+    } catch {
       setSubmitStatus({
-        type: 'error',
-        message: "Network error. Please check your connection and try again."
+        type: "error",
+        message: "Network error. Please check your connection or reach out via WhatsApp.",
       })
     } finally {
       setIsSubmitting(false)
     }
   }
 
-  const handleInputChange = (field: string, value: string) => {
-    setFormData(prev => ({ ...prev, [field]: value }))
-  }
-
   const contactInfo = [
     {
       icon: Mail,
-      title: "Email Me",
+      title: "Email",
       content: "muzammalzaheer571@gmail.com",
       description: "Send me an email anytime",
       action: "mailto:muzammalzaheer571@gmail.com",
-      color: "#10b981"
+      color: "#10b981",
     },
     {
       icon: Phone,
-      title: "Call Me",
+      title: "Phone",
       content: "+92 341 735 9571",
-      description: "Mon-Fri from 9am to 6pm",
+      description: "Mon–Fri from 9am to 6pm",
       action: "tel:+923417359571",
-      color: "#06b6d4"
+      color: "#06b6d4",
     },
     {
       icon: WhatsAppIcon,
       title: "WhatsApp",
       content: "+92 341 735 9571",
-      description: "Quick response guaranteed",
+      description: "Fast Response (2–4 hour reply)",
       action: "https://wa.me/923417359571?text=Hi! I'm visiting your contact page and interested in your services. Let's discuss my project!",
-      color: "#22c55e"
+      color: "#22c55e",
     },
     {
       icon: MapPin,
@@ -111,34 +158,35 @@ export default function ContactPage() {
       content: "Pakistan",
       description: "Serving clients worldwide",
       action: null,
-      color: "#8b5cf6"
-    }
+      color: "#8b5cf6",
+    },
   ]
 
   const services = [
     "WordPress Development",
     "Shopify Development", 
     "Frontend Development",
+    "AI Automation",
+    "AI Chatbot Integration",
     "eBay Templates",
     "SEO Optimization",
     "Custom Web Application",
-    "Other"
+    "Other",
   ]
 
   const budgets = [
     "Under $1,000",
-    "$1,000 - $5,000",
-    "$5,000 - $10,000",
-    "$10,000 - $25,000",
-    "$25,000+"
+    "$1,000 – $3,000",
+    "$3,000 – $7,000",
+    "$7,000+",
   ]
 
   const timelines = [
     "ASAP",
-    "1-2 weeks",
+    "1–2 weeks",
     "1 month",
-    "2-3 months",
-    "3+ months"
+    "2–3 months",
+    "Flexible",
   ]
 
   return (
@@ -148,194 +196,69 @@ export default function ContactPage() {
         {/* Decorative elements */}
         <div className="absolute top-40 right-10 w-64 sm:w-80 md:w-96 h-64 sm:h-80 md:h-96 rounded-full opacity-20 blur-3xl pointer-events-none"
           style={{ background: "radial-gradient(circle, rgba(16,185,129,0.3) 0%, transparent 70%)" }} />
-        <div className="absolute bottom-40 left-10 w-56 sm:w-72 md:w-80 h-56 sm:h-72 md:h-80 rounded-full opacity-15 blur-3xl pointer-events-none"
-          style={{ background: "radial-gradient(circle, rgba(6,182,212,0.25) 0%, transparent 70%)" }} />
+        <div className="absolute top-80 left-10 w-56 sm:w-72 md:w-80 h-56 sm:h-72 md:h-80 rounded-full opacity-15 blur-3xl pointer-events-none"
+          style={{ background: "radial-gradient(circle, rgba(139,92,246,0.25) 0%, transparent 70%)" }} />
 
         {/* Hero Section */}
-        <section className="py-16 sm:py-20 md:py-24 lg:py-28 relative z-10 overflow-hidden">
-          <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-            <motion.div 
+        <section className="relative py-12 sm:py-16 md:py-20">
+          <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+            <motion.div
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8 }}
-              className="max-w-5xl mx-auto"
+              className="text-center max-w-3xl mx-auto"
             >
-              {/* Badge */}
-              {/* <motion.div
-                initial={{ opacity: 0, scale: 0.9 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ duration: 0.6, delay: 0.2 }}
-                className="flex justify-center mb-6 sm:mb-8"
-              >
-                <div className="inline-flex items-center gap-2 px-4 sm:px-5 py-2 sm:py-2.5 rounded-full"
-                  style={{
-                    background: "rgba(16,185,129,0.1)",
-                    border: "2px solid rgba(16,185,129,0.3)",
-                  }}>
-                  <div className="w-2 h-2 rounded-full animate-pulse" style={{ background: "#10b981" }} />
-                  <span className="text-xs sm:text-sm font-semibold tracking-wide" style={{ 
-                    color: "#10b981",
-                    fontFamily: "'Poppins', sans-serif",
-                    fontWeight: 600,
-                    letterSpacing: "0.05em",
-                  }}>
-                    LET'S CONNECT
-                  </span>
-                </div>
-              </motion.div> */}
-
-              {/* Main Heading */}
-              <motion.h1 
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.8, delay: 0.3 }}
-                className="text-center mb-5 sm:mb-6 md:mb-8"
-              >
-                <div className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold leading-tight"
-                  style={{
-                    fontFamily: "'Poppins', sans-serif",
-                    letterSpacing: "-0.03em",
-                    lineHeight: "1.1",
-                  }}>
-                  <span style={{ 
-                    color: "#0f172a",
-                    display: "block",
-                    marginBottom: "0.2em",
-                  }}>
-                    Ready to Build
-                  </span>
-                  <span style={{
-                    background: "linear-gradient(135deg, #10b981 0%, #06b6d4 100%)",
-                    WebkitBackgroundClip: "text",
-                    WebkitTextFillColor: "transparent",
-                    display: "block",
-                  }}>
-                    Your Next Project?
-                  </span>
-                </div>
-              </motion.h1>
+              <div className="inline-flex items-center gap-2 px-3 sm:px-4 py-1.5 sm:py-2 rounded-full mb-4 sm:mb-6"
+                style={{
+                  background: "rgba(16,185,129,0.15)",
+                  border: "1px solid rgba(16,185,129,0.3)",
+                }}>
+                <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+                <span className="text-xs sm:text-sm font-medium" style={{ color: "#059669", fontFamily: "'Poppins', sans-serif" }}>
+                  Let's Connect
+                </span>
+              </div>
               
-              {/* Description */}
-              <motion.p 
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.8, delay: 0.4 }}
-                className="text-center text-base sm:text-lg md:text-xl lg:text-2xl leading-relaxed max-w-3xl mx-auto mb-8 sm:mb-10 md:mb-12"
+              <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-4 sm:mb-6"
+                style={{
+                  color: "#0f172a",
+                  fontFamily: "'Poppins', sans-serif",
+                  letterSpacing: "-0.02em",
+                  fontWeight: 700,
+                }}>
+                Start Your Project{" "}
+                <span style={{
+                  background: "linear-gradient(135deg, #10b981 0%, #06b6d4 100%)",
+                  WebkitBackgroundClip: "text",
+                  WebkitTextFillColor: "transparent",
+                }}>Today</span>
+              </h1>
+              
+              <p className="text-base sm:text-lg md:text-xl leading-relaxed px-4"
                 style={{
                   color: "#64748b",
                   fontFamily: "'Poppins', sans-serif",
                   fontWeight: 400,
-                  lineHeight: "1.7",
                 }}>
-                I'm here to transform your vision into a high-performance digital solution. 
-                <span style={{ color: "#0f172a", fontWeight: 500 }}> Let's discuss your project</span> and create something exceptional together.
-              </motion.p>
-
-              {/* Stats Row */}
-              {/* <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.8, delay: 0.5 }}
-                className="flex flex-wrap justify-center gap-6 sm:gap-8 md:gap-12 mb-8 sm:mb-10"
-              >
-                {[
-                  { value: "2-4 hrs", label: "Response Time" },
-                  { value: "100+", label: "Projects Delivered" },
-                  { value: "5.0", label: "Client Rating" },
-                ].map((stat, i) => (
-                  <div key={i} className="text-center">
-                    <div className="text-2xl sm:text-3xl md:text-4xl font-bold mb-1"
-                      style={{
-                        background: "linear-gradient(135deg, #10b981 0%, #06b6d4 100%)",
-                        WebkitBackgroundClip: "text",
-                        WebkitTextFillColor: "transparent",
-                        fontFamily: "'Poppins', sans-serif",
-                        fontWeight: 700,
-                      }}>
-                      {stat.value}
-                    </div>
-                    <div className="text-xs sm:text-sm font-medium"
-                      style={{ 
-                        color: "#64748b",
-                        fontFamily: "'Poppins', sans-serif",
-                        fontWeight: 500,
-                      }}>
-                      {stat.label}
-                    </div>
-                  </div>
-                ))}
-              </motion.div> */}
-
-              {/* CTA Buttons */}
-              {/* <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.8, delay: 0.6 }}
-                className="flex flex-col sm:flex-row items-center justify-center gap-4"
-              >
-                <motion.a
-                  href="#contact-form"
-                  onClick={(e) => {
-                    e.preventDefault()
-                    document.querySelector('#contact-form')?.scrollIntoView({ behavior: 'smooth' })
-                  }}
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                  className="flex items-center gap-2 px-8 py-3.5 rounded-lg text-base font-semibold transition-all duration-200 w-full sm:w-auto justify-center"
-                  style={{
-                    fontFamily: "'Poppins', sans-serif",
-                    color: "#63b3ed",
-                    background: "transparent",
-                    border: "2px solid #63b3ed",
-                    fontWeight: 600,
-                  }}
-                >
-                  Let's Build Together
-                  <ArrowRight className="w-5 h-5" />
-                </motion.a>
-                
-                <motion.a
-                  href="https://wa.me/923417359571?text=Hi! I'm interested in discussing a project."
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                  className="flex items-center gap-2 px-8 py-3.5 rounded-lg text-base font-semibold transition-all duration-200 w-full sm:w-auto justify-center"
-                  style={{
-                    fontFamily: "'Poppins', sans-serif",
-                    color: "#22c55e",
-                    background: "transparent",
-                    border: "2px solid #22c55e",
-                    fontWeight: 600,
-                  }}
-                >
-                  <WhatsAppIcon className="w-5 h-5" />
-                  Quick Chat
-                </motion.a>
-              </motion.div> */}
+                Have a project in mind or looking for a long-term development partner? Send over your details and I'll reply promptly.
+              </p>
             </motion.div>
           </div>
-
-          {/* Decorative Elements */}
-          <div className="absolute top-1/4 left-0 w-64 sm:w-80 md:w-96 h-64 sm:h-80 md:h-96 rounded-full opacity-10 blur-3xl pointer-events-none"
-            style={{ background: "radial-gradient(circle, rgba(16,185,129,0.4) 0%, transparent 70%)" }} />
-          <div className="absolute bottom-1/4 right-0 w-64 sm:w-80 md:w-96 h-64 sm:h-80 md:h-96 rounded-full opacity-10 blur-3xl pointer-events-none"
-            style={{ background: "radial-gradient(circle, rgba(6,182,212,0.4) 0%, transparent 70%)" }} />
         </section>
 
-        {/* Contact Section */}
-        <section className="pb-12 sm:pb-16 md:pb-20 relative z-10">
+        {/* Form and Contact Info Grid */}
+        <section className="py-6 sm:py-8 md:py-12 relative z-10">
           <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="grid lg:grid-cols-2 gap-6 sm:gap-8 lg:gap-12 max-w-7xl mx-auto">
-              {/* Contact Form */}
+            <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 max-w-6xl mx-auto items-start">
+              
+              {/* Form Card */}
               <motion.div
                 initial={{ opacity: 0, x: -30 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ duration: 0.8, delay: 0.2 }}
                 className="w-full"
-                id="contact-form"
               >
-                <Card className="p-4 sm:p-6 md:p-8 lg:p-10 border-2 w-full"
+                <Card className="p-6 sm:p-8 md:p-10 border-2"
                   style={{
                     background: "rgba(255,255,255,0.95)",
                     backdropFilter: "blur(20px)",
@@ -348,152 +271,230 @@ export default function ContactPage() {
                       color: "#0f172a",
                       fontFamily: "'Poppins', sans-serif",
                       fontWeight: 700,
-                    }}>Send me a message</h2>
+                    }}>
+                    Send Me a Message
+                  </h2>
+
+                  {/* Status message */}
+                  <div aria-live="polite" role="status">
+                    {submitStatus.type && (
+                      <motion.div
+                        initial={{ opacity: 0, y: -10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        className="p-4 sm:p-5 rounded-xl mb-6 space-y-3"
+                        style={{
+                          background: submitStatus.type === "success" 
+                            ? "rgba(34,197,94,0.12)"
+                            : "rgba(239,68,68,0.12)",
+                          border: submitStatus.type === "success"
+                            ? "2px solid rgba(34,197,94,0.25)"
+                            : "2px solid rgba(239,68,68,0.25)",
+                          color: submitStatus.type === "success" ? "#15803d" : "#b91c1c",
+                          fontFamily: "'Poppins', sans-serif",
+                        }}
+                      >
+                        <div className="flex items-center gap-3">
+                          {submitStatus.type === "success" ? (
+                            <CheckCircle className="w-5 h-5 flex-shrink-0 text-emerald-600" />
+                          ) : (
+                            <AlertCircle className="w-5 h-5 flex-shrink-0 text-red-600" />
+                          )}
+                          <span className="text-sm font-semibold">{submitStatus.message}</span>
+                        </div>
+
+                        {submitStatus.type === "error" && (
+                          <div className="pt-2 border-t border-red-200 flex flex-wrap gap-2 text-xs">
+                            <a
+                              href="https://wa.me/923417359571?text=Hi! I tried submitting the contact form on your portfolio and encountered an issue. Let's talk here!"
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg font-medium text-white bg-emerald-600 hover:bg-emerald-700 transition-colors"
+                            >
+                              <WhatsAppIcon className="w-3.5 h-3.5" />
+                              Chat on WhatsApp
+                            </a>
+                            <a
+                              href="mailto:muzammalzaheer571@gmail.com"
+                              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg font-medium text-gray-800 bg-white border border-gray-300 hover:bg-gray-50 transition-colors"
+                            >
+                              <Mail className="w-3.5 h-3.5 text-blue-600" />
+                              Email Directly
+                            </a>
+                          </div>
+                        )}
+                      </motion.div>
+                    )}
+                  </div>
                   
-                  <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-5 md:space-y-7">
+                  <form onSubmit={handleSubmit} noValidate className="space-y-4 sm:space-y-5 md:space-y-6">
+                    {/* Honeypot field */}
+                    <input
+                      type="text"
+                      name="website"
+                      value={formData.honeypot}
+                      onChange={(e) => handleInputChange("honeypot", e.target.value)}
+                      tabIndex={-1}
+                      autoComplete="off"
+                      aria-hidden="true"
+                      style={{ display: "none" }}
+                    />
+
+                    {/* Name & Email Row */}
                     <div className="grid sm:grid-cols-2 gap-4 sm:gap-5 md:gap-6">
                       <div className="w-full">
-                        <label className="block text-xs sm:text-sm font-semibold mb-2"
-                          style={{
-                            color: "#0f172a",
-                            fontFamily: "'Poppins', sans-serif",
-                            fontWeight: 600,
-                            fontSize: "14px",
-                          }}>
-                          Name *
+                        <label 
+                          htmlFor="contact-name"
+                          className="block text-xs sm:text-sm font-semibold mb-2"
+                          style={{ color: "#0f172a", fontFamily: "'Poppins', sans-serif" }}
+                        >
+                          Name <span className="text-red-500">*</span>
                         </label>
                         <Input
+                          id="contact-name"
                           type="text"
                           value={formData.name}
-                          onChange={(e) => handleInputChange('name', e.target.value)}
-                          className="h-11 sm:h-12 md:h-14 px-3 sm:px-4 md:px-5 rounded-xl border-2 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 transition-all w-full"
+                          onChange={(e) => handleInputChange("name", e.target.value)}
+                          aria-invalid={Boolean(errors.name)}
+                          aria-describedby={errors.name ? "contact-name-error" : undefined}
+                          className={`h-12 px-4 rounded-xl border-2 transition-all w-full ${
+                            errors.name ? "border-red-500 bg-red-50/20" : "focus:border-emerald-500"
+                          }`}
                           style={{
                             background: "#ffffff",
-                            borderColor: "#e2e8f0",
                             color: "#0f172a",
                             fontFamily: "'Poppins', sans-serif",
                             fontSize: "15px",
-                            fontWeight: 500,
                           }}
                           placeholder="Your full name"
                           required
                         />
+                        {errors.name && (
+                          <p id="contact-name-error" className="text-xs text-red-600 mt-1 flex items-center gap-1 font-medium">
+                            <AlertCircle className="w-3.5 h-3.5" />
+                            {errors.name}
+                          </p>
+                        )}
                       </div>
+
                       <div className="w-full">
-                        <label className="block text-xs sm:text-sm font-semibold mb-2"
-                          style={{
-                            color: "#0f172a",
-                            fontFamily: "'Poppins', sans-serif",
-                            fontWeight: 600,
-                            fontSize: "14px",
-                          }}>
-                          Email *
+                        <label 
+                          htmlFor="contact-email"
+                          className="block text-xs sm:text-sm font-semibold mb-2"
+                          style={{ color: "#0f172a", fontFamily: "'Poppins', sans-serif" }}
+                        >
+                          Email <span className="text-red-500">*</span>
                         </label>
                         <Input
+                          id="contact-email"
                           type="email"
                           value={formData.email}
-                          onChange={(e) => handleInputChange('email', e.target.value)}
-                          className="h-11 sm:h-12 md:h-14 px-3 sm:px-4 md:px-5 rounded-xl border-2 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 transition-all w-full"
+                          onChange={(e) => handleInputChange("email", e.target.value)}
+                          aria-invalid={Boolean(errors.email)}
+                          aria-describedby={errors.email ? "contact-email-error" : undefined}
+                          className={`h-12 px-4 rounded-xl border-2 transition-all w-full ${
+                            errors.email ? "border-red-500 bg-red-50/20" : "focus:border-emerald-500"
+                          }`}
                           style={{
                             background: "#ffffff",
-                            borderColor: "#e2e8f0",
                             color: "#0f172a",
                             fontFamily: "'Poppins', sans-serif",
                             fontSize: "15px",
-                            fontWeight: 500,
                           }}
                           placeholder="your@email.com"
                           required
                         />
+                        {errors.email && (
+                          <p id="contact-email-error" className="text-xs text-red-600 mt-1 flex items-center gap-1 font-medium">
+                            <AlertCircle className="w-3.5 h-3.5" />
+                            {errors.email}
+                          </p>
+                        )}
                       </div>
                     </div>
 
+                    {/* Phone & Company Row */}
                     <div className="grid sm:grid-cols-2 gap-4 sm:gap-5 md:gap-6">
                       <div className="w-full">
-                        <label className="block text-xs sm:text-sm font-semibold mb-2"
-                          style={{
-                            color: "#0f172a",
-                            fontFamily: "'Poppins', sans-serif",
-                            fontWeight: 600,
-                            fontSize: "14px",
-                          }}>
-                          Phone
+                        <label 
+                          htmlFor="contact-phone"
+                          className="block text-xs sm:text-sm font-semibold mb-2"
+                          style={{ color: "#0f172a", fontFamily: "'Poppins', sans-serif" }}
+                        >
+                          Phone / WhatsApp <span className="text-gray-400 font-normal">(Optional)</span>
                         </label>
                         <Input
+                          id="contact-phone"
                           type="tel"
                           value={formData.phone}
-                          onChange={(e) => handleInputChange('phone', e.target.value)}
-                          className="h-11 sm:h-12 md:h-14 px-3 sm:px-4 md:px-5 rounded-xl border-2 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 transition-all w-full"
+                          onChange={(e) => handleInputChange("phone", e.target.value)}
+                          className="h-12 px-4 rounded-xl border-2 focus:border-emerald-500 transition-all w-full"
                           style={{
                             background: "#ffffff",
                             borderColor: "#e2e8f0",
                             color: "#0f172a",
                             fontFamily: "'Poppins', sans-serif",
                             fontSize: "15px",
-                            fontWeight: 500,
                           }}
                           placeholder="+1 (555) 000-0000"
                         />
                       </div>
+
                       <div className="w-full">
-                        <label className="block text-xs sm:text-sm font-semibold mb-2"
-                          style={{
-                            color: "#0f172a",
-                            fontFamily: "'Poppins', sans-serif",
-                            fontWeight: 600,
-                            fontSize: "14px",
-                          }}>
-                          Company
+                        <label 
+                          htmlFor="contact-company"
+                          className="block text-xs sm:text-sm font-semibold mb-2"
+                          style={{ color: "#0f172a", fontFamily: "'Poppins', sans-serif" }}
+                        >
+                          Company / Website <span className="text-gray-400 font-normal">(Optional)</span>
                         </label>
                         <Input
+                          id="contact-company"
                           type="text"
                           value={formData.company}
-                          onChange={(e) => handleInputChange('company', e.target.value)}
-                          className="h-11 sm:h-12 md:h-14 px-3 sm:px-4 md:px-5 rounded-xl border-2 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 transition-all w-full"
+                          onChange={(e) => handleInputChange("company", e.target.value)}
+                          className="h-12 px-4 rounded-xl border-2 focus:border-emerald-500 transition-all w-full"
                           style={{
                             background: "#ffffff",
                             borderColor: "#e2e8f0",
                             color: "#0f172a",
                             fontFamily: "'Poppins', sans-serif",
                             fontSize: "15px",
-                            fontWeight: 500,
                           }}
-                          placeholder="Your company name"
+                          placeholder="Your company or site"
                         />
                       </div>
                     </div>
 
+                    {/* Service Interested In */}
                     <div className="w-full">
-                      <label className="block text-xs sm:text-sm font-semibold mb-2"
-                        style={{
-                          color: "#0f172a",
-                          fontFamily: "'Poppins', sans-serif",
-                          fontWeight: 600,
-                          fontSize: "14px",
-                        }}>
+                      <label 
+                        htmlFor="contact-service"
+                        className="block text-xs sm:text-sm font-semibold mb-2"
+                        style={{ color: "#0f172a", fontFamily: "'Poppins', sans-serif" }}
+                      >
                         Service Interested In
                       </label>
-                      <Select value={formData.service} onValueChange={(value) => handleInputChange('service', value)}>
-                        <SelectTrigger className="h-11 sm:h-12 md:h-14 px-3 sm:px-4 md:px-5 rounded-xl border-2 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 transition-all w-full"
+                      <Select value={formData.service} onValueChange={(value) => handleInputChange("service", value)}>
+                        <SelectTrigger 
+                          id="contact-service"
+                          className="h-12 px-4 rounded-xl border-2 focus:border-emerald-500 transition-all w-full"
                           style={{
                             background: "#ffffff",
                             borderColor: "#e2e8f0",
                             color: formData.service ? "#0f172a" : "#94a3b8",
                             fontFamily: "'Poppins', sans-serif",
                             fontSize: "15px",
-                            fontWeight: 500,
                           }}>
-                          <SelectValue placeholder="Select a service" />
+                          <SelectValue placeholder="Select a service (optional)" />
                         </SelectTrigger>
                         <SelectContent className="rounded-xl" style={{ background: "#ffffff", borderColor: "#e2e8f0" }}>
                           {services.map((service) => (
                             <SelectItem key={service} value={service} 
-                              className="rounded-lg py-3"
+                              className="rounded-lg py-3 cursor-pointer"
                               style={{ 
                                 color: "#0f172a",
                                 fontFamily: "'Poppins', sans-serif",
                                 fontSize: "15px",
-                                fontWeight: 500,
                               }}>
                               {service}
                             </SelectItem>
@@ -502,38 +503,37 @@ export default function ContactPage() {
                       </Select>
                     </div>
 
+                    {/* Budget & Timeline Row */}
                     <div className="grid sm:grid-cols-2 gap-4 sm:gap-5 md:gap-6">
                       <div className="w-full">
-                        <label className="block text-xs sm:text-sm font-semibold mb-2"
-                          style={{
-                            color: "#0f172a",
-                            fontFamily: "'Poppins', sans-serif",
-                            fontWeight: 600,
-                            fontSize: "14px",
-                          }}>
+                        <label 
+                          htmlFor="contact-budget"
+                          className="block text-xs sm:text-sm font-semibold mb-2"
+                          style={{ color: "#0f172a", fontFamily: "'Poppins', sans-serif" }}
+                        >
                           Budget Range
                         </label>
-                        <Select value={formData.budget} onValueChange={(value) => handleInputChange('budget', value)}>
-                          <SelectTrigger className="h-11 sm:h-12 md:h-14 px-3 sm:px-4 md:px-5 rounded-xl border-2 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 transition-all w-full"
+                        <Select value={formData.budget} onValueChange={(value) => handleInputChange("budget", value)}>
+                          <SelectTrigger 
+                            id="contact-budget"
+                            className="h-12 px-4 rounded-xl border-2 focus:border-emerald-500 transition-all w-full"
                             style={{
                               background: "#ffffff",
                               borderColor: "#e2e8f0",
                               color: formData.budget ? "#0f172a" : "#94a3b8",
                               fontFamily: "'Poppins', sans-serif",
                               fontSize: "15px",
-                              fontWeight: 500,
                             }}>
-                            <SelectValue placeholder="Select budget" />
+                            <SelectValue placeholder="Select budget (optional)" />
                           </SelectTrigger>
                           <SelectContent className="rounded-xl" style={{ background: "#ffffff", borderColor: "#e2e8f0" }}>
                             {budgets.map((budget) => (
                               <SelectItem key={budget} value={budget}
-                                className="rounded-lg py-3"
+                                className="rounded-lg py-3 cursor-pointer"
                                 style={{ 
                                   color: "#0f172a",
                                   fontFamily: "'Poppins', sans-serif",
                                   fontSize: "15px",
-                                  fontWeight: 500,
                                 }}>
                                 {budget}
                               </SelectItem>
@@ -541,37 +541,36 @@ export default function ContactPage() {
                           </SelectContent>
                         </Select>
                       </div>
+
                       <div className="w-full">
-                        <label className="block text-xs sm:text-sm font-semibold mb-2"
-                          style={{
-                            color: "#0f172a",
-                            fontFamily: "'Poppins', sans-serif",
-                            fontWeight: 600,
-                            fontSize: "14px",
-                          }}>
+                        <label 
+                          htmlFor="contact-timeline"
+                          className="block text-xs sm:text-sm font-semibold mb-2"
+                          style={{ color: "#0f172a", fontFamily: "'Poppins', sans-serif" }}
+                        >
                           Timeline
                         </label>
-                        <Select value={formData.timeline} onValueChange={(value) => handleInputChange('timeline', value)}>
-                          <SelectTrigger className="h-11 sm:h-12 md:h-14 px-3 sm:px-4 md:px-5 rounded-xl border-2 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 transition-all w-full"
+                        <Select value={formData.timeline} onValueChange={(value) => handleInputChange("timeline", value)}>
+                          <SelectTrigger 
+                            id="contact-timeline"
+                            className="h-12 px-4 rounded-xl border-2 focus:border-emerald-500 transition-all w-full"
                             style={{
                               background: "#ffffff",
                               borderColor: "#e2e8f0",
                               color: formData.timeline ? "#0f172a" : "#94a3b8",
                               fontFamily: "'Poppins', sans-serif",
                               fontSize: "15px",
-                              fontWeight: 500,
                             }}>
-                            <SelectValue placeholder="Select timeline" />
+                            <SelectValue placeholder="Select timeline (optional)" />
                           </SelectTrigger>
                           <SelectContent className="rounded-xl" style={{ background: "#ffffff", borderColor: "#e2e8f0" }}>
                             {timelines.map((timeline) => (
                               <SelectItem key={timeline} value={timeline}
-                                className="rounded-lg py-3"
+                                className="rounded-lg py-3 cursor-pointer"
                                 style={{ 
                                   color: "#0f172a",
                                   fontFamily: "'Poppins', sans-serif",
                                   fontSize: "15px",
-                                  fontWeight: 500,
                                 }}>
                                 {timeline}
                               </SelectItem>
@@ -581,65 +580,47 @@ export default function ContactPage() {
                       </div>
                     </div>
 
+                    {/* Project Details Textarea */}
                     <div>
-                      <label className="block text-sm font-semibold mb-3"
-                        style={{
-                          color: "#0f172a",
-                          fontFamily: "'Poppins', sans-serif",
-                          fontWeight: 600,
-                          fontSize: "14px",
-                        }}>
-                        Project Details *
+                      <label 
+                        htmlFor="contact-message"
+                        className="block text-xs sm:text-sm font-semibold mb-2"
+                        style={{ color: "#0f172a", fontFamily: "'Poppins', sans-serif" }}
+                      >
+                        Project Details <span className="text-red-500">*</span>
                       </label>
-                        <Textarea
-                          value={formData.message}
-                          onChange={(e) => handleInputChange('message', e.target.value)}
-                          className="min-h-[140px] sm:min-h-[160px] p-4 sm:p-5 rounded-xl border-2 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 transition-all resize-none"
+                      <Textarea
+                        id="contact-message"
+                        value={formData.message}
+                        onChange={(e) => handleInputChange("message", e.target.value)}
+                        aria-invalid={Boolean(errors.message)}
+                        aria-describedby={errors.message ? "contact-message-error" : undefined}
+                        className={`min-h-[140px] p-4 rounded-xl border-2 transition-all resize-none w-full ${
+                          errors.message ? "border-red-500 bg-red-50/20" : "focus:border-emerald-500"
+                        }`}
                         style={{
                           background: "#ffffff",
-                          borderColor: "#e2e8f0",
                           color: "#0f172a",
                           fontFamily: "'Poppins', sans-serif",
                           fontSize: "15px",
-                          fontWeight: 500,
                           lineHeight: "1.7",
                         }}
-                        placeholder="Tell me about your project, goals, and any specific requirements..."
+                        placeholder="Tell me about your project, goals, key requirements, or any references..."
                         required
                       />
+                      {errors.message && (
+                        <p id="contact-message-error" className="text-xs text-red-600 mt-1 flex items-center gap-1 font-medium">
+                          <AlertCircle className="w-3.5 h-3.5" />
+                          {errors.message}
+                        </p>
+                      )}
                     </div>
 
-                    {/* Status Message */}
-                    {submitStatus.type && (
-                      <motion.div
-                        initial={{ opacity: 0, y: 10 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        className="flex items-center gap-3 p-5 rounded-xl"
-                        style={{
-                          background: submitStatus.type === 'success' 
-                            ? "rgba(34,197,94,0.1)"
-                            : "rgba(239,68,68,0.1)",
-                          border: submitStatus.type === 'success'
-                            ? "2px solid rgba(34,197,94,0.25)"
-                            : "2px solid rgba(239,68,68,0.25)",
-                          color: submitStatus.type === 'success' ? "#16a34a" : "#dc2626",
-                          fontFamily: "'Poppins', sans-serif",
-                        }}
-                      >
-                        {submitStatus.type === 'success' ? (
-                          <CheckCircle className="w-5 h-5 flex-shrink-0" />
-                        ) : (
-                          <AlertCircle className="w-5 h-5 flex-shrink-0" />
-                        )}
-                        <span className="text-sm font-medium">{submitStatus.message}</span>
-                      </motion.div>
-                    )}
-
-                    <motion.div whileHover={{ scale: 1.01 }} whileTap={{ scale: 0.99 }} className="w-full">
+                    <div className="pt-2">
                       <Button
                         type="submit"
                         disabled={isSubmitting}
-                        className="w-full text-white font-semibold py-5 sm:py-6 md:py-7 rounded-xl shadow-lg hover:shadow-xl disabled:opacity-50 transition-all duration-300"
+                        className="w-full text-white font-semibold py-6 rounded-xl shadow-lg hover:shadow-xl disabled:cursor-not-allowed transition-all duration-300 cursor-pointer"
                         style={{
                           background: "linear-gradient(135deg, #10b981 0%, #06b6d4 100%)",
                           fontFamily: "'Poppins', sans-serif",
@@ -659,12 +640,12 @@ export default function ContactPage() {
                           </div>
                         )}
                       </Button>
-                    </motion.div>
+                    </div>
                   </form>
                 </Card>
               </motion.div>
 
-              {/* Contact Info */}
+              {/* Contact Info Column */}
               <motion.div
                 initial={{ opacity: 0, x: 30 }}
                 animate={{ opacity: 1, x: 0 }}
@@ -677,14 +658,15 @@ export default function ContactPage() {
                       color: "#0f172a",
                       fontFamily: "'Poppins', sans-serif",
                       fontWeight: 700,
-                    }}>Get in touch</h2>
+                    }}>
+                    Direct Contact Options
+                  </h2>
                   <p className="leading-relaxed text-sm sm:text-base"
                     style={{
                       color: "#64748b",
                       fontFamily: "'Poppins', sans-serif",
                     }}>
-                    I'm here to help bring your digital vision to life. Whether you have a specific project in mind 
-                    or just want to explore possibilities, I'd love to hear from you.
+                    Prefer to reach out directly? Use any of the channels below for a prompt conversation about your project.
                   </p>
                 </div>
 
@@ -725,16 +707,18 @@ export default function ContactPage() {
                                 {info.title}
                               </h3>
                               {info.action ? (
-                                <Link 
+                                <a 
                                   href={info.action}
-                                  className="font-medium transition-colors text-sm sm:text-base break-words block"
+                                  target={info.action.startsWith("http") ? "_blank" : undefined}
+                                  rel={info.action.startsWith("http") ? "noopener noreferrer" : undefined}
+                                  className="font-medium transition-colors text-sm sm:text-base break-words block hover:underline"
                                   style={{
                                     color: info.color,
                                     fontFamily: "'Poppins', sans-serif",
                                   }}
                                 >
                                   {info.content}
-                                </Link>
+                                </a>
                               ) : (
                                 <div className="font-medium text-sm sm:text-base break-words"
                                   style={{
@@ -760,7 +744,7 @@ export default function ContactPage() {
                   })}
                 </div>
 
-                {/* Response Time */}
+                {/* Response Time Card */}
                 <motion.div
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
@@ -775,13 +759,15 @@ export default function ContactPage() {
                       borderRadius: "1rem",
                     }}>
                     <div className="flex items-center gap-2 sm:gap-3 mb-2 sm:mb-3">
-                      <Clock className="w-4 h-4 sm:w-5 sm:h-5" style={{ color: "#10b981" }} />
+                      <Clock className="w-4 h-4 sm:w-5 sm:h-5" style={{ color: "#0d9488" }} />
                       <h3 className="font-semibold text-sm sm:text-base"
                         style={{
                           color: "#0f172a",
                           fontFamily: "'Poppins', sans-serif",
                           fontWeight: 600,
-                        }}>Quick Response</h3>
+                        }}>
+                        Fast Response
+                      </h3>
                     </div>
                     <p className="text-xs sm:text-sm"
                       style={{
@@ -789,8 +775,7 @@ export default function ContactPage() {
                         fontFamily: "'Poppins', sans-serif",
                         lineHeight: "1.7",
                       }}>
-                      I typically respond to all inquiries within 2-4 hours during business hours. 
-                      For urgent matters, WhatsApp is the fastest way to reach me.
+                      I usually reply within 2–4 hours during business hours. For urgent matters, WhatsApp is the fastest way to reach me.
                     </p>
                   </Card>
                 </motion.div>

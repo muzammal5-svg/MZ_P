@@ -59,6 +59,50 @@ export function FeaturedPortfolio() {
 
   const total = featuredProjects.length
 
+  const [cardWidth, setCardWidth] = useState(380)
+  const [touchStart, setTouchStart] = useState<number | null>(null)
+  const [touchEnd, setTouchEnd] = useState<number | null>(null)
+
+  useEffect(() => {
+    const updateCardWidth = () => {
+      if (typeof window !== 'undefined') {
+        const w = window.innerWidth
+        if (w < 420) {
+          setCardWidth(Math.max(280, w - 48))
+        } else if (w < 768) {
+          setCardWidth(340)
+        } else {
+          setCardWidth(380)
+        }
+      }
+    }
+    updateCardWidth()
+    window.addEventListener('resize', updateCardWidth)
+    return () => window.removeEventListener('resize', updateCardWidth)
+  }, [])
+
+  const minSwipeDistance = 50
+
+  const handleTouchStart = (e: React.TouchEvent) => {
+    setTouchEnd(null)
+    setTouchStart(e.targetTouches[0].clientX)
+    setIsAutoPlaying(false)
+  }
+
+  const handleTouchMove = (e: React.TouchEvent) => {
+    setTouchEnd(e.targetTouches[0].clientX)
+  }
+
+  const handleTouchEnd = () => {
+    if (!touchStart || !touchEnd) return
+    const distance = touchStart - touchEnd
+    if (distance > minSwipeDistance) {
+      next()
+    } else if (distance < -minSwipeDistance) {
+      prev()
+    }
+  }
+
   const next = useCallback(() => {
     setIdx((prev) => (prev + 1) % total)
   }, [total])
@@ -93,7 +137,6 @@ export function FeaturedPortfolio() {
   // 3 copies for infinite loop
   const ITEMS = [...featuredProjects, ...featuredProjects, ...featuredProjects]
   const OFFSET = total // middle copy starts here
-  const CARD_W = 380
   const GAP = 24
 
   return (
@@ -184,11 +227,18 @@ export function FeaturedPortfolio() {
 
           {/* Carousel Container */}
           <div className="relative">
-            <div className="overflow-hidden">
+            <div 
+              className="overflow-hidden select-none"
+              onTouchStart={handleTouchStart}
+              onTouchMove={handleTouchMove}
+              onTouchEnd={handleTouchEnd}
+              onMouseEnter={() => setIsAutoPlaying(false)}
+              onMouseLeave={() => setIsAutoPlaying(true)}
+            >
               <motion.div 
                 className="flex"
                 style={{ gap: `${GAP}px` }}
-                animate={{ x: -(OFFSET + idx) * (CARD_W + GAP) }}
+                animate={{ x: -(OFFSET + idx) * (cardWidth + GAP) }}
                 transition={{ type: "spring", stiffness: 280, damping: 32, mass: 0.8 }}
               >
                 {ITEMS.map((project, i) => {
@@ -199,7 +249,7 @@ export function FeaturedPortfolio() {
                     <div
                       key={i}
                       className="flex-shrink-0"
-                      style={{ width: `${CARD_W}px` }}
+                      style={{ width: `${cardWidth}px` }}
                       onClick={() => !isActive && setIdx(realIdx)}
                       onMouseEnter={() => setIsAutoPlaying(false)}
                       onMouseLeave={() => setIsAutoPlaying(true)}
@@ -207,17 +257,15 @@ export function FeaturedPortfolio() {
                   <motion.div
                     className="group flex flex-col rounded-2xl overflow-hidden hover:-translate-y-1 hover:shadow-2xl transition-all duration-400 h-full"
                     style={{
-                      background: isActive 
-                        ? "rgba(255,255,255,0.95)"
-                        : "rgba(255,255,255,0.7)",
-                      border: `2px solid ${isActive ? "rgba(16,185,129,0.3)" : "rgba(226,232,240,0.8)"}`,
+                      background: "#ffffff",
+                      border: `2px solid ${isActive ? "rgba(16,185,129,0.5)" : "rgba(226,232,240,0.8)"}`,
                       boxShadow: isActive 
-                        ? "0 20px 60px rgba(16,185,129,0.2)"
-                        : "0 10px 30px rgba(0,0,0,0.05)",
-                      opacity: isActive ? 1 : 0.6,
-                      cursor: isActive ? "default" : "pointer",
-                      transform: isActive ? "scale(1)" : "scale(0.95)",
-                      transition: "all 0.4s ease",
+                        ? "0 16px 40px rgba(16,185,129,0.18)" 
+                        : "0 8px 24px rgba(0,0,0,0.05)",
+                      opacity: 1,
+                      cursor: "pointer",
+                      transform: "none",
+                      transition: "border-color 0.3s ease, box-shadow 0.3s ease",
                     }}
                   >
                 {/* Image */}
@@ -226,7 +274,7 @@ export function FeaturedPortfolio() {
                     src={project.image}
                     alt={project.title}
                     fill
-                    sizes="380px"
+                    sizes="(max-width: 640px) 90vw, (max-width: 1024px) 45vw, 380px"
                     className="object-cover transition-transform duration-600 group-hover:scale-105"
                     quality={85}
                     loading="lazy"
@@ -270,7 +318,7 @@ export function FeaturedPortfolio() {
                   {/* Title */}
                   <div>
                     <div className="text-[10px] uppercase tracking-widest mb-1" style={{ color: "#94a3b8" }}>{project.niche}</div>
-                    <h3 className="text-base font-bold transition-colors duration-200 leading-snug"
+                    <h3 className="text-base font-bold transition-colors duration-200 leading-snug line-clamp-2 min-h-[44px]"
                       style={{
                         color: "#0f172a",
                         fontFamily: "'Poppins', sans-serif",
@@ -410,9 +458,7 @@ export function FeaturedPortfolio() {
           </div>
 < div className="flex justify-center p-12 w-full mx-auto">
 
- <Link href="/portfolio">
-                <Button 
-                  size="lg" 
+ <Button asChild size="lg" 
                   className="text-white font-semibold px-8 py-4 rounded-xl shadow-lg transition-all duration-300"
                   style={{
                     background: "linear-gradient(135deg, #10b981 0%, #06b6d4 100%)",
@@ -420,10 +466,11 @@ export function FeaturedPortfolio() {
                     fontWeight: 600,
                   }}
                 >
+                <Link href="/portfolio">
                   View Complete Portfolio
                   <ArrowRight className="ml-2 h-5 w-5" />
-                </Button>
-              </Link>
+                </Link>
+              </Button>
                   </div>
           {/* View All CTA */}
           {/* <motion.div

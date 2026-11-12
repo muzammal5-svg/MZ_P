@@ -57,7 +57,7 @@ export function WhatsAppFloat({
           damping: 20,
           delay: 0.1
         }}
-        className="fixed bottom-6 right-6 z-50"
+        className="fixed bottom-[calc(1rem+env(safe-area-inset-bottom))] right-4 sm:bottom-6 sm:right-6 z-40"
       >
         <div className="relative">
           {/* Pulse rings */}
@@ -74,7 +74,7 @@ export function WhatsAppFloat({
             onMouseLeave={() => setIsHovered(false)}
             whileHover={{ scale: 1.1 }}
             whileTap={{ scale: 0.95 }}
-            className="relative flex h-16 w-16 items-center justify-center rounded-full bg-gradient-to-br from-[#25D366] to-[#128C7E] text-white shadow-2xl transition-all duration-300 ease-out hover:shadow-[0_20px_40px_rgba(37,211,102,0.4)] focus:outline-none focus:ring-4 focus:ring-[#25D366]/40"
+            className="relative flex h-14 w-14 sm:h-16 sm:w-16 items-center justify-center rounded-full bg-gradient-to-br from-[#25D366] to-[#128C7E] text-white shadow-2xl transition-all duration-300 ease-out hover:shadow-[0_20px_40px_rgba(37,211,102,0.4)] focus:outline-none focus:ring-4 focus:ring-[#25D366]/40"
             aria-label="Contact me on WhatsApp"
             title="Chat with me on WhatsApp"
           >
@@ -85,7 +85,7 @@ export function WhatsAppFloat({
                 scale: isHovered ? 1.1 : 1
               }}
               transition={{ duration: 0.5 }}
-              className="h-9 w-9"
+              className="h-8 w-8 sm:h-9 sm:w-9"
               viewBox="0 0 24 24" 
               fill="currentColor"
             >
@@ -132,7 +132,7 @@ export function WhatsAppFloat({
                   stiffness: 300,
                   damping: 30
                 }}
-                className="absolute bottom-0 right-full mr-4 pointer-events-none"
+                className="hidden sm:block absolute bottom-0 right-full mr-4 pointer-events-none"
               >
                 <div className="relative max-w-xs rounded-2xl glass border border-white/20 p-4 text-sm text-white shadow-xl backdrop-blur-sm">
                   <div className="flex items-start gap-3">
@@ -172,7 +172,7 @@ export function WhatsAppFloat({
                         className="text-xs text-gray-400 mt-2 flex items-center gap-1"
                       >
                         <div className="w-1 h-1 bg-green-400 rounded-full animate-pulse"></div>
-                        Typically replies instantly
+                        Usually replies within a few hours
                       </motion.div>
                     </div>
                   </div>

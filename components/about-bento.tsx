@@ -45,20 +45,14 @@ export function AboutBento() {
               letterSpacing: "-0.01em",
               fontWeight: 700,
             }}>
-            Building Digital Solutions
-          </h2>
-          <p className="text-lg sm:text-xl" style={{ 
-            color: "#64748b", 
-            fontFamily: "'Poppins', sans-serif",
-            fontWeight: 500,
-          }}>
-            That Drive <span style={{ 
-              background: "linear-gradient(135deg, #10b981 0%, #06b6d4 100% 100%)",
+            Building Digital Solutions That Drive{" "}
+            <span style={{ 
+              background: "linear-gradient(135deg, #10b981 0%, #06b6d4 100%)",
               WebkitBackgroundClip: "text",
               WebkitTextFillColor: "transparent",
               fontWeight: 700,
             }}>Real Results</span>
-          </p>
+          </h2>
         </motion.div>
 
         {/* Main Content Grid */}
@@ -253,21 +247,18 @@ export function AboutBento() {
             </div>
 
             {/* CTA Button */}
-            <Link href="/portfolio">
-              <motion.button
-                whileHover={{ scale: 1.05, boxShadow: "0 10px 40px rgba(16,185,129,0.3)" }}
-                whileTap={{ scale: 0.95 }}
-                className="flex items-center gap-2 px-8 py-4 rounded-xl text-base font-semibold text-white transition-all duration-200"
-                style={{
-                  fontFamily: "'Poppins', sans-serif",
-                  background: "linear-gradient(135deg, #10b981 0%, #06b6d4 100% 100%)",
-                  boxShadow: "0 4px 20px rgba(16,185,129,0.25)",
-                  fontWeight: 600,
-                }}
-              >
-                View My Work
-                <ArrowRight className="w-5 h-5" />
-              </motion.button>
+            <Link 
+              href="/portfolio"
+              className="inline-flex items-center gap-2 px-8 py-4 rounded-xl text-base font-semibold text-white transition-all duration-200 hover:scale-105 active:scale-95 shadow-md hover:shadow-lg"
+              style={{
+                fontFamily: "'Poppins', sans-serif",
+                background: "linear-gradient(135deg, #10b981 0%, #06b6d4 100%)",
+                boxShadow: "0 4px 20px rgba(16,185,129,0.25)",
+                fontWeight: 600,
+              }}
+            >
+              View My Work
+              <ArrowRight className="w-5 h-5" />
             </Link>
           </motion.div>
 

@@ -3,8 +3,6 @@
 import { motion } from "framer-motion"
 import Link from "next/link"
 import { ArrowRight, Check, MessageSquare, Zap, Globe, Users, Clock, TrendingUp, Bot, Sparkles } from "lucide-react"
-import { MZwebSolutionsNavigation } from "@/components/rsweblabs-navigation"
-import { MZwebSolutionsFooter } from "@/components/mzwebsolutions-footer"
 
 export default function AIChatbotPage() {
   const features = [
@@ -102,8 +100,7 @@ export default function AIChatbotPage() {
 
   return (
     <div className="min-h-screen" style={{ background: "linear-gradient(180deg, #ffffff 0%, #f8fafc 100%)" }}>
-      <MZwebSolutionsNavigation />
-
+      
       {/* Hero Section */}
       <section className="pt-32 pb-20 px-4 sm:px-6 lg:px-8">
         <div className="container mx-auto">
@@ -534,7 +531,6 @@ export default function AIChatbotPage() {
         </div>
       </section>
 
-      <MZwebSolutionsFooter />
-    </div>
+          </div>
   )
 }

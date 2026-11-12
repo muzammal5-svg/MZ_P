@@ -5,8 +5,8 @@ import Link from "next/link"
 import { Metadata } from "next"
 
 export const metadata: Metadata = {
-  title: "Webflow Design Services - MZwebSolutions",
-  description: "Professional Webflow design and development services including custom animations, CMS integration, and responsive design by M Muzammil.",
+  title: "Webflow Design & Development",
+  description: "Professional Webflow design, responsive CMS sites, and fluid interactions built by Muhammad Muzammal.",
 }
 
 export default function WebflowPage() {

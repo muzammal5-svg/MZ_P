@@ -124,20 +124,14 @@ export function MZwebSolutionsServices() {
               letterSpacing: "-0.01em",
               fontWeight: 700,
             }}>
-            Services Built for
-          </h2>
-          <p className="text-lg sm:text-xl" style={{ 
-            color: "#64748b", 
-            fontFamily: "'Poppins', sans-serif",
-            fontWeight: 500,
-          }}>
+            Services Built for{" "}
             <span style={{ 
-              background: "linear-gradient(135deg, #10b981 0%, #06b6d4 100% 100%)",
+              background: "linear-gradient(135deg, #10b981 0%, #06b6d4 100%)",
               WebkitBackgroundClip: "text",
               WebkitTextFillColor: "transparent",
               fontWeight: 700,
             }}>Real Business Results</span>
-          </p>
+          </h2>
         </motion.div>
 
         {/* Services Grid */}
