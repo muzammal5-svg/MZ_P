@@ -1,8 +1,8 @@
 import { Metadata } from "next"
 
 export const metadata: Metadata = {
-  title: "WordPress Development",
-  description: "Custom WordPress themes, plugins, WooCommerce stores, and speed optimization built with clean code and high security.",
+  title: "WordPress Development Services | Muzammal Zaheer",
+  description: "Custom WordPress themes, Elementor Pro architectures, WooCommerce stores, and Core Web Vitals speed optimization by Muzammal Zaheer.",
 }
 
 export default function Layout({ children }: { children: React.ReactNode }) {
