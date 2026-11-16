@@ -710,3 +710,14 @@ export const siteConfig: SiteConfig = {
     },
   },
 }
+
+// Generate service-aware or project-aware WhatsApp chat URLs
+export function getWhatsAppUrl(service?: string, projectTitle?: string): string {
+  let text = "Hi Muzammal, I'm interested in discussing a project!"
+  if (service && projectTitle) {
+    text = `Hi Muzammal, I saw your ${projectTitle} (${service}) work and would like to get a quote for a similar build.`
+  } else if (service) {
+    text = `Hi Muzammal, I'm interested in your ${service} service and would like to get a quote.`
+  }
+  return `https://wa.me/${siteConfig.whatsappNumber}?text=${encodeURIComponent(text)}`
+}

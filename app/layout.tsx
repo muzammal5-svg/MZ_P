@@ -3,6 +3,7 @@ import type { Metadata } from "next"
 import { Inter, Poppins } from "next/font/google"
 import { Analytics } from "@vercel/analytics/next"
 import { WhatsAppFloat } from "@/components/whatsapp-float"
+import { StickyMobileCta } from "@/components/sticky-mobile-cta"
 import { ScrollToTop } from "@/components/scroll-to-top"
 import { ThemeProvider } from "@/components/theme-provider"
 import { siteConfig } from "@/lib/site-config"
@@ -259,6 +260,7 @@ export default function RootLayout({
             phoneNumber="923417359571" 
             message="Hi! I'm interested in your web development services. Let's discuss my project!" 
           />
+          <StickyMobileCta />
           <Analytics />
         </ThemeProvider>
       </body>
