@@ -151,7 +151,7 @@ export function MultiStepContactForm({
   const values = getValues()
 
   return (
-    <div className="bg-white rounded-3xl border border-slate-200/90 shadow-xl overflow-hidden p-6 sm:p-10">
+    <div className="w-full max-w-full bg-white rounded-3xl border border-slate-200/90 shadow-xl overflow-hidden p-5 sm:p-8 md:p-10">
       
       {/* Step Indicator */}
       <div className="mb-8" aria-label="Form progress">

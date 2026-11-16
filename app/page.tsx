@@ -19,7 +19,7 @@ const LazyContact = dynamic(() => import("@/components/contact").then(mod => ({ 
 
 export default function Home() {
   return (
-    <main id="main-content" tabIndex={-1} className="min-h-screen focus:outline-none">
+    <main id="main-content" tabIndex={-1} className="min-h-screen focus:outline-none w-full max-w-full overflow-x-hidden">
       <MZwebSolutionsNavigation />
       <MZwebSolutionsHero />
       <AboutBento />

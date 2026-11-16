@@ -44,7 +44,7 @@ export default function ServicesPage() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbsSchema) }}
       />
 
-      <main id="main-content" tabIndex={-1} className="min-h-screen bg-slate-50 text-slate-900 focus:outline-none">
+      <main id="main-content" tabIndex={-1} className="min-h-screen bg-slate-50 text-slate-900 focus:outline-none w-full max-w-full overflow-x-hidden">
         
         {/* Breadcrumb Bar */}
         <div className="pt-24 pb-4 border-b border-slate-200/80 bg-white">
@@ -151,7 +151,7 @@ export default function ServicesPage() {
               </p>
             </div>
 
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-7xl mx-auto">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-7xl mx-auto">
               {serviceList.map((service, index) => (
                 <motion.div
                   key={service.slug}

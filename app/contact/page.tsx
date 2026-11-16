@@ -239,7 +239,7 @@ export default function ContactPage() {
   return (
     <>
       <MZwebSolutionsNavigation />
-      <main id="main-content" tabIndex={-1} className="min-h-screen pt-24 bg-slate-50 focus:outline-none">
+      <main id="main-content" tabIndex={-1} className="min-h-screen pt-24 bg-slate-50 focus:outline-none w-full max-w-full overflow-x-hidden">
         <Suspense fallback={<div className="py-32 text-center text-slate-500 font-medium">Loading contact form...</div>}>
           <ContactContent />
         </Suspense>

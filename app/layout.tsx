@@ -1,5 +1,5 @@
 import type React from "react"
-import type { Metadata } from "next"
+import type { Metadata, Viewport } from "next"
 import { Inter, Poppins } from "next/font/google"
 import { Analytics } from "@vercel/analytics/next"
 import { WhatsAppFloat } from "@/components/whatsapp-float"
@@ -27,6 +27,13 @@ const poppins = Poppins({
   display: 'swap',
   preload: true,
 })
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 5,
+  themeColor: "#10b981",
+}
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),

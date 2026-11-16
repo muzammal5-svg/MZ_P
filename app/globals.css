@@ -169,9 +169,40 @@ img, video {
   contain-intrinsic-size: auto 500px;
 }
 
-/* ── Container ── */
+/* ── Container (Responsive & Overflow-Safe) ── */
 .container {
+  width: 100% !important;
   max-width: var(--max-container) !important;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 1rem;
+  padding-right: 1rem;
+}
+
+@media (min-width: 640px) {
+  .container {
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .container {
+    padding-left: 2rem;
+    padding-right: 2rem;
+  }
+}
+
+html {
+  overflow-x: hidden;
+  max-width: 100%;
+}
+
+body {
+  overflow-x: hidden;
+  max-width: 100%;
+  position: relative;
+  width: 100%;
 }
 
 /* ════════════════════════════════════════════════════════════════════════════

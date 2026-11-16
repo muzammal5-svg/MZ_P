@@ -136,7 +136,7 @@ export function MZwebSolutionsServices() {
         </motion.div>
 
         {/* Services Grid (6 Core Services) */}
-        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8 mb-12">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8 mb-12">
           {serviceList.map((service, index) => {
             const visual = SERVICE_ICONS[service.slug] || {
               color: "#10b981",
