@@ -1,6 +1,7 @@
 "use client"
 
 import { useState, useEffect } from "react"
+import Image from "next/image"
 import { motion, AnimatePresence } from "framer-motion"
 
 interface WhatsAppFloatProps {
@@ -148,9 +149,11 @@ export function WhatsAppFloat({
                         }}
                         className="h-8 w-8 rounded-full bg-white/10 flex items-center justify-center p-1"
                       >
-                        <img 
+                        <Image 
                           src="/MZwebsolution.png" 
-                          alt="MZ" 
+                          alt="MZ Web Solutions"
+                          width={32}
+                          height={32}
                           className="w-full h-full object-contain"
                         />
                       </motion.div>

@@ -389,7 +389,7 @@ export default function PortfolioPage() {
   return (
     <>
       <MZwebSolutionsNavigation />
-      <main className="min-h-screen pt-24 bg-slate-50">
+      <main id="main-content" tabIndex={-1} className="min-h-screen pt-24 bg-slate-50 focus:outline-none">
         <Suspense fallback={<div className="py-32 text-center text-slate-500 font-medium">Loading portfolio...</div>}>
           <PortfolioContent />
         </Suspense>

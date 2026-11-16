@@ -103,7 +103,7 @@ export default async function ProjectCaseStudyPage({ params }: PageProps) {
 
       <MZwebSolutionsNavigation />
 
-      <main className="min-h-screen bg-slate-50 text-slate-900 pt-24">
+      <main id="main-content" tabIndex={-1} className="min-h-screen bg-slate-50 text-slate-900 pt-24 focus:outline-none">
         {/* Breadcrumb Navigation */}
         <div className="py-4 border-b border-slate-200/80 bg-white">
           <div className="container mx-auto px-4 sm:px-6 lg:px-8">

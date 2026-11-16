@@ -44,7 +44,7 @@ export default function ServicesPage() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbsSchema) }}
       />
 
-      <div className="min-h-screen bg-slate-50 text-slate-900">
+      <main id="main-content" tabIndex={-1} className="min-h-screen bg-slate-50 text-slate-900 focus:outline-none">
         
         {/* Breadcrumb Bar */}
         <div className="pt-24 pb-4 border-b border-slate-200/80 bg-white">
@@ -303,7 +303,7 @@ export default function ServicesPage() {
             </div>
           </div>
         </section>
-      </div>
+      </main>
     </>
   )
 }
