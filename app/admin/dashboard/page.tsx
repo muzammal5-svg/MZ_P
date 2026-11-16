@@ -1,6 +1,7 @@
 "use client"
 
 import { useState, useEffect } from "react"
+import Image from "next/image"
 import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -282,9 +283,12 @@ export default function AdminDashboard() {
                 {/* Image */}
                 <div className="relative aspect-[16/10] bg-gray-100 overflow-hidden">
                   {project.image ? (
-                    <img
+                    <Image
                       src={project.image}
                       alt={project.title}
+                      width={400}
+                      height={250}
+                      unoptimized
                       className="w-full h-full object-cover"
                       onError={(e) => {
                         const target = e.currentTarget as HTMLImageElement
@@ -631,12 +635,15 @@ export default function AdminDashboard() {
                         {formData.image && (
                           <div className="mt-3 p-2 border rounded-lg" style={{ borderColor: "rgba(226,232,240,0.8)" }}>
                             <p className="text-xs mb-2" style={{ color: "#475569", fontWeight: 600 }}>Preview:</p>
-                            <img 
+                            <Image 
                               src={formData.image} 
                               alt="Preview" 
+                              width={300}
+                              height={128}
+                              unoptimized
                               className="max-w-full h-32 object-contain rounded"
                               onError={(e) => {
-                                const target = e.currentTarget
+                                const target = e.currentTarget as HTMLImageElement
                                 target.style.display = 'none'
                                 const errorMsg = target.nextElementSibling
                                 if (errorMsg) (errorMsg as HTMLElement).style.display = 'block'
