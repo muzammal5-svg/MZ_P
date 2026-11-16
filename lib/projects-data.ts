@@ -1,5 +1,6 @@
 export type Project = {
   id: number
+  slug: string
   title: string
   niche: string
   description: string
@@ -19,6 +20,7 @@ export const defaultProjects: Project[] = [
   // WordPress Projects
   {
     id: 1,
+    slug: "daily-mom-journey",
     title: "Daily Mom Journey",
     niche: "Parenting & Lifestyle Blog",
     description: "Custom WordPress blog with advanced SEO, performance optimization, and a bespoke theme tailored to the parenting niche.",
@@ -31,6 +33,7 @@ export const defaultProjects: Project[] = [
   },
   {
     id: 2,
+    slug: "melearni-lms",
     title: "MeLearni — E-Learning Platform",
     niche: "Online Education Platform",
     description: "Full-featured WordPress LMS with course management, user registration, and interactive learning modules.",
@@ -43,6 +46,7 @@ export const defaultProjects: Project[] = [
   },
   {
     id: 3,
+    slug: "atl-best-vending",
     title: "ATL Best Vending",
     niche: "Vending Machine Business",
     description: "Lead-generation WordPress business site for a vending machine company with custom design and contact flows.",
@@ -55,6 +59,7 @@ export const defaultProjects: Project[] = [
   },
   {
     id: 4,
+    slug: "daily-mom-craft-activities",
     title: "Daily Mom — Craft Activities",
     niche: "Parenting & Crafts Blog",
     description: "Specialized WordPress section with custom post types, media gallery, and organized category structure for craft content.",
@@ -69,6 +74,7 @@ export const defaultProjects: Project[] = [
   // Shopify Projects
   {
     id: 5,
+    slug: "hz-dynamics-fashion-store",
     title: "HZ Dynamics Fashion Store",
     niche: "Fashion E-Commerce",
     description: "High-converting Shopify store with custom Liquid theme, advanced product filtering, and seamless checkout.",
@@ -81,6 +87,7 @@ export const defaultProjects: Project[] = [
   },
   {
     id: 6,
+    slug: "modern-ecommerce-store",
     title: "Modern E-Commerce Store",
     niche: "Shopify E-Commerce",
     description: "Shopify Plus store with advanced product catalog, multi-gateway payments, and mobile-first responsive design.",
@@ -93,6 +100,7 @@ export const defaultProjects: Project[] = [
   },
   {
     id: 7,
+    slug: "sustainable-footwear-concept",
     title: "Sustainable Footwear (Concept Demo)",
     niche: "Eco-Friendly E-Commerce",
     description: "Concept Shopify Plus store showcasing sustainable footwear e-commerce UX, custom product filtering, and a seamless green checkout experience.",
@@ -107,6 +115,7 @@ export const defaultProjects: Project[] = [
   // Custom Web Projects
   {
     id: 8,
+    slug: "nurse-ai-hub",
     title: "Nurse AI Hub",
     niche: "Healthcare Technology Platform",
     description: "Modern React.js healthcare platform with AI integration, user dashboard, and responsive design for medical professionals.",
@@ -119,6 +128,7 @@ export const defaultProjects: Project[] = [
   },
   {
     id: 9,
+    slug: "codewire-solutions",
     title: "CodeWire Solutions",
     niche: "Software Agency Portfolio",
     description: "Professional Next.js portfolio site for a software agency with smooth animations and optimized Core Web Vitals.",
@@ -133,6 +143,7 @@ export const defaultProjects: Project[] = [
   // eBay Templates
   {
     id: 10,
+    slug: "ebay-template-electronics",
     title: "eBay Template — Electronics",
     niche: "Electronics Listing Template",
     description: "Clean, conversion-focused eBay listing template for electronics with mobile-responsive layout.",
@@ -145,6 +156,7 @@ export const defaultProjects: Project[] = [
   },
   {
     id: 11,
+    slug: "ebay-template-fashion",
     title: "eBay Template — Fashion",
     niche: "Fashion Listing Template",
     description: "Stylish listing template for fashion and clothing with modern typography and brand-forward layout.",
@@ -157,6 +169,7 @@ export const defaultProjects: Project[] = [
   },
   {
     id: 12,
+    slug: "ebay-template-home-garden",
     title: "eBay Template — Home & Garden",
     niche: "Home & Garden Template",
     description: "Clean professional template for home and garden products with organized sections and trust signals.",
@@ -169,6 +182,7 @@ export const defaultProjects: Project[] = [
   },
   {
     id: 13,
+    slug: "ebay-template-automotive",
     title: "eBay Template — Automotive",
     niche: "Automotive Parts Template",
     description: "Bold, professional template tailored for automotive parts with spec tables and compatibility sections.",
@@ -181,6 +195,7 @@ export const defaultProjects: Project[] = [
   },
   {
     id: 14,
+    slug: "ebay-template-sports",
     title: "eBay Template — Sports",
     niche: "Sports Equipment Template",
     description: "Dynamic template for sports and fitness equipment with engaging visuals and performance-focused copy.",
@@ -193,6 +208,7 @@ export const defaultProjects: Project[] = [
   },
   {
     id: 15,
+    slug: "ebay-template-beauty",
     title: "eBay Template — Beauty",
     niche: "Beauty Products Template",
     description: "Elegant template for beauty and health products with premium styling and lifestyle imagery support.",
@@ -205,6 +221,7 @@ export const defaultProjects: Project[] = [
   },
   {
     id: 16,
+    slug: "ebay-template-toys-games",
     title: "eBay Template — Toys & Games",
     niche: "Toys & Games Template",
     description: "Colorful, engaging template for toys and games with playful layout and safety-focused trust elements.",
@@ -217,6 +234,7 @@ export const defaultProjects: Project[] = [
   },
   {
     id: 17,
+    slug: "ebay-template-books-media",
     title: "eBay Template — Books & Media",
     niche: "Books & Media Template",
     description: "Clean, organized template for books and media with structured content hierarchy and review sections.",
@@ -229,6 +247,7 @@ export const defaultProjects: Project[] = [
   },
   {
     id: 18,
+    slug: "ebay-template-jewelry",
     title: "eBay Template — Jewelry",
     niche: "Jewelry & Accessories Template",
     description: "Luxurious template for jewelry and accessories with elegant presentation and high-end visual treatment.",
@@ -241,6 +260,7 @@ export const defaultProjects: Project[] = [
   },
   {
     id: 19,
+    slug: "ebay-template-industrial",
     title: "eBay Template — Industrial",
     niche: "Industrial Products Template",
     description: "Corporate-grade template for business and industrial products with spec-heavy layout and trust signals.",
@@ -253,6 +273,7 @@ export const defaultProjects: Project[] = [
   },
   {
     id: 20,
+    slug: "ebay-template-pet-supplies",
     title: "eBay Template — Pet Supplies",
     niche: "Pet Supplies Template",
     description: "Friendly, appealing template for pet supplies with warm visuals and product-safety focused copy.",
@@ -265,6 +286,7 @@ export const defaultProjects: Project[] = [
   },
   {
     id: 21,
+    slug: "ebay-template-collectibles",
     title: "eBay Template — Collectibles",
     niche: "Collectibles Template",
     description: "Sophisticated template for collectibles and vintage items with provenance and condition sections.",
@@ -277,6 +299,7 @@ export const defaultProjects: Project[] = [
   },
   {
     id: 22,
+    slug: "ebay-template-kitchen",
     title: "eBay Template — Kitchen",
     niche: "Kitchen & Dining Template",
     description: "Appetizing template for kitchen and dining products with lifestyle imagery and feature highlights.",
@@ -289,6 +312,7 @@ export const defaultProjects: Project[] = [
   },
   {
     id: 23,
+    slug: "heroic-home-comfort",
     title: "Heroic Home Comfort",
     niche: "HVAC Service Company",
     description: "Professional HVAC services website with CRM integration, online booking system, emergency support, and maintenance plans for heating, cooling, and ventilation solutions.",
@@ -301,6 +325,7 @@ export const defaultProjects: Project[] = [
   },
   {
     id: 24,
+    slug: "coolbuffs-job-portal",
     title: "CoolBuffs — IT Job Portal",
     niche: "Job Portal Platform",
     description: "IT-focused job portal connecting 13,000+ IT professionals with 521+ employers. Features advanced job search filters, featured companies slider, admin dashboard with job/company/blog management, and AI chatbot assistant.",
@@ -313,6 +338,7 @@ export const defaultProjects: Project[] = [
   },
   {
     id: 25,
+    slug: "seyma-robb-interior-design",
     title: "Seyma Robb — Interior Design Studio",
     niche: "Luxury Interior Design",
     description: "High-end interior design studio specializing in residential and commercial projects. Features portfolio gallery with featured projects (Manhattan Penthouse, Hamptons Hospitality, Upper East Side), luxury service offerings, design philosophy, and Robb Corporation network partnerships.",
@@ -325,6 +351,7 @@ export const defaultProjects: Project[] = [
   },
   {
     id: 26,
+    slug: "luxury-interior-design-landing",
     title: "Luxury Interior Design — Landing Page",
     niche: "Interior Design Landing Page",
     description: "Elegant frontend landing page featuring full-screen hero, portfolio gallery with smooth animations, 3-pillar design philosophy section, services showcase, and contact form. Built with responsive design, serif typography, earthy color palette, and smooth scroll interactions.",
@@ -339,6 +366,7 @@ export const defaultProjects: Project[] = [
   // AI Automation Projects
   {
     id: 27,
+    slug: "ecommerce-order-automation",
     title: "E-Commerce Order Automation",
     niche: "E-Commerce Workflow Automation",
     description: "Automated workflow connecting Shopify orders to Google Sheets, sending customer notifications via Gmail, updating inventory across multiple platforms, and notifying team on Slack. Processes 500+ orders daily without manual intervention.",
@@ -351,6 +379,7 @@ export const defaultProjects: Project[] = [
   },
   {
     id: 28,
+    slug: "marketing-lead-automation",
     title: "Marketing Lead Automation",
     niche: "Lead Generation & CRM Integration",
     description: "Intelligent lead capture system that automatically collects leads from Typeform, enriches data, adds to HubSpot CRM, sends personalized welcome emails via Mailchimp, and notifies sales team. Increased lead response time by 85%.",
@@ -363,6 +392,7 @@ export const defaultProjects: Project[] = [
   },
   {
     id: 29,
+    slug: "social-media-management-automation",
     title: "Social Media Management Automation",
     niche: "Social Media Scheduling & Analytics",
     description: "Multi-platform social media automation that schedules posts across Instagram, Twitter, Facebook, and LinkedIn. Auto-generates reports, monitors mentions, responds to comments, and tracks engagement metrics. Saves 15+ hours per week.",
@@ -375,6 +405,7 @@ export const defaultProjects: Project[] = [
   },
   {
     id: 30,
+    slug: "customer-support-ticket-system",
     title: "Customer Support Ticket System",
     niche: "Support Automation & Ticketing",
     description: "Automated customer support system that creates tickets from emails, assigns to team members based on expertise, tracks resolution time, sends satisfaction surveys, and generates performance reports. Reduced response time by 60%.",
@@ -387,6 +418,7 @@ export const defaultProjects: Project[] = [
   },
   {
     id: 31,
+    slug: "invoice-payment-automation",
     title: "Invoice & Payment Automation",
     niche: "Accounting & Finance Automation",
     description: "Complete invoicing automation that generates invoices from CRM data, sends to clients via email, tracks payments, updates accounting software, sends payment reminders, and reconciles accounts. Eliminates manual data entry completely.",
@@ -401,6 +433,7 @@ export const defaultProjects: Project[] = [
   // AI Chatbot Projects  
   {
     id: 32,
+    slug: "ecommerce-shopping-assistant",
     title: "E-Commerce Shopping Assistant",
     niche: "AI Shopping Assistant Chatbot",
     description: "ChatGPT-powered shopping assistant that helps customers find products, answers product questions, provides recommendations, tracks orders, processes returns, and handles checkout support. Increased conversion rate by 35% and reduced cart abandonment by 40%.",
@@ -413,6 +446,7 @@ export const defaultProjects: Project[] = [
   },
   {
     id: 33,
+    slug: "customer-support-ai-bot",
     title: "Customer Support AI Bot",
     niche: "24/7 Customer Support Chatbot",
     description: "Intelligent support chatbot trained on company knowledge base, handles FAQs, troubleshoots issues, escalates complex queries to humans, supports 50+ languages, and learns from interactions. Handles 80% of support queries autonomously, available on website, WhatsApp, and Facebook Messenger.",
@@ -425,6 +459,7 @@ export const defaultProjects: Project[] = [
   },
   {
     id: 34,
+    slug: "lead-qualification-chatbot",
     title: "Lead Qualification Chatbot",
     niche: "Sales Lead Qualification Bot",
     description: "AI-powered lead qualification bot that asks qualifying questions, collects contact information, schedules meetings automatically, integrates with CRM, and sends follow-up emails. Qualified 500+ leads monthly with 92% accuracy, integrated with Calendly for auto-scheduling.",
@@ -437,6 +472,7 @@ export const defaultProjects: Project[] = [
   },
   {
     id: 35,
+    slug: "healthcare-appointment-bot",
     title: "Healthcare Appointment Bot",
     niche: "Medical Appointment Scheduling",
     description: "HIPAA-compliant healthcare chatbot that helps patients book appointments, get test results, receive medication reminders, and access health information. Features symptom checker, doctor availability lookup, and automated SMS reminders. Reduced no-shows by 45%.",
@@ -449,6 +485,7 @@ export const defaultProjects: Project[] = [
   },
   {
     id: 36,
+    slug: "real-estate-property-advisor",
     title: "Real Estate Property Advisor",
     niche: "Real Estate AI Assistant",
     description: "Intelligent property assistant that answers questions about listings, schedules viewings, provides neighborhood information, calculates mortgage estimates, and sends property recommendations based on preferences. Integrated with MLS data and virtual tour systems.",
@@ -461,6 +498,7 @@ export const defaultProjects: Project[] = [
   },
   {
     id: 37,
+    slug: "restaurant-ordering-reservation-bot",
     title: "Restaurant Ordering & Reservation Bot",
     niche: "Restaurant AI Chatbot",
     description: "Multi-lingual restaurant chatbot that handles table reservations, takes food orders, answers menu questions, processes payments, and sends order confirmations. Available on WhatsApp, website, and Facebook. Supports voice ordering and dietary preference detection.",
@@ -517,4 +555,14 @@ export function initializeProjects(): void {
 export function resetToDefaultProjects(): void {
   if (typeof window === "undefined") return
   localStorage.setItem("portfolioProjects", JSON.stringify(defaultProjects))
+}
+
+// Get project by slug
+export function getProjectBySlug(slug: string): Project | undefined {
+  return defaultProjects.find((p) => p.slug === slug)
+}
+
+// Get all project slugs
+export function getAllProjectSlugs(): string[] {
+  return defaultProjects.map((p) => p.slug)
 }

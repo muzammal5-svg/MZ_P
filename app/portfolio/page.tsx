@@ -1,603 +1,399 @@
 "use client"
 
-import { useState, useEffect, useRef } from "react"
-import { ExternalLink, X, ArrowUpRight, ArrowRight } from "lucide-react"
-import { MZwebSolutionsNavigation } from "@/components/rsweblabs-navigation"
-import { MZwebSolutionsFooter } from "@/components/mzwebsolutions-footer"
-import { Button } from "@/components/ui/button"
+import { useState, useEffect, useRef, Suspense } from "react"
+import { useSearchParams, useRouter } from "next/navigation"
 import Link from "next/link"
 import Image from "next/image"
 import { motion, AnimatePresence } from "framer-motion"
-import { getProjects, initializeProjects, defaultProjects, type Project as LibProject } from "@/lib/projects-data"
+import { ExternalLink, ArrowRight, ChevronRight, Layers, Sparkles } from "lucide-react"
+import { MZwebSolutionsNavigation } from "@/components/rsweblabs-navigation"
+import { MZwebSolutionsFooter } from "@/components/mzwebsolutions-footer"
+import { siteConfig } from "@/lib/site-config"
+import { defaultProjects, Project } from "@/lib/projects-data"
 
-// ─── Types ────────────────────────────────────────────────────────────────────
-type Project = {
-  id: number
-  title: string
-  niche?: string
-  description: string
-  category: string
-  technologies: string[]
-  image: string
-  liveUrl: string
-  featured?: boolean
-  isEbayTemplate: boolean
+const CATEGORIES = [
+  "All",
+  "WordPress",
+  "Shopify",
+  "Next.js / React",
+  "eBay Templates",
+  "AI Automation",
+  "AI Chatbot",
+]
+
+// Normalize display categories to database category field
+function mapDisplayToDb(cat: string): string {
+  if (cat === "Next.js / React") return "Custom Web"
+  return cat
 }
 
-// ─── Category accent map ──────────────────────────────────────────────────────
-const CATEGORY_META: Record<string, { color: string; dot: string; bg: string }> = {
-  WordPress:      { color: "#21759b", dot: "bg-[#21759b]", bg: "rgba(33,117,155,0.1)" },
-  Shopify:        { color: "#96bf48", dot: "bg-[#96bf48]", bg: "rgba(150,191,72,0.1)" },
-  "Custom Web":   { color: "#61dafb", dot: "bg-[#61dafb]", bg: "rgba(97,218,251,0.1)" },
-  "eBay Templates":{ color: "#f59e0b", dot: "bg-[#f59e0b]", bg: "rgba(245,158,11,0.1)" },
-  "AI Automation": { color: "#6366f1", dot: "bg-[#6366f1]", bg: "rgba(99,102,241,0.1)" },
-  "AI Chatbot":   { color: "#8b5cf6", dot: "bg-[#8b5cf6]", bg: "rgba(139,92,246,0.1)" },
+function mapDbToDisplay(cat: string): string {
+  if (cat === "Custom Web") return "Next.js / React"
+  return cat
 }
 
-// ─── Pill Filter Bar ──────────────────────────────────────────────────────────
-function FilterBar({
-  categories, active, onChange,
-}: { categories: string[]; active: string; onChange: (c: string) => void }) {
-  const containerRef = useRef<HTMLDivElement>(null)
-  const itemRefs    = useRef<(HTMLButtonElement | null)[]>([])
-  const [pill, setPill] = useState({ left: 0, width: 0 })
-  const activeIdx = categories.indexOf(active)
+const CATEGORY_STYLES: Record<string, { dot: string; text: string; bg: string }> = {
+  WordPress: { dot: "bg-blue-500", text: "text-blue-700", bg: "bg-blue-50 border-blue-200" },
+  Shopify: { dot: "bg-emerald-500", text: "text-emerald-700", bg: "bg-emerald-50 border-emerald-200" },
+  "Custom Web": { dot: "bg-cyan-500", text: "text-cyan-700", bg: "bg-cyan-50 border-cyan-200" },
+  "Next.js / React": { dot: "bg-cyan-500", text: "text-cyan-700", bg: "bg-cyan-50 border-cyan-200" },
+  "eBay Templates": { dot: "bg-amber-500", text: "text-amber-700", bg: "bg-amber-50 border-amber-200" },
+  "AI Automation": { dot: "bg-indigo-500", text: "text-indigo-700", bg: "bg-indigo-50 border-indigo-200" },
+  "AI Chatbot": { dot: "bg-purple-500", text: "text-purple-700", bg: "bg-purple-50 border-purple-200" },
+}
 
+const breadcrumbsSchema = {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position": 1,
+      "name": "Home",
+      "item": siteConfig.siteUrl,
+    },
+    {
+      "@type": "ListItem",
+      "position": 2,
+      "name": "Portfolio",
+      "item": `${siteConfig.siteUrl}/portfolio`,
+    },
+  ],
+}
+
+function PortfolioContent() {
+  const searchParams = useSearchParams()
+  const router = useRouter()
+  
+  // Read category from query or default to "All"
+  const rawCat = searchParams.get("category")
+  const initialCategory = rawCat && CATEGORIES.includes(rawCat) ? rawCat : "All"
+
+  const [activeCategory, setActiveCategory] = useState<string>(initialCategory)
+  const tabRefs = useRef<(HTMLButtonElement | null)[]>([])
+
+  // Keep state synced with URL changes
   useEffect(() => {
-    const el = itemRefs.current[activeIdx]
-    const ct = containerRef.current
-    if (!el || !ct) return
-    const cr = ct.getBoundingClientRect()
-    const er = el.getBoundingClientRect()
-    setPill({ left: er.left - cr.left, width: er.width })
-  }, [activeIdx])
-
-  return (
-    <div className="overflow-x-auto scrollbar-none flex justify-center">
-      <div
-        ref={containerRef}
-        className="relative inline-flex items-center gap-0.5 p-1.5 rounded-full border-2"
-        style={{ 
-          background: "rgba(255,255,255,0.95)",
-          borderColor: "rgba(16,185,129,0.15)",
-          boxShadow: "0 4px 20px rgba(16,185,129,0.08)",
-          fontFamily: "'Poppins', sans-serif",
-        }}
-      >
-        <motion.div
-          className="absolute top-1.5 bottom-1.5 rounded-full"
-          style={{
-            background: "linear-gradient(135deg, #10b981 0%, #06b6d4 100%)",
-          }}
-          animate={{ left: pill.left, width: pill.width }}
-          transition={{ type: "spring", stiffness: 500, damping: 40 }}
-        />
-        {categories.map((cat, i) => (
-          <button
-            key={cat}
-            ref={el => { itemRefs.current[i] = el }}
-            onClick={() => onChange(cat)}
-            className={`relative z-10 px-6 py-3 rounded-full text-sm font-semibold whitespace-nowrap transition-colors duration-200 select-none ${
-              i === activeIdx ? "text-white" : "text-slate-600 hover:text-slate-900"
-            }`}
-            style={{ fontFamily: "'Poppins', sans-serif" }}
-          >
-            {cat}
-          </button>
-        ))}
-      </div>
-    </div>
-  )
-}
-
-// ─── Project Card ─────────────────────────────────────────────────────────────
-function ProjectCard({ project, index, onClick }: { project: Project; index: number; onClick: () => void }) {
-  const meta = CATEGORY_META[project.category] ?? { color: "#10b981", dot: "bg-emerald-500", bg: "rgba(16,185,129,0.1)" }
-
-  return (
-    <motion.div
-      initial={{ opacity: 0, y: 24 }}
-      animate={{ opacity: 1, y: 0 }}
-      exit={{ opacity: 0, y: 12 }}
-      transition={{ duration: 0.45, delay: index * 0.06 }}
-      onClick={onClick}
-      className="group cursor-pointer"
-    >
-      <div className="relative rounded-2xl overflow-hidden border-2 transition-all duration-500 hover:-translate-y-2"
-        style={{
-          background: "rgba(255,255,255,0.95)",
-          backdropFilter: "blur(20px)",
-          borderColor: "rgba(226,232,240,0.8)",
-          boxShadow: "0 4px 20px rgba(0,0,0,0.06)",
-        }}
-        onMouseEnter={(e) => {
-          e.currentTarget.style.borderColor = "rgba(16,185,129,0.3)"
-          e.currentTarget.style.boxShadow = "0 20px 40px rgba(16,185,129,0.15)"
-        }}
-        onMouseLeave={(e) => {
-          e.currentTarget.style.borderColor = "rgba(226,232,240,0.8)"
-          e.currentTarget.style.boxShadow = "0 4px 20px rgba(0,0,0,0.06)"
-        }}
-      >
-
-        {/* Image */}
-        <div className="relative aspect-[16/10] overflow-hidden bg-slate-100">
-          <img
-            src={project.image}
-            alt={project.title}
-            className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-            onError={e => {
-              const t = e.currentTarget
-              t.style.display = "none"
-              const fb = t.nextElementSibling as HTMLElement
-              if (fb) fb.style.display = "flex"
-            }}
-          />
-          {/* Fallback */}
-          <div className="absolute inset-0 bg-gradient-to-br from-slate-100 to-slate-200 items-center justify-center hidden">
-            <span className="text-5xl font-black text-slate-300">{project.title.charAt(0)}</span>
-          </div>
-
-          {/* Hover overlay */}
-          <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end justify-center pb-6">
-            <div className="flex items-center gap-2 px-5 py-2.5 rounded-full text-white text-sm font-semibold"
-              style={{
-                background: "linear-gradient(135deg, #10b981 0%, #06b6d4 100%)",
-                fontFamily: "'Poppins', sans-serif",
-              }}>
-              <ArrowUpRight className="w-4 h-4" />
-              View Details
-            </div>
-          </div>
-
-          {/* Category pill */}
-          <div className="absolute top-3 left-3">
-            <div className="flex items-center gap-2 px-3 py-1.5 rounded-full border"
-              style={{
-                background: "rgba(255,255,255,0.95)",
-                backdropFilter: "blur(10px)",
-                borderColor: "rgba(226,232,240,0.8)",
-              }}>
-              <div className={`w-2 h-2 rounded-full ${meta.dot}`} />
-              <span className="text-xs font-semibold"
-                style={{ 
-                  color: meta.color,
-                  fontFamily: "'Poppins', sans-serif",
-                }}>{project.category}</span>
-            </div>
-          </div>
-
-          {/* Featured badge */}
-          {project.featured && (
-            <div className="absolute top-3 right-3">
-              <div className="px-3 py-1.5 rounded-full border text-xs font-semibold"
-                style={{
-                  background: "rgba(16,185,129,0.15)",
-                  backdropFilter: "blur(10px)",
-                  borderColor: "rgba(16,185,129,0.3)",
-                  color: "#10b981",
-                  fontFamily: "'Poppins', sans-serif",
-                }}>
-                Featured
-              </div>
-            </div>
-          )}
-        </div>
-
-        {/* Content */}
-        <div className="p-6">
-          <h3 className="text-lg font-bold mb-2 leading-snug line-clamp-1 transition-colors duration-200"
-            style={{
-              color: "#0f172a",
-              fontFamily: "'Poppins', sans-serif",
-            }}>
-            {project.title}
-          </h3>
-          <p className="text-sm leading-relaxed line-clamp-2 mb-4"
-            style={{
-              color: "#64748b",
-              fontFamily: "'Poppins', sans-serif",
-            }}>
-            {project.description}
-          </p>
-
-          {/* Tech tags */}
-          <div className="flex flex-wrap gap-2">
-            {project.technologies.slice(0, 3).map(tech => (
-              <span key={tech} className="px-3 py-1 text-xs rounded-full border font-medium"
-                style={{
-                  background: "rgba(241,245,249,1)",
-                  color: "#475569",
-                  borderColor: "rgba(226,232,240,1)",
-                  fontFamily: "'Poppins', sans-serif",
-                }}>
-                {tech}
-              </span>
-            ))}
-            {project.technologies.length > 3 && (
-              <span className="px-3 py-1 text-xs rounded-full border font-medium"
-                style={{
-                  background: "rgba(241,245,249,1)",
-                  color: "#64748b",
-                  borderColor: "rgba(226,232,240,1)",
-                  fontFamily: "'Poppins', sans-serif",
-                }}>
-                +{project.technologies.length - 3}
-              </span>
-            )}
-          </div>
-        </div>
-      </div>
-    </motion.div>
-  )
-}
-
-// ─── Modal ────────────────────────────────────────────────────────────────────
-function ProjectModal({ project, onClose }: { project: Project; onClose: () => void }) {
-  const meta = CATEGORY_META[project.category] ?? { color: "#10b981", dot: "bg-emerald-500", bg: "rgba(16,185,129,0.1)" }
-
-  return (
-    <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
-      className="fixed inset-0 z-50 flex items-center justify-center p-4"
-      style={{
-        background: "rgba(0,0,0,0.7)",
-        backdropFilter: "blur(8px)",
-      }}
-      onClick={onClose}
-    >
-      <motion.div
-        initial={{ scale: 0.92, opacity: 0, y: 20 }}
-        animate={{ scale: 1, opacity: 1, y: 0 }}
-        exit={{ scale: 0.92, opacity: 0, y: 20 }}
-        transition={{ type: "spring", damping: 28, stiffness: 320 }}
-        className="relative w-full max-w-3xl max-h-[90vh] overflow-hidden rounded-3xl border-2"
-        style={{
-          background: "rgba(255,255,255,0.98)",
-          borderColor: "rgba(16,185,129,0.2)",
-          boxShadow: "0 25px 80px rgba(0,0,0,0.3)",
-        }}
-        onClick={e => e.stopPropagation()}
-      >
-        {/* Close */}
-        <button
-          onClick={onClose}
-          className="absolute top-4 right-4 z-10 p-2.5 rounded-full transition-all duration-200"
-          style={{
-            background: "rgba(241,245,249,0.95)",
-            color: "#64748b",
-          }}
-          onMouseEnter={(e) => {
-            e.currentTarget.style.background = "rgba(226,232,240,1)"
-            e.currentTarget.style.color = "#0f172a"
-          }}
-          onMouseLeave={(e) => {
-            e.currentTarget.style.background = "rgba(241,245,249,0.95)"
-            e.currentTarget.style.color = "#64748b"
-          }}
-        >
-          <X className="w-5 h-5" />
-        </button>
-
-        <div className="overflow-y-auto max-h-[90vh]">
-          {/* Image */}
-          <div className="relative w-full bg-slate-100">
-            <img
-              src={project.image}
-              alt={project.title}
-              className="w-full h-auto object-contain"
-              style={{ maxHeight: "70vh" }}
-              onError={e => { e.currentTarget.src = "/placeholder.svg" }}
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-white via-transparent to-transparent pointer-events-none" />
-          </div>
-
-          {/* Info */}
-          <div className="p-8 space-y-6">
-            <div className="flex items-start justify-between gap-4">
-              <div>
-                <div className="flex items-center gap-2 mb-3">
-                  <div className={`w-2 h-2 rounded-full ${meta.dot}`} />
-                  <span className="text-xs font-bold uppercase tracking-widest"
-                    style={{
-                      color: meta.color,
-                      fontFamily: "'Poppins', sans-serif",
-                    }}>
-                    {project.category}
-                  </span>
-                </div>
-                <h2 className="text-3xl font-bold leading-tight"
-                  style={{
-                    color: "#0f172a",
-                    fontFamily: "'Poppins', sans-serif",
-                  }}>{project.title}</h2>
-              </div>
-            </div>
-
-            <p className="leading-relaxed text-base"
-              style={{
-                color: "#64748b",
-                fontFamily: "'Poppins', sans-serif",
-              }}>{project.description}</p>
-
-            {/* Tech */}
-            <div>
-              <div className="text-xs uppercase tracking-widest mb-3 font-bold"
-                style={{
-                  color: "#94a3b8",
-                  fontFamily: "'Poppins', sans-serif",
-                }}>Technologies</div>
-              <div className="flex flex-wrap gap-2">
-                {project.technologies.map(tech => (
-                  <span key={tech} className="px-4 py-2 text-sm rounded-xl border font-medium"
-                    style={{
-                      background: "rgba(241,245,249,1)",
-                      color: "#475569",
-                      borderColor: "rgba(226,232,240,1)",
-                      fontFamily: "'Poppins', sans-serif",
-                    }}>
-                    {tech}
-                  </span>
-                ))}
-              </div>
-            </div>
-
-            {/* Actions */}
-            <div className="flex gap-3 pt-2">
-              {!project.isEbayTemplate && project.liveUrl && !project.liveUrl.startsWith("#") ? (
-                <a href={project.liveUrl} target="_blank" rel="noopener noreferrer" className="flex-1">
-                  <Button className="w-full text-white font-semibold rounded-xl py-6 transition-all duration-300 hover:shadow-lg"
-                    style={{
-                      background: "linear-gradient(135deg, #10b981 0%, #06b6d4 100%)",
-                      fontFamily: "'Poppins', sans-serif",
-                      fontWeight: 600,
-                    }}>
-                    <ExternalLink className="w-4 h-4 mr-2" />
-                    Visit Live Site
-                  </Button>
-                </a>
-              ) : (
-                <Link href="/contact" className="flex-1">
-                  <Button className="w-full text-white font-semibold rounded-xl py-6 transition-all duration-300 hover:shadow-lg"
-                    style={{
-                      background: "linear-gradient(135deg, #10b981 0%, #06b6d4 100%)",
-                      fontFamily: "'Poppins', sans-serif",
-                      fontWeight: 600,
-                    }}>
-                    {project.isEbayTemplate ? "Get This Template" : "Inquire About Project"}
-                  </Button>
-                </Link>
-              )}
-              <Link href="/contact">
-                <Button variant="outline" className="rounded-xl px-6 py-6 transition-all duration-300 border-2 font-semibold"
-                  style={{
-                    background: "rgba(255,255,255,1)",
-                    borderColor: "rgba(226,232,240,1)",
-                    color: "#0f172a",
-                    fontFamily: "'Poppins', sans-serif",
-                  }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.background = "rgba(241,245,249,1)"
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.background = "rgba(255,255,255,1)"
-                  }}
-                >
-                  Start Similar
-                </Button>
-              </Link>
-            </div>
-          </div>
-        </div>
-      </motion.div>
-    </motion.div>
-  )
-}
-
-// ─── Page ─────────────────────────────────────────────────────────────────────
-export default function PortfolioPage() {
-  const [active, setActive] = useState("All")
-  const [selected, setSelected] = useState<Project | null>(null)
-  const [projects, setProjects] = useState<Project[]>(defaultProjects as unknown as Project[])
-
-  // Load projects from localStorage on mount
-  useEffect(() => {
-    initializeProjects()
-    const loadedProjects = getProjects()
-    setProjects(loadedProjects)
-  }, [])
-
-  // Get unique categories from projects
-  const categories = ["All", ...Array.from(new Set(projects.map(p => p.category)))]
-
-  const filtered = active === "All" ? projects : projects.filter(p => p.category === active)
-
-  useEffect(() => {
-    const onKey = (e: KeyboardEvent) => { if (e.key === "Escape") setSelected(null) }
-    if (selected) {
-      document.addEventListener("keydown", onKey)
-      document.body.style.overflow = "hidden"
+    if (rawCat && CATEGORIES.includes(rawCat)) {
+      setActiveCategory(rawCat)
+    } else if (!rawCat) {
+      setActiveCategory("All")
     }
-    return () => {
-      document.removeEventListener("keydown", onKey)
-      document.body.style.overflow = "unset"
+  }, [rawCat])
+
+  const handleCategoryChange = (cat: string) => {
+    setActiveCategory(cat)
+    if (cat === "All") {
+      router.push("/portfolio", { scroll: false })
+    } else {
+      router.push(`/portfolio?category=${encodeURIComponent(cat)}`, { scroll: false })
     }
-  }, [selected])
+  }
+
+  // Keyboard navigation for accessible tabs (ArrowLeft, ArrowRight)
+  const handleKeyDown = (e: React.KeyboardEvent, index: number) => {
+    let nextIndex = index
+    if (e.key === "ArrowRight") {
+      nextIndex = (index + 1) % CATEGORIES.length
+      tabRefs.current[nextIndex]?.focus()
+      handleCategoryChange(CATEGORIES[nextIndex])
+    } else if (e.key === "ArrowLeft") {
+      nextIndex = (index - 1 + CATEGORIES.length) % CATEGORIES.length
+      tabRefs.current[nextIndex]?.focus()
+      handleCategoryChange(CATEGORIES[nextIndex])
+    }
+  }
+
+  // Filter projects
+  const filteredProjects = defaultProjects.filter((project) => {
+    if (activeCategory === "All") return true
+    const dbCat = mapDisplayToDb(activeCategory)
+    return project.category === dbCat
+  })
 
   return (
     <>
-      <MZwebSolutionsNavigation />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbsSchema) }}
+      />
 
-      <div className="min-h-screen pt-24" style={{ background: "linear-gradient(180deg, #ffffff 0%, #f8fafc 100%)" }}>
-
-        {/* Decorative elements */}
-        <div className="absolute top-40 right-10 w-96 h-96 rounded-full opacity-20 blur-3xl pointer-events-none"
-          style={{ background: "radial-gradient(circle, rgba(16,185,129,0.3) 0%, transparent 70%)" }} />
-        <div className="absolute bottom-40 left-10 w-80 h-80 rounded-full opacity-15 blur-3xl pointer-events-none"
-          style={{ background: "radial-gradient(circle, rgba(6,182,212,0.25) 0%, transparent 70%)" }} />
-
-        {/* ── Hero ── */}
-        <section className="relative pt-20 pb-16 overflow-hidden">
-          <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-            <motion.div
-              initial={{ opacity: 0, y: 24 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.7 }}
-              className="max-w-4xl mx-auto text-center"
-            >
-              <h1 className="text-5xl sm:text-6xl lg:text-7xl font-bold tracking-tight mb-6"
-                style={{
-                  fontFamily: "'Poppins', sans-serif",
-                  letterSpacing: "-0.02em",
-                }}>
-                <span style={{ color: "#0f172a" }}>Work that</span>
-                <br />
-                <span style={{
-                  background: "linear-gradient(135deg, #10b981 0%, #06b6d4 100%)",
-                  WebkitBackgroundClip: "text",
-                  WebkitTextFillColor: "transparent",
-                }}>speaks for itself</span>
-              </h1>
-
-              <p className="text-xl leading-relaxed max-w-3xl mx-auto"
-                style={{
-                  color: "#64748b",
-                  fontFamily: "'Poppins', sans-serif",
-                }}>
-                A curated collection of projects across WordPress, Shopify, custom web applications, and eBay templates — each built to perform.
-              </p>
-            </motion.div>
-          </div>
-        </section>
-
-        {/* ── Filter ── */}
-        <section className="pb-12 relative z-10">
-          <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-            <motion.div
-              initial={{ opacity: 0, y: 12 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.3 }}
-            >
-              <FilterBar categories={categories} active={active} onChange={cat => setActive(cat)} />
-            </motion.div>
-          </div>
-        </section>
-
-        {/* ── Grid ── */}
-        <section className="pb-20 relative z-10">
-          <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-            <AnimatePresence mode="wait">
-              <motion.div
-                key={active}
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                transition={{ duration: 0.3 }}
-                className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6"
-              >
-                {filtered.map((project, i) => (
-                  <ProjectCard
-                    key={`${project.id}-${project.title}`}
-                    project={project}
-                    index={i}
-                    onClick={() => setSelected(project)}
-                  />
-                ))}
-              </motion.div>
-            </AnimatePresence>
-
-            {filtered.length === 0 && (
-              <div className="text-center py-24 text-sm"
-                style={{
-                  color: "#94a3b8",
-                  fontFamily: "'Poppins', sans-serif",
-                }}>No projects in this category.</div>
-            )}
-          </div>
-        </section>
-
-        {/* ── CTA ── */}
-        <section className="pb-24 relative z-10">
-          <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-            <motion.div
-              initial={{ opacity: 0, y: 24 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.7 }}
-              viewport={{ once: true }}
-              className="relative rounded-3xl overflow-hidden p-12 text-center border-2"
-              style={{
-                background: "rgba(255,255,255,0.95)",
-                backdropFilter: "blur(20px)",
-                borderColor: "rgba(16,185,129,0.15)",
-                boxShadow: "0 25px 60px rgba(16,185,129,0.1)",
-              }}
-            >
-              {/* Decorative glow */}
-              <div className="absolute top-0 left-1/4 w-96 h-96 rounded-full opacity-20 blur-3xl pointer-events-none"
-                style={{ background: "radial-gradient(circle, rgba(16,185,129,0.4) 0%, transparent 70%)" }} />
-              <div className="absolute bottom-0 right-1/4 w-80 h-80 rounded-full opacity-15 blur-3xl pointer-events-none"
-                style={{ background: "radial-gradient(circle, rgba(6,182,212,0.3) 0%, transparent 70%)" }} />
-
-              <div className="relative z-10 max-w-2xl mx-auto">
-                <h2 className="text-4xl sm:text-5xl font-bold mb-5"
-                  style={{
-                    color: "#0f172a",
-                    fontFamily: "'Poppins', sans-serif",
-                  }}>
-                  Ready to start your project?
-                </h2>
-                <p className="text-lg mb-8 leading-relaxed"
-                  style={{
-                    color: "#64748b",
-                    fontFamily: "'Poppins', sans-serif",
-                  }}>
-                  Let's build something that performs as well as it looks. Get in touch and I'll scope it out with you.
-                </p>
-                <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                  <Link href="/contact">
-                    <Button className="text-white font-semibold px-8 py-6 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300"
-                      style={{
-                        background: "linear-gradient(135deg, #10b981 0%, #06b6d4 100%)",
-                        fontFamily: "'Poppins', sans-serif",
-                        fontWeight: 600,
-                      }}>
-                      Start a Project
-                      <ArrowRight className="ml-2 h-5 w-5" />
-                    </Button>
-                  </Link>
-                  <Link href="/services">
-                    <Button variant="outline" className="px-8 py-6 rounded-xl transition-all duration-300 border-2 font-semibold"
-                      style={{
-                        background: "rgba(255,255,255,1)",
-                        borderColor: "rgba(226,232,240,1)",
-                        color: "#0f172a",
-                        fontFamily: "'Poppins', sans-serif",
-                      }}
-                      onMouseEnter={(e) => {
-                        e.currentTarget.style.background = "rgba(241,245,249,1)"
-                      }}
-                      onMouseLeave={(e) => {
-                        e.currentTarget.style.background = "rgba(255,255,255,1)"
-                      }}
-                    >
-                      View Services
-                    </Button>
-                  </Link>
-                </div>
-              </div>
-            </motion.div>
-          </div>
-        </section>
-
+      {/* Breadcrumb Bar */}
+      <div className="py-4 border-b border-slate-200/80 bg-white">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+          <nav aria-label="Breadcrumb" className="flex items-center gap-2 text-xs text-slate-500 font-medium">
+            <Link href="/" className="hover:text-emerald-600 transition-colors">Home</Link>
+            <ChevronRight className="w-3.5 h-3.5 text-slate-400" />
+            <span className="text-slate-800 font-semibold" aria-current="page">Portfolio</span>
+          </nav>
+        </div>
       </div>
 
-      {/* ── Modal ── */}
-      <AnimatePresence>
-        {selected && <ProjectModal project={selected} onClose={() => setSelected(null)} />}
-      </AnimatePresence>
+      {/* Hero Section */}
+      <section className="py-16 sm:py-20 bg-white border-b border-slate-200/80 relative overflow-hidden">
+        <div className="pointer-events-none absolute top-0 left-1/2 -translate-x-1/2 w-[700px] h-[350px] rounded-full opacity-20 blur-3xl bg-emerald-200" />
 
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center max-w-4xl">
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full mb-6 bg-emerald-50 border border-emerald-200">
+            <Sparkles className="w-4 h-4 text-emerald-600" />
+            <span className="text-xs font-semibold text-emerald-800" style={{ fontFamily: "'Poppins', sans-serif" }}>
+              100+ Projects Delivered Across 10+ Countries
+            </span>
+          </div>
+
+          <h1 
+            className="text-4xl sm:text-5xl lg:text-6xl font-bold text-slate-900 mb-6 tracking-tight"
+            style={{ fontFamily: "'Poppins', sans-serif" }}
+          >
+            Featured Client Work &{" "}
+            <span 
+              style={{
+                background: "linear-gradient(135deg, #10b981 0%, #06b6d4 100%)",
+                WebkitBackgroundClip: "text",
+                WebkitTextFillColor: "transparent",
+              }}
+            >
+              Case Studies
+            </span>
+          </h1>
+
+          <p className="text-base sm:text-lg text-slate-600 max-w-2xl mx-auto leading-relaxed mb-10">
+            Explore verified websites, e-commerce stores, custom frontend applications, and automation systems engineered for speed and conversion.
+          </p>
+
+          {/* Accessible, URL-Synced Category Filter Tabs */}
+          <div 
+            role="tablist"
+            aria-label="Filter projects by technology category"
+            className="flex items-center justify-start sm:justify-center gap-2 overflow-x-auto pb-4 scrollbar-none px-2"
+          >
+            {CATEGORIES.map((cat, idx) => {
+              const isActive = activeCategory === cat
+
+              return (
+                <button
+                  key={cat}
+                  ref={(el) => { tabRefs.current[idx] = el }}
+                  role="tab"
+                  id={`tab-${cat.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`}
+                  aria-selected={isActive}
+                  tabIndex={isActive ? 0 : -1}
+                  onClick={() => handleCategoryChange(cat)}
+                  onKeyDown={(e) => handleKeyDown(e, idx)}
+                  className={`px-4 sm:px-5 py-2.5 rounded-full text-xs sm:text-sm font-semibold whitespace-nowrap transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500 ${
+                    isActive
+                      ? "text-white shadow-md shadow-emerald-500/20"
+                      : "text-slate-600 bg-slate-100 hover:bg-slate-200"
+                  }`}
+                  style={{
+                    background: isActive
+                      ? "linear-gradient(135deg, #10b981 0%, #06b6d4 100%)"
+                      : undefined,
+                    fontFamily: "'Poppins', sans-serif",
+                  }}
+                >
+                  {cat}
+                </button>
+              )
+            })}
+          </div>
+        </div>
+      </section>
+
+      {/* Portfolio Grid */}
+      <section className="py-16 sm:py-20 bg-slate-50">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl">
+          
+          <div className="flex items-center justify-between mb-8 text-xs sm:text-sm text-slate-500 font-medium">
+            <span>Showing <strong className="text-slate-900">{filteredProjects.length}</strong> projects in <strong className="text-emerald-700">{activeCategory}</strong></span>
+            {activeCategory !== "All" && (
+              <button
+                onClick={() => handleCategoryChange("All")}
+                className="text-emerald-600 hover:underline font-semibold"
+              >
+                Reset Filter
+              </button>
+            )}
+          </div>
+
+          <motion.div 
+            layout
+            className="grid sm:grid-cols-2 lg:grid-cols-3 gap-8"
+          >
+            <AnimatePresence>
+              {filteredProjects.map((project, index) => {
+                const style = CATEGORY_STYLES[project.category] || {
+                  dot: "bg-emerald-500",
+                  text: "text-emerald-700",
+                  bg: "bg-emerald-50 border-emerald-200",
+                }
+                const hasLive = Boolean(project.liveUrl && project.liveUrl !== "#" && project.liveUrl.trim() !== "")
+
+                return (
+                  <motion.div
+                    key={project.slug}
+                    layout
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, scale: 0.95 }}
+                    transition={{ duration: 0.35, delay: index * 0.04 }}
+                    className="h-full"
+                  >
+                    <div className="bg-white rounded-2xl border border-slate-200/90 overflow-hidden shadow-sm hover:shadow-xl hover:-translate-y-1.5 transition-all duration-300 flex flex-col justify-between h-full group">
+                      <div>
+                        {/* Standardized 16:10 Thumbnail Frame */}
+                        <Link 
+                          href={`/portfolio/${project.slug}`}
+                          className="relative aspect-[16/10] bg-slate-100 block overflow-hidden"
+                          aria-label={`View case study for ${project.title}`}
+                        >
+                          <Image
+                            src={project.image}
+                            alt={`${project.title} - ${project.niche}`}
+                            fill
+                            priority={index < 3}
+                            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                            className="object-cover object-top group-hover:scale-105 transition-transform duration-500"
+                          />
+
+                          {/* Category Badge overlay */}
+                          <div className="absolute top-3 left-3">
+                            <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-[11px] font-semibold border backdrop-blur-sm bg-white/95 ${style.text}`}>
+                              <span className={`w-1.5 h-1.5 rounded-full ${style.dot}`} />
+                              {mapDbToDisplay(project.category)}
+                            </span>
+                          </div>
+
+                          {/* Live/Concept pill */}
+                          <div className="absolute top-3 right-3">
+                            <span className="px-2.5 py-1 rounded-md text-[10px] font-bold bg-slate-900/80 text-white backdrop-blur-sm">
+                              {hasLive ? "Live Site" : "Concept Demo"}
+                            </span>
+                          </div>
+                        </Link>
+
+                        {/* Content */}
+                        <div className="p-6">
+                          <div className="text-xs font-semibold text-emerald-600 mb-1">
+                            {project.niche}
+                          </div>
+
+                          <h2 
+                            className="text-lg font-bold text-slate-900 mb-2 group-hover:text-emerald-600 transition-colors line-clamp-1"
+                            style={{ fontFamily: "'Poppins', sans-serif" }}
+                          >
+                            <Link href={`/portfolio/${project.slug}`}>
+                              {project.title}
+                            </Link>
+                          </h2>
+
+                          <p className="text-xs sm:text-sm text-slate-600 leading-relaxed line-clamp-2 mb-4">
+                            {project.description}
+                          </p>
+
+                          {/* Technologies */}
+                          <div className="flex flex-wrap gap-1.5">
+                            {project.technologies.slice(0, 3).map((tech, tIdx) => (
+                              <span
+                                key={tIdx}
+                                className="px-2 py-0.5 rounded text-[11px] font-medium bg-slate-100 text-slate-600 border border-slate-200"
+                              >
+                                {tech}
+                              </span>
+                            ))}
+                            {project.technologies.length > 3 && (
+                              <span className="px-1.5 py-0.5 rounded text-[10px] font-semibold text-slate-400">
+                                +{project.technologies.length - 3}
+                              </span>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Footer Actions */}
+                      <div className="px-6 pb-6 pt-3 border-t border-slate-100 flex items-center justify-between text-xs font-semibold">
+                        <Link
+                          href={`/portfolio/${project.slug}`}
+                          className="inline-flex items-center gap-1 text-slate-900 hover:text-emerald-600 transition-colors"
+                        >
+                          <span>Case Study</span>
+                          <ArrowRight className="w-3.5 h-3.5 text-slate-400 group-hover:translate-x-1 group-hover:text-emerald-600 transition-all" />
+                        </Link>
+
+                        {hasLive ? (
+                          <a
+                            href={project.liveUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="inline-flex items-center gap-1 text-emerald-700 hover:text-emerald-800"
+                          >
+                            <span>Live URL</span>
+                            <ExternalLink className="w-3.5 h-3.5" />
+                          </a>
+                        ) : (
+                          <Link
+                            href={`/contact?service=${encodeURIComponent(project.category)}&project=${encodeURIComponent(project.title)}`}
+                            className="text-slate-500 hover:text-emerald-600"
+                          >
+                            Discuss Similar →
+                          </Link>
+                        )}
+                      </div>
+                    </div>
+                  </motion.div>
+                )
+              })}
+            </AnimatePresence>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* Bottom CTA Banner */}
+      <section className="py-20 bg-slate-900 text-white text-center">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="max-w-2xl mx-auto">
+            <h2 className="text-3xl sm:text-4xl font-bold mb-4" style={{ fontFamily: "'Poppins', sans-serif" }}>
+              Have a Project in Mind?
+            </h2>
+            <p className="text-slate-400 mb-8 text-sm sm:text-base leading-relaxed">
+              Let's build a website or workflow automation that drives real business results for you.
+            </p>
+            <div className="flex flex-wrap items-center justify-center gap-4">
+              <Link
+                href="/contact"
+                className="px-8 py-4 rounded-xl text-sm font-semibold text-white shadow-lg hover:shadow-xl transition-all"
+                style={{
+                  background: "linear-gradient(135deg, #10b981 0%, #06b6d4 100%)",
+                  fontFamily: "'Poppins', sans-serif",
+                }}
+              >
+                Get a Free Quote
+              </Link>
+              <a
+                href={siteConfig.whatsappUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="px-8 py-4 rounded-xl text-sm font-semibold text-slate-200 bg-slate-800 hover:bg-slate-700 border border-slate-700 transition-colors"
+              >
+                Chat on WhatsApp
+              </a>
+            </div>
+          </div>
+        </div>
+      </section>
+    </>
+  )
+}
+
+export default function PortfolioPage() {
+  return (
+    <>
+      <MZwebSolutionsNavigation />
+      <main className="min-h-screen pt-24 bg-slate-50">
+        <Suspense fallback={<div className="py-32 text-center text-slate-500 font-medium">Loading portfolio...</div>}>
+          <PortfolioContent />
+        </Suspense>
+      </main>
       <MZwebSolutionsFooter />
     </>
   )

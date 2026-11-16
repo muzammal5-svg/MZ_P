@@ -173,6 +173,7 @@ export default function AdminDashboard() {
       // Add new project
       const newProject: Project = {
         id: Date.now(),
+        slug: formData.title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '') || `project-${Date.now()}`,
         title: formData.title,
         niche: formData.niche,
         description: formData.description,

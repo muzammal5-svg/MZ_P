@@ -1,37 +1,29 @@
 "use client"
 
-import { Button } from "@/components/ui/button"
-import { ArrowRight, ExternalLink, X, ChevronLeft, ChevronRight, Award } from "lucide-react"
+import { useState, useEffect, useCallback, useRef } from "react"
 import Link from "next/link"
 import Image from "next/image"
-import { motion, AnimatePresence } from "framer-motion"
-import { useState, useEffect, useCallback } from "react"
-import { getProjects, initializeProjects, defaultProjects, type Project } from "@/lib/projects-data"
+import { motion } from "framer-motion"
+import { ArrowRight, ExternalLink, ChevronLeft, ChevronRight, Sparkles } from "lucide-react"
+import { defaultProjects, Project } from "@/lib/projects-data"
 
-const categoryColors: Record<string, string> = {
-  WordPress: "bg-blue-500/20 text-blue-400 border-blue-500/30",
-  "Custom Web": "bg-green-500/20 text-green-400 border-green-500/30",
-  Shopify: "bg-purple-500/20 text-purple-400 border-purple-500/30",
-  "eBay Templates": "bg-yellow-500/20 text-yellow-400 border-yellow-500/30",
+const CATEGORY_STYLES: Record<string, { dot: string; text: string; bg: string }> = {
+  WordPress: { dot: "bg-blue-500", text: "text-blue-700", bg: "bg-blue-50 border-blue-200" },
+  Shopify: { dot: "bg-emerald-500", text: "text-emerald-700", bg: "bg-emerald-50 border-emerald-200" },
+  "Custom Web": { dot: "bg-cyan-500", text: "text-cyan-700", bg: "bg-cyan-50 border-cyan-200" },
+  "eBay Templates": { dot: "bg-amber-500", text: "text-amber-700", bg: "bg-amber-50 border-amber-200" },
+  "AI Automation": { dot: "bg-indigo-500", text: "text-indigo-700", bg: "bg-indigo-50 border-indigo-200" },
+  "AI Chatbot": { dot: "bg-purple-500", text: "text-purple-700", bg: "bg-purple-50 border-purple-200" },
 }
 
 export function FeaturedPortfolio() {
-  const [selectedProject, setSelectedProject] = useState<Project | null>(null)
   const [idx, setIdx] = useState(0)
   const [isAutoPlaying, setIsAutoPlaying] = useState(true)
-  const [featuredProjects, setFeaturedProjects] = useState<Project[]>(defaultProjects.slice(0, 10))
+  const [isHovered, setIsHovered] = useState(false)
+  const containerRef = useRef<HTMLDivElement>(null)
 
-  // Sync with localStorage on client mount if customized in admin
-  useEffect(() => {
-    if (typeof window !== 'undefined') {
-      initializeProjects()
-      const stored = getProjects()
-      if (stored && stored.length > 0) {
-        setFeaturedProjects(stored.slice(0, 10))
-      }
-    }
-  }, [])
-
+  // Curate 8 diverse projects for the homepage showcase
+  const featuredProjects = defaultProjects.slice(0, 8)
   const total = featuredProjects.length
 
   const [cardWidth, setCardWidth] = useState(380)
@@ -40,7 +32,7 @@ export function FeaturedPortfolio() {
 
   useEffect(() => {
     const updateCardWidth = () => {
-      if (typeof window !== 'undefined') {
+      if (typeof window !== "undefined") {
         const w = window.innerWidth
         if (w < 420) {
           setCardWidth(Math.max(280, w - 48))
@@ -52,8 +44,8 @@ export function FeaturedPortfolio() {
       }
     }
     updateCardWidth()
-    window.addEventListener('resize', updateCardWidth)
-    return () => window.removeEventListener('resize', updateCardWidth)
+    window.addEventListener("resize", updateCardWidth)
+    return () => window.removeEventListener("resize", updateCardWidth)
   }, [])
 
   const minSwipeDistance = 50
@@ -79,575 +71,281 @@ export function FeaturedPortfolio() {
   }
 
   const next = useCallback(() => {
-    setIdx((prev) => (prev + 1) % total)
+    setIdx((current) => (current + 1) % total)
   }, [total])
 
   const prev = useCallback(() => {
-    setIdx((prev) => (prev - 1 + total) % total)
+    setIdx((current) => (current - 1 + total) % total)
   }, [total])
 
-  // Auto-scroll every 4 seconds
+  // Auto-scroll every 5.5 seconds, pause on hover/focus
   useEffect(() => {
-    if (!isAutoPlaying) return
-    const interval = setInterval(next, 4000)
+    if (!isAutoPlaying || isHovered) return
+    const interval = setInterval(next, 5500)
     return () => clearInterval(interval)
-  }, [isAutoPlaying, next])
+  }, [isAutoPlaying, isHovered, next])
 
-  useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === "Escape") setSelectedProject(null)
-      if (e.key === "ArrowRight") { next(); setIsAutoPlaying(false) }
-      if (e.key === "ArrowLeft") { prev(); setIsAutoPlaying(false) }
+  // Keyboard navigation
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === "ArrowRight") {
+      next()
+      setIsAutoPlaying(false)
+    } else if (e.key === "ArrowLeft") {
+      prev()
+      setIsAutoPlaying(false)
     }
-    document.addEventListener("keydown", handleKeyDown)
-    if (selectedProject) {
-      document.body.style.overflow = "hidden"
-    }
-    return () => {
-      document.removeEventListener("keydown", handleKeyDown)
-      document.body.style.overflow = "unset"
-    }
-  }, [selectedProject, next, prev])
+  }
 
-  // 3 copies for infinite loop
+  // 3 copies for infinite-loop carousel appearance
   const ITEMS = [...featuredProjects, ...featuredProjects, ...featuredProjects]
-  const OFFSET = total // middle copy starts here
+  const OFFSET = total
   const GAP = 24
 
   return (
-    <>
-      <section className="py-32 relative overflow-hidden" style={{ background: "linear-gradient(180deg, #ffffff 0%, #f8fafc 100%)" }}>
-        {/* Premium background effects */}
-        <div className="pointer-events-none absolute top-0 left-1/4 w-[700px] h-[700px] rounded-full blur-3xl opacity-15"
-          style={{ background: "radial-gradient(circle, rgba(16,185,129,0.3) 0%, transparent 70%)" }} />
-        <div className="pointer-events-none absolute bottom-0 right-1/4 w-[600px] h-[600px] rounded-full blur-3xl opacity-15"
-          style={{ background: "radial-gradient(circle, rgba(139,92,246,0.25) 0%, transparent 70%)" }} />
+    <section 
+      id="portfolio"
+      aria-roledescription="carousel"
+      aria-label="Featured projects showcase"
+      className="py-24 relative overflow-hidden bg-white border-b border-slate-200/80"
+      onKeyDown={handleKeyDown}
+      tabIndex={0}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+      onFocus={() => setIsHovered(true)}
+      onBlur={() => setIsHovered(false)}
+    >
+      {/* Decorative ambient background */}
+      <div 
+        className="pointer-events-none absolute top-0 left-1/4 w-[700px] h-[500px] rounded-full blur-3xl opacity-15"
+        style={{ background: "radial-gradient(circle, rgba(16,185,129,0.3) 0%, transparent 70%)" }} 
+      />
 
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-          {/* Header */}
-          <div className="flex items-end justify-between mb-16">
-            <motion.div
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8 }}
-              viewport={{ once: true }}
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+        
+        {/* Header */}
+        <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-6 mb-12">
+          <div>
+            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full mb-3 bg-emerald-50 border border-emerald-200">
+              <Sparkles className="w-4 h-4 text-emerald-600" />
+              <span className="text-xs font-semibold text-emerald-800" style={{ fontFamily: "'Poppins', sans-serif" }}>
+                Proven Client Work
+              </span>
+            </div>
+
+            <h2 
+              className="text-3xl sm:text-4xl md:text-5xl font-bold text-slate-900 tracking-tight"
+              style={{ fontFamily: "'Poppins', sans-serif" }}
             >
-              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full mb-6"
-                style={{
-                  background: "rgba(16,185,129,0.15)",
-                  border: "1px solid rgba(16,185,129,0.3)",
-                }}>
-                <Award className="w-4 h-4" style={{ color: "#3b82f6" }} />
-                <span className="text-sm font-medium" style={{ color: "#2563eb", fontFamily: "'Poppins', sans-serif" }}>Featured Work</span>
-              </div>
-              <h2 className="font-bold mb-4 text-3xl sm:text-4xl md:text-5xl lg:text-6xl"
-                style={{
-                  fontFamily: "'Poppins', sans-serif",
-                  letterSpacing: "-0.02em",
-                  lineHeight: 1.1,
-                  color: "#0f172a",
-                  fontWeight: 700,
-                }}>
-                Recent <span style={{
-                  background: "linear-gradient(135deg, #10b981 0%, #06b6d4 100% 100%)",
-                  WebkitBackgroundClip: "text",
-                  WebkitTextFillColor: "transparent",
-                }}>Success Stories</span>
-              </h2>
-              <p className="text-base max-w-2xl"
-                style={{
-                  color: "#64748b",
-                  fontFamily: "'Poppins', sans-serif",
-                  lineHeight: 1.7,
-                }}>
-                Each project is a case study in performance, design, and measurable results.
-              </p>
-            </motion.div>
+              Recent <span style={{
+                background: "linear-gradient(135deg, #10b981 0%, #06b6d4 100%)",
+                WebkitBackgroundClip: "text",
+                WebkitTextFillColor: "transparent",
+              }}>Case Studies</span>
+            </h2>
 
-            {/* Navigation Arrows */}
-            <div className="flex items-center gap-3 flex-shrink-0 pb-1">
-              <motion.button
+            <p className="text-sm sm:text-base text-slate-600 mt-2 max-w-xl">
+              High-converting websites, e-commerce stores, and custom software delivered for global clients.
+            </p>
+          </div>
+
+          {/* Navigation Controls & Progress Indicator */}
+          <div className="flex items-center gap-4 flex-shrink-0">
+            {/* Meaningful progress indicator */}
+            <div className="text-xs font-semibold text-slate-500" aria-live="polite">
+              Project <span className="text-slate-900 font-bold">{idx + 1}</span> of {total}
+            </div>
+
+            <div className="flex items-center gap-2">
+              <button
                 onClick={() => { prev(); setIsAutoPlaying(false) }}
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
                 aria-label="Previous project"
-                className="w-12 h-12 rounded-full flex items-center justify-center transition-all"
-                style={{
-                  background: "rgba(255,255,255,0.9)",
-                  border: "2px solid rgba(226,232,240,0.8)",
-                  color: "#64748b",
-                  boxShadow: "0 4px 12px rgba(0,0,0,0.05)",
-                }}
+                className="w-10 h-10 rounded-full flex items-center justify-center bg-white border border-slate-300 text-slate-700 hover:border-emerald-500 hover:text-emerald-600 transition-colors shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500"
               >
                 <ChevronLeft className="w-5 h-5" />
-              </motion.button>
+              </button>
 
-              <motion.button
+              <button
                 onClick={() => { next(); setIsAutoPlaying(false) }}
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
                 aria-label="Next project"
-                className="w-12 h-12 rounded-full flex items-center justify-center transition-all"
+                className="w-10 h-10 rounded-full flex items-center justify-center text-white transition-all shadow-md hover:shadow-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500"
                 style={{
                   background: "linear-gradient(135deg, #10b981 0%, #06b6d4 100%)",
-                  border: "none",
-                  color: "#ffffff",
-                  boxShadow: "0 8px 24px rgba(16,185,129,0.4)",
                 }}
               >
                 <ChevronRight className="w-5 h-5" />
-              </motion.button>
+              </button>
             </div>
           </div>
-
-          {/* Carousel Container */}
-          <div className="relative">
-            <div 
-              className="overflow-hidden select-none"
-              onTouchStart={handleTouchStart}
-              onTouchMove={handleTouchMove}
-              onTouchEnd={handleTouchEnd}
-              onMouseEnter={() => setIsAutoPlaying(false)}
-              onMouseLeave={() => setIsAutoPlaying(true)}
-            >
-              <motion.div 
-                className="flex"
-                style={{ gap: `${GAP}px` }}
-                animate={{ x: -(OFFSET + idx) * (cardWidth + GAP) }}
-                transition={{ type: "spring", stiffness: 280, damping: 32, mass: 0.8 }}
-              >
-                {ITEMS.map((project, i) => {
-                  const realIdx = i % total
-                  const isActive = i === OFFSET + idx
-
-                  return (
-                    <div
-                      key={i}
-                      className="flex-shrink-0"
-                      style={{ width: `${cardWidth}px` }}
-                      onClick={() => !isActive && setIdx(realIdx)}
-                      onMouseEnter={() => setIsAutoPlaying(false)}
-                      onMouseLeave={() => setIsAutoPlaying(true)}
-                    >
-                  <motion.div
-                    className="group flex flex-col rounded-2xl overflow-hidden hover:-translate-y-1 hover:shadow-2xl transition-all duration-400 h-full"
-                    style={{
-                      background: "#ffffff",
-                      border: `2px solid ${isActive ? "rgba(16,185,129,0.5)" : "rgba(226,232,240,0.8)"}`,
-                      boxShadow: isActive 
-                        ? "0 16px 40px rgba(16,185,129,0.18)" 
-                        : "0 8px 24px rgba(0,0,0,0.05)",
-                      opacity: 1,
-                      cursor: "pointer",
-                      transform: "none",
-                      transition: "border-color 0.3s ease, box-shadow 0.3s ease",
-                    }}
-                  >
-                {/* Image */}
-                <div className="relative aspect-[16/10] overflow-hidden bg-gray-100 flex-shrink-0">
-                  <Image
-                    src={project.image}
-                    alt={project.title}
-                    fill
-                    sizes="(max-width: 640px) 90vw, (max-width: 1024px) 45vw, 380px"
-                    className="object-cover transition-transform duration-600 group-hover:scale-105"
-                    quality={85}
-                    loading="lazy"
-                    onError={(e) => {
-                      const t = e.currentTarget as HTMLImageElement
-                      t.style.display = "none"
-                    }}
-                  />
-                  <div className="w-full h-full bg-gradient-to-br from-gray-200 to-gray-300 items-center justify-center hidden absolute inset-0">
-                    <span className="text-gray-500 text-sm">Preview</span>
-                  </div>
-
-                  {/* Category badge */}
-                  <div className="absolute top-3 left-3">
-                    <span className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold border backdrop-blur-sm ${categoryColors[project.category] ?? "bg-primary/20 text-primary border-primary/30"}`}>
-                      {project.category}
-                    </span>
-                  </div>
-
-                  
-                </div>
-
-                {/* Content */}
-                <div className="flex flex-col flex-1 p-5 gap-4">
-                  {/* Title */}
-                  <div>
-                    <div className="text-[10px] uppercase tracking-widest mb-1" style={{ color: "#94a3b8" }}>{project.niche}</div>
-                    <h3 className="text-base font-bold transition-colors duration-200 leading-snug line-clamp-2 min-h-[44px]"
-                      style={{
-                        color: "#0f172a",
-                        fontFamily: "'Poppins', sans-serif",
-                      }}
-                    >
-                      {project.title}
-                    </h3>
-                    <p className="text-xs leading-relaxed mt-1.5 line-clamp-2"
-                      style={{
-                        color: "#64748b",
-                        fontFamily: "'Poppins', sans-serif",
-                      }}
-                    >
-                      {project.description}
-                    </p>
-                  </div>
-
-                  {/* Achievement stats */}
-                  {/* <div className="grid grid-cols-3 gap-2">
-                    {project.achievements.map((a, i) => (
-                      <div key={i} className="rounded-xl p-2.5 border text-center"
-                        style={{
-                          borderColor: "rgba(226,232,240,0.8)",
-                          background: "rgba(248,250,252,0.8)",
-                        }}
-                      >
-                        <div className="flex justify-center mb-1 scale-75" style={{ color: "#3b82f6" }}>{a.icon}</div>
-                        <div className="text-sm font-bold leading-none" style={{ color: "#0f172a", fontFamily: "'Poppins', sans-serif" }}>{a.value}</div>
-                        <div className="text-[10px] mt-0.5 leading-tight" style={{ color: "#64748b", fontFamily: "'Poppins', sans-serif" }}>{a.label}</div>
-                      </div>
-                    ))}
-                  </div> */}
-
-                  {/* Tech tags */}
-                  <div className="flex flex-wrap gap-1.5">
-                    {project.technologies.slice(0, 3).map((tech) => (
-                      <span key={tech} className="px-2 py-1 text-[10px] rounded-full border"
-                        style={{
-                          background: "rgba(248,250,252,0.8)",
-                          color: "#64748b",
-                          borderColor: "rgba(226,232,240,0.8)",
-                          fontFamily: "'Poppins', sans-serif",
-                        }}
-                      >
-                        {tech}
-                      </span>
-                    ))}
-                    {project.technologies.length > 3 && (
-                      <span className="px-2 py-1 text-[10px] rounded-full border"
-                        style={{
-                          background: "rgba(248,250,252,0.8)",
-                          color: "#94a3b8",
-                          borderColor: "rgba(226,232,240,0.8)",
-                          fontFamily: "'Poppins', sans-serif",
-                        }}
-                      >
-                        +{project.technologies.length - 3}
-                      </span>
-                    )}
-                  </div>
-
-                  {/* Testimonial */}
-                  {/* <div className="rounded-xl p-3 border mt-auto"
-                    style={{
-                      borderColor: "rgba(16,185,129,0.2)",
-                      background: "rgba(16,185,129,0.05)",
-                    }}
-                  >
-                    <p className="text-xs italic leading-relaxed line-clamp-2"
-                      style={{
-                        color: "#64748b",
-                        fontFamily: "'Poppins', sans-serif",
-                      }}
-                    >"{project.testimonial.quote}"</p>
-                    <div className="text-[10px] mt-1.5 font-medium"
-                      style={{
-                        color: "#3b82f6",
-                        fontFamily: "'Poppins', sans-serif",
-                      }}
-                    >— {project.testimonial.author}</div>
-                  </div> */}
-
-                  {/* Actions */}
-                  <div className="flex gap-2 pt-1">
-                    <Button
-                      onClick={() => setSelectedProject(project)}
-                      size="sm"
-                      className="flex-1 text-white text-xs font-semibold rounded-xl transition-all duration-300"
-                      style={{
-                        background: "linear-gradient(135deg, #10b981 0%, #06b6d4 100% 100%)",
-                        fontFamily: "'Poppins', sans-serif",
-                      }}
-                    >
-                      Case Study
-                      <ArrowRight className="ml-1.5 h-3 w-3" />
-                    </Button>
-                    {!project.isEbayTemplate && project.liveUrl && !project.liveUrl.startsWith("#") && (
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        className="rounded-xl px-3 transition-all duration-300"
-                        style={{
-                          borderColor: "rgba(16,185,129,0.3)",
-                          color: "#3b82f6",
-                        }}
-                        onClick={() => window.open(project.liveUrl, "_blank")}
-                      >
-                        <ExternalLink className="h-3.5 w-3.5" />
-                      </Button>
-                    )}
-                  </div>
-                </div>
-              </motion.div>
-            </div>
-          )
-        })}
-        </motion.div>
-      </div>
-
-            {/* Progress Indicators */}
-            <div className="flex items-center justify-center gap-2 mt-8">
-              {featuredProjects.map((_, i) => (
-                <button
-                  key={i}
-                  onClick={() => { setIdx(i); setIsAutoPlaying(false) }}
-                  aria-label={`Go to project ${i + 1}`}
-                  className="relative h-1 rounded-full transition-all duration-300"
-                  style={{
-                    width: i === idx ? "48px" : "24px",
-                    background: i === idx
-                      ? "linear-gradient(90deg, #10b981 0%, #06b6d4 100%)"
-                      : "rgba(226,232,240,0.8)",
-                  }}
-                />
-              ))}
-            </div>
-          </div>
-< div className="flex justify-center p-12 w-full mx-auto">
-
- <Button asChild size="lg" 
-                  className="text-white font-semibold px-8 py-4 rounded-xl shadow-lg transition-all duration-300"
-                  style={{
-                    background: "linear-gradient(135deg, #10b981 0%, #06b6d4 100%)",
-                    fontFamily: "'Poppins', sans-serif",
-                    fontWeight: 600,
-                  }}
-                >
-                <Link href="/portfolio">
-                  View Complete Portfolio
-                  <ArrowRight className="ml-2 h-5 w-5" />
-                </Link>
-              </Button>
-                  </div>
-          {/* View All CTA */}
-          {/* <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.3 }}
-            viewport={{ once: true }}
-            className="text-center mt-20"
-          >
-            <div 
-              className="rounded-3xl p-12 max-w-3xl mx-auto"
-              style={{
-                background: "rgba(255,255,255,0.9)",
-                backdropFilter: "blur(20px)",
-                border: "2px solid rgba(16,185,129,0.2)",
-                boxShadow: "0 20px 60px rgba(16,185,129,0.15)",
-              }}
-            >
-              <h3 
-                className="text-3xl font-bold mb-4"
-                style={{
-                  color: "#0f172a",
-                  fontFamily: "'Poppins', sans-serif",
-                  fontWeight: 700,
-                }}
-              >
-                Want to See More Projects?
-              </h3>
-              <p 
-                className="mb-8 leading-relaxed"
-                style={{
-                  color: "#64748b",
-                  fontFamily: "'Poppins', sans-serif",
-                }}
-              >
-                Explore 100+ successful projects across WordPress, Shopify, React, and more.
-              </p>
-              <div className="flex justify-center">
-                <Link href="/portfolio">
-                  <Button 
-                    size="lg" 
-                    className="text-white font-semibold px-8 py-4 rounded-xl shadow-lg transition-all duration-300"
-                    style={{
-                      background: "linear-gradient(135deg, #10b981 0%, #06b6d4 100%)",
-                      fontFamily: "'Poppins', sans-serif",
-                      fontWeight: 600,
-                    }}
-                  >
-                    View Complete Portfolio
-                    <ArrowRight className="ml-2 h-5 w-5" />
-                  </Button>
-                </Link>
-              </div>
-              <div 
-                className="grid grid-cols-3 gap-8 pt-8 mt-8"
-                style={{ borderTop: "2px solid rgba(226,232,240,0.5)" }}
-              >
-                {[["100+", "Projects Completed"], ["15+", "Industries Served"], ["98%", "Client Satisfaction"]].map(([val, label]) => (
-                  <div key={label} className="text-center">
-                    <div 
-                      className="text-2xl font-bold"
-                      style={{
-                        background: "linear-gradient(135deg, #10b981 0%, #06b6d4 100%)",
-                        WebkitBackgroundClip: "text",
-                        WebkitTextFillColor: "transparent",
-                        fontFamily: "'Poppins', sans-serif",
-                      }}
-                    >
-                      {val}
-                    </div>
-                    <div 
-                      className="text-sm"
-                      style={{
-                        color: "#64748b",
-                        fontFamily: "'Poppins', sans-serif",
-                      }}
-                    >
-                      {label}
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </motion.div> */}
         </div>
-      </section>
 
-      {/* Case Study Modal */}
-      <AnimatePresence>
-        {selectedProject && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 backdrop-blur-sm z-50 flex items-center justify-center p-4"
-            style={{ background: "rgba(0,0,0,0.7)" }}
-            onClick={() => setSelectedProject(null)}
+        {/* Carousel Viewport */}
+        <div 
+          ref={containerRef}
+          className="relative overflow-hidden select-none pb-4"
+          onTouchStart={handleTouchStart}
+          onTouchMove={handleTouchMove}
+          onTouchEnd={handleTouchEnd}
+        >
+          <motion.div 
+            className="flex items-stretch"
+            style={{ gap: `${GAP}px` }}
+            animate={{ x: -(OFFSET + idx) * (cardWidth + GAP) }}
+            transition={{ type: "spring", stiffness: 280, damping: 32, mass: 0.8 }}
           >
-            <motion.div
-              initial={{ scale: 0.85, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.85, opacity: 0 }}
-              transition={{ type: "spring", damping: 25, stiffness: 300 }}
-              className="relative max-w-4xl max-h-[90vh] w-full rounded-3xl overflow-hidden shadow-2xl"
-              style={{
-                background: "#ffffff",
-                border: "2px solid rgba(226,232,240,0.8)",
-              }}
-              onClick={(e) => e.stopPropagation()}
-            >
-              <div className="flex items-start justify-between p-6"
-                style={{ borderBottom: "2px solid rgba(226,232,240,0.5)" }}
-              >
-                <div>
-                  <div className="text-xs uppercase tracking-widest mb-1" style={{ color: "#94a3b8", fontFamily: "'Poppins', sans-serif" }}>{selectedProject.niche}</div>
-                  <h3 
-                    className="text-2xl font-bold"
-                    style={{
-                      background: "linear-gradient(135deg, #10b981 0%, #06b6d4 100% 100%)",
-                      WebkitBackgroundClip: "text",
-                      WebkitTextFillColor: "transparent",
-                      fontFamily: "'Poppins', sans-serif",
-                    }}
-                  >{selectedProject.title}</h3>
-                  <p className="text-sm mt-1" style={{ color: "#64748b", fontFamily: "'Poppins', sans-serif" }}>{selectedProject.description}</p>
-                </div>
-                <button
-                  onClick={() => setSelectedProject(null)}
-                  className="p-2 rounded-full transition-colors ml-4 flex-shrink-0"
-                  style={{
-                    background: "rgba(226,232,240,0.5)",
-                    color: "#64748b",
-                  }}
+            {ITEMS.map((project, i) => {
+              const realIdx = i % total
+              const isActive = i === OFFSET + idx
+              const hasLive = Boolean(project.liveUrl && project.liveUrl !== "#" && project.liveUrl.trim() !== "")
+              const style = CATEGORY_STYLES[project.category] || {
+                dot: "bg-emerald-500",
+                text: "text-emerald-700",
+                bg: "bg-emerald-50 border-emerald-200",
+              }
+
+              return (
+                <div
+                  key={i}
+                  className="flex-shrink-0"
+                  style={{ width: `${cardWidth}px` }}
+                  onClick={() => !isActive && setIdx(realIdx)}
                 >
-                  <X className="w-5 h-5" />
-                </button>
-              </div>
-
-                  <div className="overflow-y-auto max-h-[calc(90vh-120px)]">
-                <div className="p-6 space-y-6">
-                  <div className="relative w-full" style={{ aspectRatio: "16/10", maxHeight: "50vh" }}>
-                    <Image
-                      src={selectedProject.image}
-                      alt={selectedProject.title}
-                      fill
-                      sizes="(max-width: 768px) 100vw, 896px"
-                      className="object-contain rounded-2xl"
-                      quality={90}
-                      loading="lazy"
-                      onError={(e) => { 
-                        const img = e.currentTarget as HTMLImageElement
-                        img.src = "/placeholder.svg" 
-                      }}
-                    />
-                  </div>
-
-                  <div className="flex flex-wrap gap-2">
-                    {selectedProject.technologies.map((tech) => (
-                      <span key={tech} className="px-3 py-1.5 text-xs rounded-full border"
-                        style={{
-                          background: "rgba(16,185,129,0.1)",
-                          color: "#3b82f6",
-                          borderColor: "rgba(16,185,129,0.3)",
-                          fontFamily: "'Poppins', sans-serif",
-                        }}
+                  <div
+                    className={`h-full rounded-2xl overflow-hidden flex flex-col justify-between bg-white border transition-all duration-300 ${
+                      isActive 
+                        ? "border-emerald-400 shadow-xl" 
+                        : "border-slate-200/90 shadow-sm hover:border-slate-300"
+                    }`}
+                  >
+                    <div>
+                      {/* Standardized 16:10 Thumbnail Frame */}
+                      <Link 
+                        href={`/portfolio/${project.slug}`}
+                        className="relative aspect-[16/10] bg-slate-100 block overflow-hidden group"
+                        aria-label={`View case study for ${project.title}`}
                       >
-                        {tech}
-                      </span>
-                    ))}
-                  </div>
+                        <Image
+                          src={project.image}
+                          alt={`${project.title} - ${project.niche}`}
+                          fill
+                          sizes="(max-width: 640px) 90vw, (max-width: 1024px) 45vw, 380px"
+                          className="object-cover object-top group-hover:scale-105 transition-transform duration-500"
+                          loading="lazy"
+                        />
 
-                  <div className="flex gap-4 justify-center pb-2">
-                    {!selectedProject.isEbayTemplate && selectedProject.liveUrl && !selectedProject.liveUrl.startsWith("#") ? (
-                      <Button
-                        className="text-white font-semibold px-8 py-3 rounded-xl"
-                        style={{
-                          background: "linear-gradient(135deg, #10b981 0%, #06b6d4 100% 100%)",
-                          fontFamily: "'Poppins', sans-serif",
-                        }}
-                        onClick={() => window.open(selectedProject.liveUrl, "_blank")}
-                      >
-                        <ExternalLink className="w-4 h-4 mr-2" />
-                        Visit Live Site
-                      </Button>
-                    ) : (
-                      <Link href="/contact">
-                        <Button 
-                          className="text-white font-semibold px-8 py-3 rounded-xl"
-                          style={{
-                            background: "linear-gradient(135deg, #10b981 0%, #06b6d4 100% 100%)",
-                            fontFamily: "'Poppins', sans-serif",
-                          }}
-                        >
-                          <ArrowRight className="w-4 h-4 mr-2" />
-                          {selectedProject.isEbayTemplate ? "Get This Template" : "Discuss Similar Project"}
-                        </Button>
+                        {/* Category Badge overlay */}
+                        <div className="absolute top-3 left-3">
+                          <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-[11px] font-semibold border backdrop-blur-sm bg-white/95 ${style.text}`}>
+                            <span className={`w-1.5 h-1.5 rounded-full ${style.dot}`} />
+                            {project.category}
+                          </span>
+                        </div>
+
+                        {/* Status pill */}
+                        <div className="absolute top-3 right-3">
+                          <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-slate-900/80 text-white backdrop-blur-sm">
+                            {hasLive ? "Live" : "Concept"}
+                          </span>
+                        </div>
                       </Link>
-                    )}
-                    <Link href="/contact">
-                      <Button 
-                        variant="outline" 
-                        className="px-8 py-3 rounded-xl"
-                        style={{
-                          borderColor: "rgba(16,185,129,0.3)",
-                          color: "#3b82f6",
-                          fontFamily: "'Poppins', sans-serif",
-                        }}
+
+                      {/* Content */}
+                      <div className="p-5">
+                        <div className="text-[11px] font-semibold text-emerald-600 mb-1">
+                          {project.niche}
+                        </div>
+
+                        <h3 
+                          className="text-base font-bold text-slate-900 mb-2 leading-snug line-clamp-1 hover:text-emerald-600 transition-colors"
+                          style={{ fontFamily: "'Poppins', sans-serif" }}
+                        >
+                          <Link href={`/portfolio/${project.slug}`}>
+                            {project.title}
+                          </Link>
+                        </h3>
+
+                        <p className="text-xs text-slate-600 leading-relaxed line-clamp-2 mb-4">
+                          {project.description}
+                        </p>
+
+                        {/* Technologies */}
+                        <div className="flex flex-wrap gap-1.5">
+                          {project.technologies.slice(0, 3).map((tech, tIdx) => (
+                            <span
+                              key={tIdx}
+                              className="px-2 py-0.5 rounded text-[10px] font-medium bg-slate-100 text-slate-600 border border-slate-200"
+                            >
+                              {tech}
+                            </span>
+                          ))}
+                          {project.technologies.length > 3 && (
+                            <span className="px-1.5 py-0.5 rounded text-[10px] font-semibold text-slate-400">
+                              +{project.technologies.length - 3}
+                            </span>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Footer Actions */}
+                    <div className="px-5 pb-5 pt-3 border-t border-slate-100 flex items-center justify-between text-xs font-semibold">
+                      <Link
+                        href={`/portfolio/${project.slug}`}
+                        className="inline-flex items-center gap-1 text-slate-900 hover:text-emerald-600 transition-colors"
                       >
-                        Start Similar Project
-                      </Button>
-                    </Link>
+                        <span>Case Study</span>
+                        <ArrowRight className="w-3.5 h-3.5 text-slate-400" />
+                      </Link>
+
+                      {hasLive ? (
+                        <a
+                          href={project.liveUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-flex items-center gap-1 text-emerald-700 hover:text-emerald-800"
+                        >
+                          <span>Live Demo</span>
+                          <ExternalLink className="w-3.5 h-3.5" />
+                        </a>
+                      ) : (
+                        <Link
+                          href={`/contact?service=${encodeURIComponent(project.category)}&project=${encodeURIComponent(project.title)}`}
+                          className="text-slate-500 hover:text-emerald-600"
+                        >
+                          Discuss a Similar Project →
+                        </Link>
+                      )}
+                    </div>
                   </div>
                 </div>
-              </div>
-            </motion.div>
+              )
+            })}
           </motion.div>
-        )}
-      </AnimatePresence>
-    </>
+        </div>
+
+        {/* Carousel Dots & Bottom Link */}
+        <div className="flex flex-col sm:flex-row items-center justify-between gap-4 mt-8 pt-4 border-t border-slate-100">
+          <div className="flex items-center gap-1.5" aria-hidden="true">
+            {featuredProjects.map((_, dotIdx) => (
+              <button
+                key={dotIdx}
+                onClick={() => { setIdx(dotIdx); setIsAutoPlaying(false) }}
+                aria-label={`Go to slide ${dotIdx + 1}`}
+                className={`h-2 rounded-full transition-all duration-300 ${
+                  dotIdx === idx ? "w-6 bg-emerald-500" : "w-2 bg-slate-300 hover:bg-slate-400"
+                }`}
+              />
+            ))}
+          </div>
+
+          <Link
+            href="/portfolio"
+            className="inline-flex items-center gap-2 text-xs sm:text-sm font-semibold text-emerald-700 hover:text-emerald-800 transition-colors"
+          >
+            <span>Explore All 37 Projects & Templates in Portfolio</span>
+            <ArrowRight className="w-4 h-4" />
+          </Link>
+        </div>
+      </div>
+    </section>
   )
 }
