@@ -8,7 +8,8 @@ export default function robots(): MetadataRoute.Robots {
       {
         userAgent: '*',
         allow: '/',
-        disallow: ['/admin/', '/api/', '/reset-projects/'],
+        // TODO: Re-add /blog/ to the allow list once real written MDX articles exist
+        disallow: ['/admin/', '/api/', '/reset-projects/', '/blog/'],
       },
     ],
     sitemap: `${siteUrl}/sitemap.xml`,

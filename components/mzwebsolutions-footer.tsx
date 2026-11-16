@@ -1,8 +1,10 @@
 "use client"
 
 import Link from "next/link"
-import { Mail, Phone, Github, Linkedin, Twitter } from "lucide-react"
+import Image from "next/image"
+import { Mail, Phone, Github, Linkedin, ExternalLink } from "lucide-react"
 import { motion } from "framer-motion"
+import { siteConfig } from "@/lib/site-config"
 
 export function MZwebSolutionsFooter() {
   const currentYear = new Date().getFullYear()
@@ -16,14 +18,7 @@ export function MZwebSolutionsFooter() {
     { name: "AI Chatbot", href: "/services/ai-chatbot" },
     { name: "eBay Listing", href: "/services/ebay-templates" },
     { name: "Portfolio", href: "/portfolio" },
-    { name: "Blog", href: "/blog" },
     { name: "Contact", href: "/contact" },
-  ]
-
-  const socialLinks = [
-    { name: "GitHub", href: "https://github.com/muzammal5-svg", icon: Github },
-    { name: "LinkedIn", href: "https://www.linkedin.com/in/muz-the-coder/", icon: Linkedin },
-    // { name: "Twitter", href: "#", icon: Twitter },
   ]
 
   return (
@@ -44,13 +39,15 @@ export function MZwebSolutionsFooter() {
               className="space-y-4"
             >
               <div className="flex items-center gap-3">
-                {/* Profile Picture as Logo - Same as Header */}
+                {/* Profile Picture as Logo */}
                 <div 
                   className="relative w-10 h-10 rounded-full overflow-hidden ring-2 ring-emerald-500/30 hover:ring-emerald-500/60 transition-all duration-300 hover:scale-105"
                 >
-                  <img 
+                  <Image 
                     src="/profile-pic.jpg" 
-                    alt="Muhammad Muzammal" 
+                    alt={siteConfig.name}
+                    width={40}
+                    height={40}
                     className="w-full h-full object-cover"
                   />
                 </div>
@@ -59,26 +56,26 @@ export function MZwebSolutionsFooter() {
                     color: "#0f172a",
                     fontFamily: "'Poppins', sans-serif",
                     fontWeight: 700,
-                  }}>Muhammad Muzammal</div>
-                  <div className="text-xs" style={{ 
-                    color: "#64748b",
+                  }}>{siteConfig.name}</div>
+                  <div className="text-xs text-emerald-600 font-medium" style={{ 
                     fontFamily: "'Poppins', sans-serif",
-                  }}>Full-Stack Developer</div>
+                  }}>{siteConfig.title}</div>
                 </div>
               </div>
               <p className="text-sm leading-relaxed" style={{
                 color: "#64748b",
                 fontFamily: "'Poppins', sans-serif",
               }}>
-                I build high-performance websites and web applications for businesses worldwide.
+                {siteConfig.headline}
               </p>
               
-              {/* Social Links */}
-              <div className="flex gap-2 pt-2">
-                {socialLinks.map(({ name, href, icon: Icon }) => (
+              {/* Social & Marketplace Links */}
+              <div className="flex flex-wrap gap-2 pt-2">
+                {siteConfig.githubUrl && (
                   <motion.a
-                    key={name}
-                    href={href}
+                    href={siteConfig.githubUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
                     whileHover={{ scale: 1.1, y: -2 }}
                     whileTap={{ scale: 0.95 }}
                     className="p-2.5 rounded-lg transition-all duration-300"
@@ -86,11 +83,67 @@ export function MZwebSolutionsFooter() {
                       background: "rgba(16,185,129,0.1)",
                       border: "1px solid rgba(16,185,129,0.2)",
                     }}
-                    aria-label={name}
+                    aria-label="GitHub Profile"
                   >
-                    <Icon className="h-4 w-4" style={{ color: "#10b981" }} />
+                    <Github className="h-4 w-4" style={{ color: "#10b981" }} />
                   </motion.a>
-                ))}
+                )}
+
+                {siteConfig.linkedinUrl && (
+                  <motion.a
+                    href={siteConfig.linkedinUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    whileHover={{ scale: 1.1, y: -2 }}
+                    whileTap={{ scale: 0.95 }}
+                    className="p-2.5 rounded-lg transition-all duration-300"
+                    style={{
+                      background: "rgba(16,185,129,0.1)",
+                      border: "1px solid rgba(16,185,129,0.2)",
+                    }}
+                    aria-label="LinkedIn Profile"
+                  >
+                    <Linkedin className="h-4 w-4" style={{ color: "#10b981" }} />
+                  </motion.a>
+                )}
+
+                {siteConfig.upworkUrl && (
+                  <motion.a
+                    href={siteConfig.upworkUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    whileHover={{ scale: 1.05, y: -2 }}
+                    whileTap={{ scale: 0.95 }}
+                    className="px-3 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition-all duration-300"
+                    style={{
+                      background: "rgba(20,168,0,0.1)",
+                      border: "1px solid rgba(20,168,0,0.25)",
+                      color: "#14a800",
+                    }}
+                    aria-label="Upwork Profile"
+                  >
+                    Upwork <ExternalLink className="w-3 h-3" />
+                  </motion.a>
+                )}
+
+                {siteConfig.fiverrUrl && (
+                  <motion.a
+                    href={siteConfig.fiverrUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    whileHover={{ scale: 1.05, y: -2 }}
+                    whileTap={{ scale: 0.95 }}
+                    className="px-3 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition-all duration-300"
+                    style={{
+                      background: "rgba(29,191,115,0.1)",
+                      border: "1px solid rgba(29,191,115,0.25)",
+                      color: "#1dbf73",
+                    }}
+                    aria-label="Fiverr Profile"
+                  >
+                    Fiverr <ExternalLink className="w-3 h-3" />
+                  </motion.a>
+                )}
               </div>
             </motion.div>
 
@@ -137,28 +190,32 @@ export function MZwebSolutionsFooter() {
                 fontWeight: 600,
               }}>Get In Touch</h3>
               <div className="space-y-3">
-                <a href="mailto:muzammalzaheer571@gmail.com" className="flex items-center gap-2 text-sm group">
-                  <div className="p-2 rounded-lg transition-colors" style={{
-                    background: "rgba(16,185,129,0.1)",
-                  }}>
-                    <Mail className="h-3.5 w-3.5" style={{ color: "#10b981" }} />
-                  </div>
-                  <span className="transition-colors" style={{
-                    color: "#64748b",
-                    fontFamily: "'Poppins', sans-serif",
-                  }}>muzammalzaheer571@gmail.com</span>
-                </a>
-                <a href="tel:+923417359571" className="flex items-center gap-2 text-sm group">
-                  <div className="p-2 rounded-lg transition-colors" style={{
-                    background: "rgba(16,185,129,0.1)",
-                  }}>
-                    <Phone className="h-3.5 w-3.5" style={{ color: "#10b981" }} />
-                  </div>
-                  <span className="transition-colors" style={{
-                    color: "#64748b",
-                    fontFamily: "'Poppins', sans-serif",
-                  }}>+92 341 735 9571</span>
-                </a>
+                {siteConfig.email && (
+                  <a href={`mailto:${siteConfig.email}`} className="flex items-center gap-2 text-sm group">
+                    <div className="p-2 rounded-lg transition-colors" style={{
+                      background: "rgba(16,185,129,0.1)",
+                    }}>
+                      <Mail className="h-3.5 w-3.5" style={{ color: "#10b981" }} />
+                    </div>
+                    <span className="transition-colors group-hover:text-emerald-600" style={{
+                      color: "#64748b",
+                      fontFamily: "'Poppins', sans-serif",
+                    }}>{siteConfig.email}</span>
+                  </a>
+                )}
+                {siteConfig.phone && (
+                  <a href={`tel:${siteConfig.phone.replace(/\s+/g, '')}`} className="flex items-center gap-2 text-sm group">
+                    <div className="p-2 rounded-lg transition-colors" style={{
+                      background: "rgba(16,185,129,0.1)",
+                    }}>
+                      <Phone className="h-3.5 w-3.5" style={{ color: "#10b981" }} />
+                    </div>
+                    <span className="transition-colors group-hover:text-emerald-600" style={{
+                      color: "#64748b",
+                      fontFamily: "'Poppins', sans-serif",
+                    }}>{siteConfig.phone}</span>
+                  </a>
+                )}
               </div>
             </motion.div>
           </div>
@@ -177,21 +234,13 @@ export function MZwebSolutionsFooter() {
             color: "#64748b",
             fontFamily: "'Poppins', sans-serif",
           }}>
-            © {currentYear} Muhammad Muzammal. All rights reserved.
+            © {currentYear} {siteConfig.name}. All rights reserved.
           </div>
           <div className="flex gap-6 text-xs">
-            {/* <Link href="/privacy" className="transition-colors" style={{
-              color: "#64748b",
-              fontFamily: "'Poppins', sans-serif",
-            }}>Privacy</Link>
-            <Link href="/terms" className="transition-colors" style={{
-              color: "#64748b",
-              fontFamily: "'Poppins', sans-serif",
-            }}>Terms</Link> */}
             <span style={{
               color: "#94a3b8",
               fontFamily: "'Poppins', sans-serif",
-            }}>Built with Next.js</span>
+            }}>Built with Next.js &amp; Tailwind CSS</span>
           </div>
         </motion.div>
       </div>

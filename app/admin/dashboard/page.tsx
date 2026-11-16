@@ -19,20 +19,7 @@ import {
   Loader2
 } from "lucide-react"
 import { motion, AnimatePresence } from "framer-motion"
-import { getProjects, saveProjects, defaultProjects as allDefaultProjects } from "@/lib/projects-data"
-
-type Project = {
-  id: number
-  title: string
-  niche: string
-  description: string
-  category: string
-  technologies: string[]
-  image: string
-  liveUrl: string
-  isEbayTemplate: boolean
-  trustScore: number
-}
+import { getProjects, saveProjects, defaultProjects as allDefaultProjects, type Project } from "@/lib/projects-data"
 
 export default function AdminDashboard() {
   const router = useRouter()
@@ -142,8 +129,8 @@ export default function AdminDashboard() {
       technologies: project.technologies.join(", "),
       image: project.image,
       liveUrl: project.liveUrl,
-      isEbayTemplate: project.isEbayTemplate,
-      trustScore: project.trustScore,
+      isEbayTemplate: project.isEbayTemplate ?? false,
+      trustScore: project.trustScore ?? 100,
     })
     setShowForm(true)
   }

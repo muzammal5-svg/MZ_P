@@ -3,8 +3,6 @@ import { MZwebSolutionsHero } from "@/components/rsweblabs-hero"
 import { AboutBento } from "@/components/about-bento"
 import { MZwebSolutionsServices } from "@/components/rsweblabs-services"
 import { FeaturedPortfolio } from "@/components/featured-portfolio"
-import { Testimonials } from "@/components/testimonials"
-import { Contact } from "@/components/contact"
 import { MZwebSolutionsFooter } from "@/components/mzwebsolutions-footer"
 import dynamic from "next/dynamic"
 

@@ -8,7 +8,7 @@ export type Project = {
   image: string
   liveUrl: string
   isEbayTemplate: boolean
-  trustScore: number
+  trustScore?: number
   featured?: boolean
   achievements?: { icon: React.ReactNode; label: string; value: string }[]
   testimonial?: { quote: string; author: string }
@@ -93,13 +93,13 @@ export const defaultProjects: Project[] = [
   },
   {
     id: 7,
-    title: "Sustainable Footwear Brand",
+    title: "Sustainable Footwear (Concept Demo)",
     niche: "Eco-Friendly E-Commerce",
-    description: "Premium Shopify store with eco-friendly design, product customization, and a seamless sustainable checkout experience.",
+    description: "Concept Shopify Plus store showcasing sustainable footwear e-commerce UX, custom product filtering, and a seamless green checkout experience.",
     category: "Shopify",
-    technologies: ["Shopify Plus", "Liquid", "Custom Checkout", "Analytics"],
+    technologies: ["Shopify Plus", "Liquid", "Custom Checkout", "Concept UI"],
     image: "/shopify/shopify landing page.png",
-    liveUrl: "https://www.allbirds.com/",
+    liveUrl: "",
     isEbayTemplate: false,
     trustScore: 100,
   },

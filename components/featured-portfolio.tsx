@@ -1,27 +1,13 @@
 "use client"
 
 import { Button } from "@/components/ui/button"
-import { ArrowRight, ExternalLink, Star, Award, CheckCircle, X, ChevronLeft, ChevronRight } from "lucide-react"
+import { ArrowRight, ExternalLink, X, ChevronLeft, ChevronRight, Award } from "lucide-react"
 import Link from "next/link"
 import Image from "next/image"
 import { motion, AnimatePresence } from "framer-motion"
 import { useState, useEffect, useCallback } from "react"
-import { getProjects, initializeProjects } from "@/lib/projects-data"
+import { getProjects, initializeProjects, defaultProjects, type Project } from "@/lib/projects-data"
 
-type Project = {
-  id: number
-  title: string
-  niche: string
-  description: string
-  category: string
-  technologies: string[]
-  image: string
-  liveUrl: string
-  isEbayTemplate: boolean
-  trustScore: number
-  achievements: { icon: React.ReactNode; label: string; value: string }[]
-  testimonial: { quote: string; author: string }
-}
 const categoryColors: Record<string, string> = {
   WordPress: "bg-blue-500/20 text-blue-400 border-blue-500/30",
   "Custom Web": "bg-green-500/20 text-green-400 border-green-500/30",
@@ -33,28 +19,17 @@ export function FeaturedPortfolio() {
   const [selectedProject, setSelectedProject] = useState<Project | null>(null)
   const [idx, setIdx] = useState(0)
   const [isAutoPlaying, setIsAutoPlaying] = useState(true)
-  const [featuredProjects, setFeaturedProjects] = useState<Project[]>([])
+  const [featuredProjects, setFeaturedProjects] = useState<Project[]>(defaultProjects.slice(0, 10))
 
-  // Load projects from localStorage on mount
+  // Sync with localStorage on client mount if customized in admin
   useEffect(() => {
-    initializeProjects()
-    const projects = getProjects()
-    
-    // Add default achievements and testimonials if missing
-    const projectsWithExtras = projects.map(project => ({
-      ...project,
-      achievements: project.achievements || [
-        { icon: <Star className="w-5 h-5" />, label: "Quality", value: "100%" },
-        { icon: <Award className="w-5 h-5" />, label: "Rating", value: "5.0" },
-        { icon: <CheckCircle className="w-5 h-5" />, label: "Success", value: "100%" }
-      ],
-      testimonial: project.testimonial || {
-        quote: "Excellent work! Professional, timely, and exceeded expectations.",
-        author: "Satisfied Client"
+    if (typeof window !== 'undefined') {
+      initializeProjects()
+      const stored = getProjects()
+      if (stored && stored.length > 0) {
+        setFeaturedProjects(stored.slice(0, 10))
       }
-    }))
-    
-    setFeaturedProjects(projectsWithExtras)
+    }
   }, [])
 
   const total = featuredProjects.length
@@ -294,23 +269,7 @@ export function FeaturedPortfolio() {
                     </span>
                   </div>
 
-                  {/* Stars overlay */}
-                  <div className="absolute bottom-3 left-3 right-3">
-                    <div className="flex items-center gap-2 px-3 py-2 rounded-xl backdrop-blur-md border"
-                      style={{
-                        background: "rgba(255,255,255,0.9)",
-                        borderColor: "rgba(226,232,240,0.8)",
-                      }}
-                    >
-                      <div className="flex items-center gap-0.5">
-                        {[1,2,3,4,5].map(s => (
-                          <Star key={s} className="w-3 h-3 text-yellow-400 fill-current" />
-                        ))}
-                      </div>
-                      <span className="text-xs font-medium" style={{ color: "#0f172a" }}>{project.trustScore}% Trust Score</span>
-                      <CheckCircle className="w-3.5 h-3.5 text-green-500 ml-auto" />
-                    </div>
-                  </div>
+                  
                 </div>
 
                 {/* Content */}
@@ -415,7 +374,7 @@ export function FeaturedPortfolio() {
                       Case Study
                       <ArrowRight className="ml-1.5 h-3 w-3" />
                     </Button>
-                    {!project.isEbayTemplate && (
+                    {!project.isEbayTemplate && project.liveUrl && !project.liveUrl.startsWith("#") && (
                       <Button
                         variant="outline"
                         size="sm"
@@ -627,31 +586,6 @@ export function FeaturedPortfolio() {
                     />
                   </div>
 
-                  <div className="grid grid-cols-3 gap-4">
-                    {selectedProject.achievements.map((a, i) => (
-                      <div key={i} className="rounded-xl p-4 border text-center"
-                        style={{
-                          background: "rgba(248,250,252,0.8)",
-                          borderColor: "rgba(226,232,240,0.8)",
-                        }}
-                      >
-                        <div className="flex justify-center mb-2" style={{ color: "#3b82f6" }}>{a.icon}</div>
-                        <div className="text-xl font-bold" style={{ color: "#0f172a", fontFamily: "'Poppins', sans-serif" }}>{a.value}</div>
-                        <div className="text-xs" style={{ color: "#64748b", fontFamily: "'Poppins', sans-serif" }}>{a.label}</div>
-                      </div>
-                    ))}
-                  </div>
-
-                  <div className="rounded-xl p-5 border"
-                    style={{
-                      borderColor: "rgba(16,185,129,0.2)",
-                      background: "rgba(16,185,129,0.05)",
-                    }}
-                  >
-                    <p className="italic" style={{ color: "#64748b", fontFamily: "'Poppins', sans-serif" }}>"{selectedProject.testimonial.quote}"</p>
-                    <div className="text-sm mt-2 font-medium" style={{ color: "#3b82f6", fontFamily: "'Poppins', sans-serif" }}>— {selectedProject.testimonial.author}</div>
-                  </div>
-
                   <div className="flex flex-wrap gap-2">
                     {selectedProject.technologies.map((tech) => (
                       <span key={tech} className="px-3 py-1.5 text-xs rounded-full border"
@@ -668,7 +602,7 @@ export function FeaturedPortfolio() {
                   </div>
 
                   <div className="flex gap-4 justify-center pb-2">
-                    {!selectedProject.isEbayTemplate ? (
+                    {!selectedProject.isEbayTemplate && selectedProject.liveUrl && !selectedProject.liveUrl.startsWith("#") ? (
                       <Button
                         className="text-white font-semibold px-8 py-3 rounded-xl"
                         style={{
@@ -689,7 +623,8 @@ export function FeaturedPortfolio() {
                             fontFamily: "'Poppins', sans-serif",
                           }}
                         >
-                          Get This Template
+                          <ArrowRight className="w-4 h-4 mr-2" />
+                          {selectedProject.isEbayTemplate ? "Get This Template" : "Discuss Similar Project"}
                         </Button>
                       </Link>
                     )}

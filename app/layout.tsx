@@ -1,13 +1,14 @@
 import type React from "react"
 import type { Metadata } from "next"
-import { Inter } from "next/font/google"
+import { Inter, Poppins } from "next/font/google"
 import { Analytics } from "@vercel/analytics/next"
 import { WhatsAppFloat } from "@/components/whatsapp-float"
 import { ScrollToTop } from "@/components/scroll-to-top"
 import { ThemeProvider } from "@/components/theme-provider"
+import { siteConfig } from "@/lib/site-config"
 import "./globals.css"
 
-const SITE_URL = (process.env.NEXT_PUBLIC_SITE_URL || 'https://muzammalzaheer.vercel.app').replace(/\/+$/, '')
+const SITE_URL = siteConfig.siteUrl.replace(/\/+$/, '')
 
 const inter = Inter({ 
   subsets: ["latin"],
@@ -18,19 +19,27 @@ const inter = Inter({
   fallback: ['system-ui', 'arial'],
 })
 
+const poppins = Poppins({
+  subsets: ["latin"],
+  weight: ['400', '500', '600', '700'],
+  variable: '--font-poppins',
+  display: 'swap',
+  preload: true,
+})
+
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: {
-    default: "Muhammad Muzammal | Full-Stack Web Developer",
-    template: "%s | Muhammad Muzammal"
+    default: `${siteConfig.name} | ${siteConfig.title}`,
+    template: `%s | ${siteConfig.name}`
   },
   description:
-    "Full-stack developer specializing in Next.js, React, WordPress, and Shopify. Delivering fast, accessible, and high-performance websites.",
+    `${siteConfig.name} - ${siteConfig.title} specializing in WordPress, Shopify, Next.js, and AI automation. Delivering fast, high-converting websites with ${siteConfig.metrics.projectsCount} projects delivered.`,
   generator: "Next.js",
-  applicationName: "Muhammad Muzammal Portfolio",
-  authors: [{ name: "Muhammad Muzammal", url: SITE_URL }],
-  creator: "Muhammad Muzammal",
-  publisher: "Muhammad Muzammal",
+  applicationName: `${siteConfig.name} Portfolio`,
+  authors: [{ name: siteConfig.name, url: SITE_URL }],
+  creator: siteConfig.name,
+  publisher: siteConfig.name,
   formatDetection: {
     email: false,
     address: false,
@@ -71,22 +80,22 @@ export const metadata: Metadata = {
     type: 'website',
     locale: 'en_US',
     url: SITE_URL,
-    title: 'Muhammad Muzammal | Full-Stack Web Developer',
-    description: 'Full-stack developer specializing in Next.js, React, WordPress, and Shopify with 100+ projects delivered.',
-    siteName: 'Muhammad Muzammal - Full-Stack Developer',
+    title: `${siteConfig.name} | ${siteConfig.title}`,
+    description: `${siteConfig.name} - ${siteConfig.title} specializing in WordPress, Shopify, Next.js, and AI automation with ${siteConfig.metrics.projectsCount} projects delivered.`,
+    siteName: `${siteConfig.name} - ${siteConfig.title}`,
     images: [
       {
         url: '/og-image.jpg',
         width: 1200,
         height: 630,
-        alt: 'Muhammad Muzammal - Full-Stack Web Developer',
+        alt: `${siteConfig.name} - ${siteConfig.title}`,
       },
     ],
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Muhammad Muzammal | Full-Stack Web Developer',
-    description: 'Full-stack developer specializing in Next.js, React, WordPress, and Shopify. 100+ projects delivered.',
+    title: `${siteConfig.name} | ${siteConfig.title}`,
+    description: `${siteConfig.name} - ${siteConfig.title} specializing in WordPress, Shopify, Next.js, and AI automation with ${siteConfig.metrics.projectsCount} projects delivered.`,
     images: ['/og-image.jpg'],
   },
   alternates: {
@@ -110,7 +119,7 @@ export default function RootLayout({
       {
         "@type": "Person",
         "@id": `${SITE_URL}/#person`,
-        "name": "Muhammad Muzammal",
+        "name": siteConfig.name,
         "url": SITE_URL,
         "image": {
           "@type": "ImageObject",
@@ -119,15 +128,17 @@ export default function RootLayout({
           "height": 400
         },
         "sameAs": [
-          "https://github.com/muzammal5-svg",
-          "https://www.linkedin.com/in/muz-the-coder/"
-        ],
-        "jobTitle": "Full-Stack Web Developer",
+          siteConfig.githubUrl,
+          siteConfig.linkedinUrl,
+          siteConfig.upworkUrl,
+          siteConfig.fiverrUrl,
+        ].filter(Boolean),
+        "jobTitle": siteConfig.title,
         "worksFor": {
           "@type": "Organization",
           "name": "Freelance"
         },
-        "description": "Professional WordPress developer, Shopify expert, and React/Next.js specialist with 2+ years of experience",
+        "description": `${siteConfig.title} specializing in WordPress, Shopify, Next.js, and AI automation with ${siteConfig.metrics.yearsExperience} of experience and ${siteConfig.metrics.projectsCount} projects delivered.`,
         "knowsAbout": [
           "WordPress Development",
           "Shopify Development",
@@ -138,6 +149,7 @@ export default function RootLayout({
           "WooCommerce",
           "eBay Templates",
           "E-commerce Development",
+          "AI Automation",
           "API Integration",
           "Performance Optimization",
           "SEO"
@@ -146,14 +158,14 @@ export default function RootLayout({
       {
         "@type": "ProfessionalService",
         "@id": `${SITE_URL}/#service`,
-        "name": "Muhammad Muzammal - Full-Stack Web Development Services",
+        "name": `${siteConfig.name} - ${siteConfig.title} Services`,
         "url": SITE_URL,
         "logo": `${SITE_URL}/MZwebsolution.png`,
         "image": `${SITE_URL}/og-image.jpg`,
-        "description": "Professional WordPress, Shopify, and React development services. Custom theme development, e-commerce solutions, and high-performance web applications.",
+        "description": `Professional WordPress, Shopify, and React development services by ${siteConfig.name}. Custom theme development, e-commerce solutions, and high-performance web applications.`,
         "priceRange": "$$",
-        "telephone": "+92-341-735-9571",
-        "email": "muzammalzaheer571@gmail.com",
+        "telephone": siteConfig.phone,
+        "email": siteConfig.email,
         "address": {
           "@type": "PostalAddress",
           "addressCountry": "PK"
@@ -171,23 +183,17 @@ export default function RootLayout({
           "E-commerce Development",
           "Custom Web Applications",
           "eBay Template Design",
+          "AI Automation",
           "API Integration",
           "Performance Optimization"
-        ],
-        "aggregateRating": {
-          "@type": "AggregateRating",
-          "ratingValue": "5.0",
-          "reviewCount": "100",
-          "bestRating": "5",
-          "worstRating": "1"
-        }
+        ]
       },
       {
         "@type": "WebSite",
         "@id": `${SITE_URL}/#website`,
         "url": SITE_URL,
-        "name": "Muhammad Muzammal - Full-Stack Developer",
-        "description": "Professional WordPress, Shopify, and React developer portfolio",
+        "name": `${siteConfig.name} - ${siteConfig.title}`,
+        "description": `${siteConfig.name} - ${siteConfig.title} portfolio showcasing WordPress, Shopify, and Next.js projects.`,
         "publisher": {
           "@id": `${SITE_URL}/#person`
         }
@@ -233,14 +239,12 @@ export default function RootLayout({
   };
 
   return (
-    <html lang="en" className={`${inter.variable}`} suppressHydrationWarning>
+    <html lang="en" className={`${inter.variable} ${poppins.variable}`} suppressHydrationWarning>
       <head>
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
         />
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="dns-prefetch" href="https://fonts.googleapis.com" />
       </head>
       <body className={`${inter.className} font-sans antialiased min-h-screen`}>
         <ThemeProvider

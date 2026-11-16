@@ -10,7 +10,6 @@ const navLinks = [
   { label: "Home",      href: "/" },
   { label: "Services",  href: "/services", hasDropdown: true },
   { label: "Portfolio", href: "/portfolio" },
-  { label: "Blog",      href: "/blog" },
   { label: "Contact",   href: "/contact" },
 ]
 

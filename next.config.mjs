@@ -41,9 +41,18 @@ const nextConfig = {
   reactStrictMode: true,
   // SEO optimizations
   generateEtags: true,
+  // 301 Redirects for deprecated or merged services
+  async redirects() {
+    return [
+      {
+        source: '/services/webflow',
+        destination: '/services',
+        permanent: true,
+      },
+    ]
+  },
   // Experimental features for better performance
   experimental: {
-    optimizeCss: true,
     optimizePackageImports: ['lucide-react', '@radix-ui/react-icons', 'framer-motion'],
   },
 }

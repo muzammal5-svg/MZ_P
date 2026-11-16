@@ -6,8 +6,9 @@ import { MZwebSolutionsNavigation } from "@/components/rsweblabs-navigation"
 import { MZwebSolutionsFooter } from "@/components/mzwebsolutions-footer"
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
+import Image from "next/image"
 import { motion, AnimatePresence } from "framer-motion"
-import { getProjects, initializeProjects } from "@/lib/projects-data"
+import { getProjects, initializeProjects, defaultProjects, type Project as LibProject } from "@/lib/projects-data"
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 type Project = {
@@ -345,7 +346,7 @@ function ProjectModal({ project, onClose }: { project: Project; onClose: () => v
 
             {/* Actions */}
             <div className="flex gap-3 pt-2">
-              {!project.isEbayTemplate ? (
+              {!project.isEbayTemplate && project.liveUrl && !project.liveUrl.startsWith("#") ? (
                 <a href={project.liveUrl} target="_blank" rel="noopener noreferrer" className="flex-1">
                   <Button className="w-full text-white font-semibold rounded-xl py-6 transition-all duration-300 hover:shadow-lg"
                     style={{
@@ -365,7 +366,7 @@ function ProjectModal({ project, onClose }: { project: Project; onClose: () => v
                       fontFamily: "'Poppins', sans-serif",
                       fontWeight: 600,
                     }}>
-                    Get This Template
+                    {project.isEbayTemplate ? "Get This Template" : "Inquire About Project"}
                   </Button>
                 </Link>
               )}
@@ -399,7 +400,7 @@ function ProjectModal({ project, onClose }: { project: Project; onClose: () => v
 export default function PortfolioPage() {
   const [active, setActive] = useState("All")
   const [selected, setSelected] = useState<Project | null>(null)
-  const [projects, setProjects] = useState<Project[]>([])
+  const [projects, setProjects] = useState<Project[]>(defaultProjects as unknown as Project[])
 
   // Load projects from localStorage on mount
   useEffect(() => {
