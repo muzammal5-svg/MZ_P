@@ -35,7 +35,7 @@ export interface ServiceItem {
   process: ServiceProcessStep[]
   faqs: ServiceFAQ[]
   relatedSlugs: string[]
-  testimonialMatch: ServiceTestimonial
+  testimonialMatch?: ServiceTestimonial
 }
 
 export interface SiteConfig {
@@ -293,18 +293,8 @@ export const siteConfig: SiteConfig = {
         },
       ],
       relatedSlugs: ["wordpress", "frontend", "ai-automation"],
-      // Verified Upwork client feedback on speed and communication
-      // TODO: Confirm specific Shopify client quote if you'd like a dedicated e-commerce review here
-      testimonialMatch: {
-        name: "WordPress Client",
-        role: "Upwork Client",
-        platform: "upwork",
-        rating: 5,
-        tag: "Web Development / E-Commerce",
-        text: "Great work, fast delivery, and excellent communication throughout the project. Highly recommend this developer to anyone looking for high-quality results. I'll definitely work with them again!",
-        initials: "WC",
-        bgColor: "#15803d",
-      },
+      // Note: No dedicated Shopify-specific client review currently in verified set
+      // TODO: Add client review specific to Shopify store development once provided
     },
 
     frontend: {
@@ -509,18 +499,8 @@ export const siteConfig: SiteConfig = {
         },
       ],
       relatedSlugs: ["ai-chatbot", "shopify", "wordpress"],
-      // Verified Upwork client feedback on on-time delivery and communication
-      // TODO: Add client review specific to Make.com / AI Automation once available
-      testimonialMatch: {
-        name: "Custom WordPress Client",
-        role: "Upwork Client",
-        platform: "upwork",
-        rating: 5,
-        tag: "Automation & Integration",
-        text: "Excellent experience working together. The work was delivered on time with great attention to detail and quality. Communication was smooth throughout the project. Highly recommended.",
-        initials: "CW",
-        bgColor: "#15803d",
-      },
+      // Note: No dedicated Make.com / AI Automation review currently in verified set
+      // TODO: Add client review specific to Make.com / AI Automation once provided
     },
 
     "ai-chatbot": {
@@ -618,18 +598,8 @@ export const siteConfig: SiteConfig = {
         },
       ],
       relatedSlugs: ["ai-automation", "frontend", "wordpress"],
-      // Verified Upwork client feedback
-      // TODO: Replace with dedicated AI Chatbot client testimonial once confirmed
-      testimonialMatch: {
-        name: "Muhammad Haseeb Arshad",
-        role: "Entrepreneur",
-        platform: "upwork",
-        rating: 5,
-        tag: "React / Custom Solutions",
-        text: "I worked with Muzammil on a React project and had a great experience. He is skilled, professional, and delivers quality work on time. I highly recommend him for any web development project.",
-        initials: "MH",
-        bgColor: "#0284c7",
-      },
+      // Note: No dedicated AI Chatbot review currently in verified set
+      // TODO: Add client review specific to AI Chatbots once provided
     },
 
     "ebay-templates": {

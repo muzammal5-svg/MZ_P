@@ -513,53 +513,99 @@ export function ServiceDetailView({ service }: ServiceDetailViewProps) {
           </div>
         </section>
 
-        {/* Real Matching Testimonial */}
+        {/* Testimonial / Platform Reviews Block */}
         <section className="py-20 bg-white border-b border-slate-200/80">
           <div className="container mx-auto px-4 sm:px-6 lg:px-8">
             <div className="max-w-3xl mx-auto">
-              <div className="text-center mb-10">
-                <span className="text-xs font-semibold text-emerald-600 uppercase tracking-wider">
-                  Client Validation
-                </span>
-                <h2 className="text-2xl sm:text-3xl font-bold text-slate-900 mt-1" style={{ fontFamily: "'Poppins', sans-serif" }}>
-                  Verified Client Feedback
-                </h2>
-              </div>
+              {service.testimonialMatch ? (
+                <>
+                  <div className="text-center mb-10">
+                    <span className="text-xs font-semibold text-emerald-600 uppercase tracking-wider">
+                      Client Validation
+                    </span>
+                    <h2 className="text-2xl sm:text-3xl font-bold text-slate-900 mt-1" style={{ fontFamily: "'Poppins', sans-serif" }}>
+                      Verified Client Feedback
+                    </h2>
+                  </div>
 
-              <div className="p-8 rounded-2xl bg-slate-50 border border-slate-200 shadow-sm">
-                <div className="flex items-center justify-between mb-4">
-                  {service.testimonialMatch.platform === "upwork" ? <UpworkBadge /> : <FiverrBadge />}
-                  <div className="flex gap-1" aria-label="5 out of 5 stars">
-                    {Array.from({ length: service.testimonialMatch.rating }).map((_, si) => (
-                      <Star key={si} className="w-4 h-4 fill-amber-400 text-amber-400" />
-                    ))}
+                  <div className="p-8 rounded-2xl bg-slate-50 border border-slate-200 shadow-sm">
+                    <div className="flex items-center justify-between mb-4">
+                      {service.testimonialMatch.platform === "upwork" ? <UpworkBadge /> : <FiverrBadge />}
+                      <div className="flex gap-1" aria-label="5 out of 5 stars">
+                        {Array.from({ length: service.testimonialMatch.rating }).map((_, si) => (
+                          <Star key={si} className="w-4 h-4 fill-amber-400 text-amber-400" />
+                        ))}
+                      </div>
+                    </div>
+
+                    <p 
+                      className="text-base sm:text-lg text-slate-800 leading-relaxed italic mb-6"
+                      style={{ fontFamily: "'Poppins', sans-serif" }}
+                    >
+                      "{service.testimonialMatch.text}"
+                    </p>
+
+                    <div className="flex items-center gap-3 pt-4 border-t border-slate-200">
+                      <div 
+                        className="w-10 h-10 rounded-full flex items-center justify-center font-bold text-white text-sm"
+                        style={{ backgroundColor: service.testimonialMatch.bgColor }}
+                      >
+                        {service.testimonialMatch.initials}
+                      </div>
+                      <div>
+                        <div className="text-sm font-bold text-slate-900" style={{ fontFamily: "'Poppins', sans-serif" }}>
+                          {service.testimonialMatch.name}
+                        </div>
+                        <div className="text-xs text-slate-500">
+                          {service.testimonialMatch.role} · {service.testimonialMatch.tag}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </>
+              ) : (
+                /* Labeled fallback when no service-specific testimonial exists */
+                <div className="p-8 sm:p-10 rounded-2xl bg-slate-50 border border-slate-200 shadow-sm text-center">
+                  <span className="text-xs font-semibold px-3 py-1 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200">
+                    Client reviews on Upwork & Fiverr
+                  </span>
+                  
+                  <h2 className="text-2xl sm:text-3xl font-bold text-slate-900 mt-4 mb-3" style={{ fontFamily: "'Poppins', sans-serif" }}>
+                    Verified 5.0 Client Reviews on Freelance Platforms
+                  </h2>
+
+                  <p className="text-sm text-slate-600 max-w-xl mx-auto mb-6 leading-relaxed">
+                    I deliver all projects with a verified 5.0-star track record across Upwork and Fiverr. While dedicated reviews for this specific service category are being organized, you can verify my complete contract history, client ratings, and feedback directly on my official freelance profiles.
+                  </p>
+
+                  <div className="flex flex-wrap items-center justify-center gap-4">
+                    {siteConfig.upworkUrl && (
+                      <a
+                        href={siteConfig.upworkUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-white border border-slate-300 hover:border-emerald-500 text-xs sm:text-sm font-semibold text-slate-800 transition-colors shadow-sm"
+                      >
+                        <UpworkBadge />
+                        <span>View Upwork Profile & Reviews</span>
+                        <ExternalLink className="w-3.5 h-3.5 text-slate-400" />
+                      </a>
+                    )}
+                    {siteConfig.fiverrUrl && (
+                      <a
+                        href={siteConfig.fiverrUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-white border border-slate-300 hover:border-emerald-500 text-xs sm:text-sm font-semibold text-slate-800 transition-colors shadow-sm"
+                      >
+                        <FiverrBadge />
+                        <span>View Fiverr Profile & Reviews</span>
+                        <ExternalLink className="w-3.5 h-3.5 text-slate-400" />
+                      </a>
+                    )}
                   </div>
                 </div>
-
-                <p 
-                  className="text-base sm:text-lg text-slate-800 leading-relaxed italic mb-6"
-                  style={{ fontFamily: "'Poppins', sans-serif" }}
-                >
-                  "{service.testimonialMatch.text}"
-                </p>
-
-                <div className="flex items-center gap-3 pt-4 border-t border-slate-200">
-                  <div 
-                    className="w-10 h-10 rounded-full flex items-center justify-center font-bold text-white text-sm"
-                    style={{ backgroundColor: service.testimonialMatch.bgColor }}
-                  >
-                    {service.testimonialMatch.initials}
-                  </div>
-                  <div>
-                    <div className="text-sm font-bold text-slate-900" style={{ fontFamily: "'Poppins', sans-serif" }}>
-                      {service.testimonialMatch.name}
-                    </div>
-                    <div className="text-xs text-slate-500">
-                      {service.testimonialMatch.role} · {service.testimonialMatch.tag}
-                    </div>
-                  </div>
-                </div>
-              </div>
+              )}
             </div>
           </div>
         </section>
