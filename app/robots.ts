@@ -1,15 +1,16 @@
 import { MetadataRoute } from 'next'
+import { siteConfig } from '@/lib/site-config'
 
 export default function robots(): MetadataRoute.Robots {
-  const siteUrl = (process.env.NEXT_PUBLIC_SITE_URL || 'https://muzammalzaheer.vercel.app').replace(/\/+$/, '')
+  const siteUrl = siteConfig.siteUrl.replace(/\/+$/, '')
 
   return {
     rules: [
       {
         userAgent: '*',
         allow: '/',
-        // TODO: Re-add /blog/ to the allow list once real written MDX articles exist
-        disallow: ['/admin/', '/api/', '/reset-projects/', '/blog/'],
+        // Disallow private, non-indexable, demo, and unlaunched draft sections
+        disallow: ['/admin/', '/api/', '/reset-projects/', '/demo/', '/blog/'],
       },
     ],
     sitemap: `${siteUrl}/sitemap.xml`,

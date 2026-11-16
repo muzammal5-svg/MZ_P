@@ -1,8 +1,9 @@
 import { MetadataRoute } from 'next'
 import { getAllProjectSlugs } from '@/lib/projects-data'
+import { siteConfig } from '@/lib/site-config'
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const siteUrl = (process.env.NEXT_PUBLIC_SITE_URL || 'https://muzammalzaheer.vercel.app').replace(/\/+$/, '')
+  const siteUrl = siteConfig.siteUrl.replace(/\/+$/, '')
   const currentDate = new Date().toISOString().split('T')[0]
 
   const staticRoutes = [
