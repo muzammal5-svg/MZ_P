@@ -1,250 +1,323 @@
-export type BlogPost = {
+import { siteConfig } from "./site-config"
+
+export interface TableOfContentsItem {
+  id: string
+  title: string
+}
+
+export interface BlogPost {
   id: string
   title: string
   slug: string
   excerpt: string
   content: string
-  category: string
+  category: "WordPress" | "Shopify" | "eBay Templates" | "Frontend" | "AI Automation"
   tags: string[]
   author: string
+  authorRole: string
   publishedAt: string
   readTime: string
   image: string
   featured: boolean
+  draft: boolean
   seoTitle: string
   seoDescription: string
-  seoKeywords: string[]
+  tableOfContents: TableOfContentsItem[]
 }
 
 export const blogPosts: BlogPost[] = [
-  // WordPress Blogs
   {
     id: "1",
-    title: "10 Essential WordPress Performance Optimization Techniques for 2024",
-    slug: "wordpress-performance-optimization-2024",
-    excerpt: "Learn how to boost your WordPress site speed and achieve 100/100 PageSpeed scores with these proven optimization techniques.",
+    slug: "wordpress-core-web-vitals-optimization-guide",
+    title: "The Complete Guide to Optimizing WordPress for Core Web Vitals (LCP, INP, CLS)",
+    excerpt: "A developer's checklist for scoring green Core Web Vitals on WordPress: database caching, critical CSS, asset offloading, and font loading strategies.",
     category: "WordPress",
-    tags: ["WordPress", "Performance", "SEO", "Speed Optimization", "Core Web Vitals"],
-    author: "Muzammal",
-    publishedAt: "2024-01-15",
-    readTime: "8 min read",
-    image: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=800&h=500&fit=crop",
+    tags: ["WordPress", "Core Web Vitals", "LCP", "INP", "CLS", "Performance"],
+    author: siteConfig.name,
+    authorRole: siteConfig.title,
+    publishedAt: "2024-11-15",
+    readTime: "7 min read",
+    image: "/professional-wordpress-business-website.jpg",
     featured: true,
-    seoTitle: "WordPress Performance Optimization Guide 2024 | Speed Up Your Site",
-    seoDescription: "Complete guide to WordPress performance optimization. Learn caching, image optimization, database cleanup, and more to achieve lightning-fast load times.",
-    seoKeywords: ["wordpress performance", "wordpress speed optimization", "wordpress caching", "wordpress optimization", "improve wordpress speed", "wordpress core web vitals"],
-    content: ``,
+    draft: true,
+    seoTitle: "Optimizing WordPress for Core Web Vitals: Developer Guide | Muzammal Zaheer",
+    seoDescription: "Step-by-step developer guide to solving LCP, INP, and CLS on WordPress and WooCommerce sites without breaking layout or plugins.",
+    tableOfContents: [
+      { id: "understanding-vitals", title: "1. Understanding Core Web Vitals in 2025" },
+      { id: "tackling-lcp", title: "2. Tackling Largest Contentful Paint (LCP)" },
+      { id: "solving-inp", title: "3. Reducing Interaction to Next Paint (INP)" },
+      { id: "eliminating-cls", title: "4. Eliminating Cumulative Layout Shift (CLS)" },
+      { id: "server-caching", title: "5. Server-Level Caching & Redis Object Cache" },
+      { id: "checklist", title: "6. Production Deployment Checklist" },
+    ],
+    content: `
+## 1. Understanding Core Web Vitals in 2025 {#understanding-vitals}
+
+Google's Core Web Vitals have evolved into ranking factors that directly reflect real-world user experience (CrUX data). The three pillar metrics evaluated in search indexing are:
+
+1. **LCP (Largest Contentful Paint)**: Measures loading speed. The largest content element (typically the hero image or headline block) should render within **2.5 seconds** of navigation.
+2. **INP (Interaction to Next Paint)**: Replaced FID (First Input Delay) to measure overall UI responsiveness throughout the user's session. A good INP score is under **200 milliseconds**.
+3. **CLS (Cumulative Layout Shift)**: Measures visual stability. Layout shifts caused by late-loading ads, dynamic banners, or unsized images must stay under **0.1**.
+
+On WordPress, scoring green on these metrics requires addressing both backend execution time (TTFB) and frontend asset delivery.
+
+---
+
+## 2. Tackling Largest Contentful Paint (LCP) {#tackling-lcp}
+
+LCP is most commonly dragged down by oversized hero images and unoptimized font loading. Here is the exact pipeline to fix it:
+
+- **Preload the Hero Image**: Ensure the primary above-the-fold image has \`<link rel="preload" as="image">\` and is never lazy-loaded. Lazy-loading the hero image adds an unnecessary delay before the browser requests the resource.
+- **Convert to Next-Gen Formats**: Deliver WebP or AVIF images. AVIF typically achieves 20% to 30% higher compression efficiency over WebP with zero perceptual quality degradation.
+- **Inline Critical CSS**: Extract and inline the minimal stylesheet required to paint the above-the-fold viewport, then load non-critical stylesheets asynchronously with \`media="print" onload="this.media='all'"\`.
+- **Eliminate Render-Blocking Scripts**: Defer or load non-essential JavaScript asynchronously, preventing the HTML parser from blocking.
+
+---
+
+## 3. Reducing Interaction to Next Paint (INP) {#solving-inp}
+
+With Google replacing FID with INP, long-running JavaScript execution that freezes the browser main thread directly hurts your search visibility.
+
+Common culprits in WordPress:
+- Heavy third-party tracking scripts (Hotjar, Meta Pixel, Google Tag Manager container bloat).
+- Slider and carousel scripts running continuous requestAnimationFrame loops.
+- Excessive DOM depth generated by visual page builders (Elementor / Divi nested container hierarchies).
+
+**Solutions**:
+1. Delay third-party marketing tags until first user interaction (scroll, touch, or keydown) using lightweight loaders.
+2. Audit heavy jQuery plugins and replace them with vanilla JavaScript or CSS transitions.
+3. Optimize DOM node counts to remain well under Google's recommended threshold of 1,400 total DOM nodes.
+
+---
+
+## 4. Eliminating Cumulative Layout Shift (CLS) {#eliminating-cls}
+
+Layout shifts happen when elements change position without user interaction because asynchronous assets rendered unexpectedly.
+
+**Standard Fixes**:
+- **Always declare explicit aspect ratios**: Set \`width\` and \`height\` attributes or use CSS \`aspect-ratio: 16 / 9\` on all image containers and iframe wrappers.
+- **Pre-allocate dimensions for cookie banners & notice bars**: Reserve min-height placeholders in CSS so page content does not jump when JavaScript mounts the element.
+- **Font Display Optional**: Use \`font-display: optional\` or \`swap\` combined with matched fallback font metrics (\`size-adjust\`, \`ascent-override\`) to prevent visible text shifts during webfont loading.
+
+---
+
+## 5. Server-Level Caching & Redis Object Cache {#server-caching}
+
+Plugin-based PHP page caching is inadequate for high-traffic or dynamic WooCommerce stores. You need layered server caching:
+
+- **Nginx FastCGI Cache or OpenLiteSpeed Caching**: Serves fully pre-rendered static HTML directly from RAM in 30ms to 60ms, bypassing PHP and MySQL completely for guest visitors.
+- **Persistent Redis Object Cache**: Caches repeated database queries, transient options, and user session data in memory. This eliminates database spikes during high concurrent checkouts.
+- **OPcache Allocation**: Allocate at least 128MB to 256MB to PHP OPcache with \`opcache.validate_timestamps=0\` in high-throughput production environments.
+
+---
+
+## 6. Production Deployment Checklist {#checklist}
+
+Before launching any WordPress speed overhaul, verify each of these checkpoints:
+
+- [ ] Hero image preloaded with \`fetchpriority="high"\`
+- [ ] No above-the-fold image has \`loading="lazy"\`
+- [ ] Redis object caching verified active via \`redis-cli info\`
+- [ ] Google Fonts hosted locally or served via self-hosted WOFF2 assets
+- [ ] Gzip / Brotli compression active on server responses
+- [ ] Real-user CrUX data monitored over a 28-day rolling window
+`,
   },
   {
     id: "2",
-    title: "WordPress Security Best Practices: Complete Guide to Protect Your Website",
-    slug: "wordpress-security-best-practices",
-    excerpt: "Protect your WordPress site from hackers with these essential security measures and best practices.",
-    category: "WordPress",
-    tags: ["WordPress", "Security", "Website Protection", "SSL", "Firewall"],
-    author: "Muzammal",
-    publishedAt: "2024-01-10",
-    readTime: "10 min read",
-    image: "https://images.unsplash.com/photo-1555949963-ff9fe0c870eb?w=800&h=500&fit=crop",
+    slug: "custom-shopify-theme-vs-premium-theme",
+    title: "Custom Shopify Theme vs. Pre-Built Premium Theme: Which Drives Higher ROI?",
+    excerpt: "An engineering and conversion breakdown of when an e-commerce brand should choose a pre-built Shopify theme versus a bespoke Liquid development build.",
+    category: "Shopify",
+    tags: ["Shopify", "E-commerce", "Liquid", "Theme Development", "Conversion Rate"],
+    author: siteConfig.name,
+    authorRole: siteConfig.title,
+    publishedAt: "2024-11-20",
+    readTime: "6 min read",
+    image: "/modern-shopify-ecommerce-store.jpg",
     featured: false,
-    seoTitle: "WordPress Security Guide 2024 | Protect Your Website from Hackers",
-    seoDescription: "Learn essential WordPress security best practices including SSL, firewall setup, malware protection, and regular backups to keep your website safe.",
-    seoKeywords: ["wordpress security", "wordpress protection", "secure wordpress site", "wordpress malware", "wordpress firewall", "wordpress ssl"],
-    content: ``,
+    draft: true,
+    seoTitle: "Custom Shopify Theme vs Premium Theme: ROI Analysis | Muzammal Zaheer",
+    seoDescription: "Compare the performance, total cost of ownership, and conversion impact between custom Liquid Shopify themes and Theme Store templates.",
+    tableOfContents: [
+      { id: "the-decision", title: "1. The E-Commerce Architecture Decision" },
+      { id: "premium-theme-pros-cons", title: "2. Pre-Built Themes: Strengths and Pitfalls" },
+      { id: "custom-liquid-advantage", title: "3. Bespoke Themes: The Engineering Advantage" },
+      { id: "speed-comparison", title: "4. Load Speed & App Bloat Comparison" },
+      { id: "decision-framework", title: "5. Five Questions to Pick the Right Route" },
+    ],
+    content: `
+## 1. The E-Commerce Architecture Decision {#the-decision}
+
+Every growing Shopify store reaches a pivot point: do you buy a \$350 to \$400 theme from the Shopify Theme Store, or do you commission a bespoke custom theme?
+
+The answer is rarely one-size-fits-all. It depends on catalogue complexity, average order value (AOV), monthly revenue, and whether your conversion funnel requires specialized interaction patterns.
+
+---
+
+## 2. Pre-Built Themes: Strengths and Pitfalls {#premium-theme-pros-cons}
+
+### Strengths
+- **Immediate Time to Market**: Pre-built themes (such as Dawn, Impulse, or Prestige) allow you to launch within days.
+- **Built-In Features**: Mega menus, slide-out carts, and basic currency selectors come out-of-the-box.
+- **Low Initial Upfront Cost**: Hundreds of dollars rather than several thousand.
+
+### Pitfalls
+- **Feature Overload & Code Bloat**: Pre-built themes are engineered to appeal to every conceivable merchant. They ship with dozens of CSS and JavaScript bundles that run even when the corresponding section is disabled.
+- **Difficult Code Customization**: Modifying deeply nested vendor templates frequently leads to breaking future automated theme updates.
+- **Cookie-Cutter Aesthetics**: Your store looks visually indistinguishable from hundreds of direct competitors in your niche.
+
+---
+
+## 3. Bespoke Themes: The Engineering Advantage {#custom-liquid-advantage}
+
+A bespoke Shopify theme built from Shopify Dawn or custom Liquid architecture is designed specifically for your brand's checkout funnel:
+
+- **Tailored Customer Journeys**: Build custom product configurators, bundle builders, and dynamic checkout upsells that increase Average Order Value (AOV).
+- **Zero Extraneous Code**: Only the styles and scripts needed by your active components are bundled and loaded.
+- **Clean Section Architecture**: Uses modern Shopify OS 2.0 JSON templates, giving non-technical store managers full drag-and-drop customization without risking codebase breakage.
+
+---
+
+## 4. Load Speed & App Bloat Comparison {#speed-comparison}
+
+Every additional second of mobile load time in e-commerce drops conversion rates by up to 20%.
+
+| Factor | Pre-Built Premium Theme | Bespoke Custom Liquid Theme |
+| :--- | :--- | :--- |
+| **JS Bundle Size** | Often 400KB - 850KB | Under 120KB minified |
+| **Mobile Speed Index** | Typically 3.8s - 5.5s | Under 2.0s |
+| **App Reliance** | 8 - 15 apps for custom UI | Hand-coded native sections (0 app scripts) |
+| **Theme Updates** | Manual merge conflicts | Clean Git version control |
+
+By eliminating third-party apps for tabs, swatches, and cart drawers, custom theme architecture saves hundreds of dollars in recurring monthly app subscriptions while keeping the store lightning fast.
+
+---
+
+## 5. Five Questions to Pick the Right Route {#decision-framework}
+
+1. **Is your monthly store revenue under \$15,000/month?** Start with a clean theme like Shopify Dawn or a vetted premium theme. Reinvest your capital into customer acquisition.
+2. **Is your monthly revenue exceeding \$50,000/month?** A 0.5% boost in conversion rate from custom architecture pays for the entire development cost within 60 to 90 days.
+3. **Do you require custom B2B tiers, complex bundles, or subscription flows?** A bespoke Liquid implementation provides a seamless experience without clunky app redirects.
+4. **Is mobile load speed a primary KPI?** Choose custom architecture with zero third-party vendor bloat.
+`,
   },
-  // Shopify Blogs
   {
     id: "3",
-    title: "Shopify Store Optimization: 15 Ways to Increase Your Conversion Rate",
-    slug: "shopify-conversion-rate-optimization",
-    excerpt: "Boost your Shopify store sales with these proven conversion rate optimization strategies and techniques.",
-    category: "Shopify",
-    tags: ["Shopify", "E-commerce", "Conversion Rate", "Sales", "Optimization"],
-    author: "Muzammal",
-    publishedAt: "2024-01-12",
-    readTime: "12 min read",
-    image: "https://images.unsplash.com/photo-1472851294608-062f824d29cc?w=800&h=500&fit=crop",
-    featured: true,
-    seoTitle: "Shopify Conversion Rate Optimization | Increase Sales by 40%",
-    seoDescription: "Proven strategies to optimize your Shopify store and increase conversion rates. Learn checkout optimization, product page design, and trust signals.",
-    seoKeywords: ["shopify optimization", "shopify conversion rate", "increase shopify sales", "shopify checkout", "ecommerce conversion", "shopify store optimization"],
-    content: ``,
-  },
-  {
-    id: "4",
-    title: "Shopify App Integration Guide: Must-Have Apps for Your Store in 2024",
-    slug: "shopify-app-integration-guide",
-    excerpt: "Discover the essential Shopify apps that will help you grow your e-commerce business and improve customer experience.",
-    category: "Shopify",
-    tags: ["Shopify", "Apps", "E-commerce", "Integration", "Tools"],
-    author: "Muzammal",
-    publishedAt: "2024-01-08",
-    readTime: "9 min read",
-    image: "https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=800&h=500&fit=crop",
+    slug: "high-converting-ebay-listing-templates",
+    title: "How to Build High-Converting, Mobile-Responsive eBay Listing Templates in 2025",
+    excerpt: "Engineering eBay listing templates that comply with modern active content policies, load instantly on mobile apps, and convert browsing shoppers into buyers.",
+    category: "eBay Templates",
+    tags: ["eBay", "Templates", "HTML", "CSS", "E-commerce", "Mobile Responsive"],
+    author: siteConfig.name,
+    authorRole: siteConfig.title,
+    publishedAt: "2024-11-25",
+    readTime: "5 min read",
+    image: "/ebay-product-listing-template.jpg",
     featured: false,
-    seoTitle: "Best Shopify Apps 2024 | Essential Integrations for Your Store",
-    seoDescription: "Complete guide to must-have Shopify apps including email marketing, inventory management, reviews, and customer support integrations.",
-    seoKeywords: ["shopify apps", "best shopify apps", "shopify integrations", "shopify plugins", "shopify store apps", "ecommerce apps"],
-    content: ``,
-  },
-  // React/Frontend Blogs
-  {
-    id: "5",
-    title: "React Performance Optimization: Advanced Techniques for Faster Apps",
-    slug: "react-performance-optimization",
-    excerpt: "Master React performance optimization with code splitting, lazy loading, memoization, and other advanced techniques.",
-    category: "Frontend",
-    tags: ["React", "Performance", "JavaScript", "Optimization", "Web Development"],
-    author: "Muzammal",
-    publishedAt: "2024-01-14",
-    readTime: "11 min read",
-    image: "https://images.unsplash.com/photo-1633356122544-f134324a6cee?w=800&h=500&fit=crop",
-    featured: true,
-    seoTitle: "React Performance Optimization Guide | Make Your App 3x Faster",
-    seoDescription: "Learn advanced React performance optimization techniques including code splitting, lazy loading, React.memo, useMemo, and useCallback for faster apps.",
-    seoKeywords: ["react performance", "react optimization", "react speed", "react lazy loading", "react code splitting", "react memoization"],
-    content: ``,
-  },
-  {
-    id: "6",
-    title: "Next.js 14 Complete Guide: Server Components, App Router & Best Practices",
-    slug: "nextjs-14-complete-guide",
-    excerpt: "Everything you need to know about Next.js 14 including server components, app router, and modern best practices.",
-    category: "Frontend",
-    tags: ["Next.js", "React", "Web Development", "Server Components", "App Router"],
-    author: "Muzammal",
-    publishedAt: "2024-01-11",
-    readTime: "15 min read",
-    image: "https://images.unsplash.com/photo-1618477247222-acbdb0e159b3?w=800&h=500&fit=crop",
-    featured: false,
-    seoTitle: "Next.js 14 Complete Guide | Server Components & App Router Tutorial",
-    seoDescription: "Comprehensive Next.js 14 guide covering server components, app router, streaming, suspense, and performance optimization techniques.",
-    seoKeywords: ["nextjs 14", "nextjs tutorial", "nextjs server components", "nextjs app router", "react server components", "nextjs guide"],
-    content: ``,
-  },
-  // AI Automation Blogs
-  {
-    id: "7",
-    title: "Business Automation with Make.com: Complete Beginner's Guide",
-    slug: "business-automation-make-com-guide",
-    excerpt: "Learn how to automate your business workflows with Make.com and save hours every day without coding.",
-    category: "AI Automation",
-    tags: ["Automation", "Make.com", "Workflow", "Business", "Productivity"],
-    author: "Muzammal",
-    publishedAt: "2024-01-13",
-    readTime: "10 min read",
-    image: "https://images.unsplash.com/photo-1518432031352-d6fc5c10da5a?w=800&h=500&fit=crop",
-    featured: true,
-    seoTitle: "Make.com Automation Guide | Automate Business Workflows Without Code",
-    seoDescription: "Complete beginner's guide to Make.com automation. Learn how to connect apps, automate workflows, and save time with visual automation builder.",
-    seoKeywords: ["make.com", "business automation", "workflow automation", "zapier alternative", "no-code automation", "process automation"],
-    content: ``,
-  },
-  {
-    id: "8",
-    title: "10 E-commerce Workflows You Should Automate Today",
-    slug: "ecommerce-automation-workflows",
-    excerpt: "Discover the most impactful e-commerce automation workflows that will save time and increase revenue.",
-    category: "AI Automation",
-    tags: ["E-commerce", "Automation", "Shopify", "Workflow", "Sales"],
-    author: "Muzammal",
-    publishedAt: "2024-01-09",
-    readTime: "8 min read",
-    image: "https://images.unsplash.com/photo-1556742111-a301076d9d18?w=800&h=500&fit=crop",
-    featured: false,
-    seoTitle: "E-commerce Automation Guide | 10 Workflows to Automate Your Store",
-    seoDescription: "Learn which e-commerce workflows to automate including order processing, inventory management, customer emails, and shipping notifications.",
-    seoKeywords: ["ecommerce automation", "shopify automation", "order automation", "inventory automation", "customer service automation", "email automation"],
-    content: ``,
-  },
-  // AI Chatbot Blogs
-  {
-    id: "9",
-    title: "AI Chatbots for Business: ROI, Benefits & Implementation Guide",
-    slug: "ai-chatbots-business-guide",
-    excerpt: "Learn how AI chatbots can transform your customer service and generate leads 24/7 with measurable ROI.",
-    category: "AI Chatbot",
-    tags: ["AI", "Chatbot", "Customer Service", "Lead Generation", "Automation"],
-    author: "Muzammal",
-    publishedAt: "2024-01-16",
-    readTime: "12 min read",
-    image: "https://images.unsplash.com/photo-1531746790731-6c087fecd65a?w=800&h=500&fit=crop",
-    featured: true,
-    seoTitle: "AI Chatbot for Business | Complete Implementation & ROI Guide 2024",
-    seoDescription: "Comprehensive guide to implementing AI chatbots for business. Learn about ROI, customer service automation, lead generation, and integration.",
-    seoKeywords: ["ai chatbot", "business chatbot", "chatgpt business", "customer service automation", "ai customer support", "chatbot roi"],
-    content: ``,
-  },
-  {
-    id: "10",
-    title: "ChatGPT Integration: How to Build Smart AI Chatbots for Your Website",
-    slug: "chatgpt-integration-guide",
-    excerpt: "Step-by-step guide to integrating ChatGPT into your website and building intelligent customer support chatbots.",
-    category: "AI Chatbot",
-    tags: ["ChatGPT", "AI", "Integration", "API", "Development"],
-    author: "Muzammal",
-    publishedAt: "2024-01-07",
-    readTime: "14 min read",
-    image: "https://images.unsplash.com/photo-1677442136019-21780ecad995?w=800&h=500&fit=crop",
-    featured: false,
-    seoTitle: "ChatGPT Integration Guide | Build AI Chatbots for Your Website",
-    seoDescription: "Complete technical guide to ChatGPT integration. Learn API setup, prompt engineering, context management, and best practices for AI chatbots.",
-    seoKeywords: ["chatgpt integration", "chatgpt api", "ai chatbot development", "chatgpt website", "openai integration", "chatbot development"],
-    content: ``,
-  },
-  // eBay Templates Blogs
-  {
-    id: "11",
-    title: "eBay Listing Optimization: How to Create High-Converting Product Listings",
-    slug: "ebay-listing-optimization-guide",
-    excerpt: "Master eBay listing optimization with proven strategies to increase visibility, clicks, and sales.",
-    category: "eBay",
-    tags: ["eBay", "Listing Optimization", "E-commerce", "Sales", "SEO"],
-    author: "Muzammal",
-    publishedAt: "2024-01-06",
-    readTime: "9 min read",
-    image: "https://images.unsplash.com/photo-1523474253046-8cd2748b5fd2?w=800&h=500&fit=crop",
-    featured: false,
-    seoTitle: "eBay Listing Optimization Guide | Increase Sales by 50%",
-    seoDescription: "Complete eBay listing optimization guide including title optimization, photo tips, description writing, and pricing strategies to boost sales.",
-    seoKeywords: ["ebay listing optimization", "ebay seo", "ebay listing tips", "increase ebay sales", "ebay product listing", "ebay templates"],
-    content: ``,
-  },
-  {
-    id: "12",
-    title: "Professional eBay Store Design: Templates & Best Practices for 2024",
-    slug: "ebay-store-design-templates",
-    excerpt: "Create a professional eBay store with custom templates and design best practices that build trust and increase conversions.",
-    category: "eBay",
-    tags: ["eBay", "Store Design", "Templates", "Branding", "Conversion"],
-    author: "Muzammal",
-    publishedAt: "2024-01-05",
-    readTime: "7 min read",
-    image: "https://images.unsplash.com/photo-1607082348824-0a96f2a4b9da?w=800&h=500&fit=crop",
-    featured: false,
-    seoTitle: "eBay Store Design Guide | Professional Templates & Best Practices",
-    seoDescription: "Learn how to design a professional eBay store with custom templates, branding strategies, and mobile-responsive designs that convert.",
-    seoKeywords: ["ebay store design", "ebay templates", "ebay store templates", "ebay branding", "ebay store setup", "professional ebay store"],
-    content: ``,
+    draft: true,
+    seoTitle: "Mobile-Responsive eBay Listing Templates Guide | Muzammal Zaheer",
+    seoDescription: "Learn how to build policy-compliant, mobile-optimized eBay listing templates using pure CSS tabs and HTTPS-hosted responsive design.",
+    tableOfContents: [
+      { id: "active-content-rules", title: "1. eBay's Active Content Security Policy" },
+      { id: "mobile-viewport", title: "2. The eBay Mobile App Rendering Sandbox" },
+      { id: "css-only-tabs", title: "3. CSS-Only Accordions & Product Tabs" },
+      { id: "https-asset-hosting", title: "4. HTTPS Asset & Image Hosting" },
+      { id: "conversion-best-practices", title: "5. High-Converting Visual Hierarchy" },
+    ],
+    content: `
+## 1. eBay's Active Content Security Policy {#active-content-rules}
+
+Many legacy eBay listing templates broke when eBay banned all **Active Content** (JavaScript, Flash, form actions, and external iframes). 
+
+Modern eBay listing templates must be constructed using **pure semantic HTML5 and CSS3**:
+- No \`<script>\` tags or inline JavaScript event handlers (\`onclick\`, \`onload\`).
+- No modal popups or external cookie scripts.
+- No form submit inputs or external cart redirects.
+
+Designing templates that look dynamic and interactive within these constraints requires specialized CSS mastery.
+
+---
+
+## 2. The eBay Mobile App Rendering Sandbox {#mobile-viewport}
+
+Over 65% of eBay transactions are initiated or completed on mobile devices. Inside the eBay mobile app (iOS and Android), description HTML is rendered within a constrained sandboxed webview.
+
+To guarantee that your listing renders flawlessly without horizontal scrolling or tiny illegible text:
+
+1. **Include the eBay Viewport Meta**:
+   \`\`\`html
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   \`\`\`
+2. **Use Relative Fluid Dimensions**: Never set fixed \`width: 900px\` containers. Always use \`max-width: 100%\` and CSS Flexbox / CSS Grid.
+3. **Prevent Content Overflow**: Ensure tables, image galleries, and specification grids use \`overflow-x: auto\` or wrap vertically on smaller screens.
+
+---
+
+## 3. CSS-Only Accordions & Product Tabs {#css-only-tabs}
+
+Because JavaScript is forbidden, tabbed interfaces (Shipping, Warranty, Sizing Chart, Returns) must use the **CSS Checkbox / Radio Hack**:
+
+\`\`\`html
+<!-- CSS-Only Tab Architecture -->
+<div class="tabs-wrapper">
+  <input type="radio" name="tabs" id="tab-1" checked>
+  <label for="tab-1">Product Details</label>
+
+  <input type="radio" name="tabs" id="tab-2">
+  <label for="tab-2">Shipping Policy</label>
+
+  <div class="tab-content" id="content-1">
+    <p>Detailed product specifications...</p>
+  </div>
+  <div class="tab-content" id="content-2">
+    <p>Fast dispatch within 24 hours via tracked carrier...</p>
+  </div>
+</div>
+\`\`\`
+
+When a shopper taps a tab label on their smartphone, CSS \`:checked\` pseudo-selectors toggle visibility instantly with zero JavaScript overhead.
+
+---
+
+## 4. HTTPS Asset & Image Hosting {#https-asset-hosting}
+
+eBay enforces strict HTTPS compliance across all embedded resources. If any product image, icon, or logo is referenced via insecure \`http://\`, eBay flags the listing as "Non-Secure Content" and hides the description behind a warning click.
+
+- Host all template assets (logos, payment badge SVGs, gallery thumbnails) on a fast global CDN with SSL certificates.
+- Optimize asset weights to ensure the listing description renders in under 500 milliseconds even on 3G connections.
+
+---
+
+## 5. High-Converting Visual Hierarchy {#conversion-best-practices}
+
+Top-performing eBay store listings follow a proven psychological sequence:
+
+1. **Clear Header & Brand Trust**: Logo, dispatch time commitment, and positive feedback guarantee.
+2. **High-Res Gallery Preview**: Clean product views emphasizing authenticity.
+3. **Key Selling Points & Bullet Specs**: Scannable features for mobile skimmers.
+4. **Tabbed Confidence Elements**: Clear return window, international shipping details, and support policies.
+5. **Cross-Sell Items**: Related products within the seller's inventory.
+`,
   },
 ]
 
 export function getAllPosts(): BlogPost[] {
-  return blogPosts.sort((a, b) => new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime())
+  return blogPosts
 }
 
 export function getFeaturedPosts(): BlogPost[] {
-  return blogPosts.filter(post => post.featured)
-}
-
-export function getPostsByCategory(category: string): BlogPost[] {
-  return blogPosts.filter(post => post.category === category)
+  return blogPosts.filter((p) => p.featured)
 }
 
 export function getPostBySlug(slug: string): BlogPost | undefined {
-  return blogPosts.find(post => post.slug === slug)
+  return blogPosts.find((p) => p.slug === slug)
+}
+
+export function getPostsByCategory(category: string): BlogPost[] {
+  return blogPosts.filter((p) => p.category === category)
 }
 
 export function getAllCategories(): string[] {
-  return Array.from(new Set(blogPosts.map(post => post.category)))
+  return Array.from(new Set(blogPosts.map((p) => p.category)))
 }
