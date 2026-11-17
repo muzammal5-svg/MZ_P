@@ -304,58 +304,31 @@ export function MZwebSolutionsHero() {
 
           </div>
 
-          {/* RIGHT COLUMN - Developer Portrait with Diagonal Frame */}
-          <div className="lg:col-span-5 relative hidden lg:block animate-in fade-in slide-in-from-right-4 duration-800 delay-300">
-            <div className="relative w-full max-w-[460px] mx-auto" style={{ height: "510px" }}>
+          {/* RIGHT COLUMN - Digital Development Services Showcase */}
+          <div className="lg:col-span-5 relative mt-8 lg:mt-0 animate-in fade-in slide-in-from-right-4 duration-800 delay-300">
+            <div className="relative w-full max-w-[520px] mx-auto">
               
-              {/* Diagonal frame wrapper with emerald/cyan gradient border */}
+              {/* Decorative ambient backdrop glow */}
               <div
-                className="absolute inset-0 shadow-2xl transition-transform duration-500 hover:scale-[1.01]"
-                style={{
-                  clipPath: "polygon(14% 0%, 100% 0%, 86% 100%, 0% 100%)",
-                  background: "linear-gradient(135deg, #10b981 0%, #06b6d4 100%)",
-                  padding: "4px",
-                }}
-              >
-                <div
-                  className="w-full h-full relative overflow-hidden bg-slate-900"
-                  style={{
-                    clipPath: "polygon(14% 0%, 100% 0%, 86% 100%, 0% 100%)",
-                  }}
-                >
-                  <Image
-                    src="/professional-developer-portrait.png"
-                    alt={`${siteConfig.name} - ${siteConfig.title}`}
-                    fill
-                    sizes="(min-width: 1024px) 460px, 100vw"
-                    priority
-                    className="w-full h-full object-cover object-top hover:scale-105 transition-transform duration-700"
-                  />
-                  
-                  {/* Subtle dark gradient overlay for depth */}
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent pointer-events-none" />
+                className="absolute inset-0 rounded-3xl opacity-40 pointer-events-none blur-3xl scale-95"
+                style={{ background: "radial-gradient(circle, rgba(16,185,129,0.3) 0%, rgba(6,182,212,0.2) 60%, transparent 80%)" }}
+              />
 
-                  {/* Clean bottom badge */}
-                  <div
-                    className="absolute bottom-5 left-7 right-7 px-4 py-3 rounded-xl backdrop-blur-md"
-                    style={{
-                      background: "rgba(15, 23, 42, 0.8)",
-                      border: "1px solid rgba(255, 255, 255, 0.15)",
-                    }}
-                  >
-                    <div className="text-white text-xs font-semibold" style={{ fontFamily: "'Poppins', sans-serif" }}>
-                      {siteConfig.name}
-                    </div>
-                    <div className="text-emerald-400 text-[11px] font-medium" style={{ fontFamily: "'Poppins', sans-serif" }}>
-                      {siteConfig.title} · {siteConfig.metrics.projectsCount} Projects
-                    </div>
-                  </div>
-                </div>
+              {/* 3D Showcase Image */}
+              <div className="relative w-full aspect-[3/2] transition-transform duration-500 hover:scale-[1.02]">
+                <Image
+                  src="/digital-development-services-collage.png"
+                  alt="WordPress, Shopify, Next.js, and AI Automation Services Showcase"
+                  fill
+                  priority
+                  sizes="(min-width: 1280px) 520px, (min-width: 1024px) 440px, 100vw"
+                  className="object-contain drop-shadow-xl"
+                />
               </div>
 
-              {/* Decorative ambient accent */}
+              {/* Decorative subtle ambient accent */}
               <div
-                className="absolute -top-6 -right-6 w-32 h-32 rounded-full opacity-35 pointer-events-none blur-2xl"
+                className="absolute -top-6 -right-6 w-32 h-32 rounded-full opacity-30 pointer-events-none blur-2xl"
                 style={{ background: "linear-gradient(135deg, #10b981 0%, #06b6d4 100%)" }}
               />
             </div>
